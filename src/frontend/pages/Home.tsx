@@ -1,10 +1,12 @@
-import SkillGradientCard from './SkillGradientCard'
+import SkillGradientCard from "../components/common/SkillGradientCard";
 
 export default function Home() {
   return (
     <div className="max-w-5xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-2">Học tiếng Anh mỗi ngày</h1>
-      <p className="text-gray-600 mb-6">Chọn một kỹ năng để bắt đầu luyện tập.</p>
+      <p className="text-gray-600 mb-6">
+        Chọn một kỹ năng để bắt đầu luyện tập.
+      </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         <SkillGradientCard
@@ -33,5 +35,5 @@ export default function Home() {
         />
       </div>
     </div>
-  )
+  );
 }
