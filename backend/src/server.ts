@@ -1,17 +1,27 @@
 import express from 'express'
 import dotenv from 'dotenv'
+import cors from 'cors'
 import { connectDB } from './config/database'
-// import express, { type Express } from 'express'
-// import cors from 'cors'
-// import authRoutes from './routes/auth.routes.js'
-// import lessonRoutes from './routes/lesson.routes.js'
-// import { errorHandler } from './middleware/error.middleware.js'
+import aiRoutes from './routes/ai.routes.js'
 
 // // Load environment variables
 dotenv.config()
 
 const app = express()
 const PORT = process.env.PORT || 5000
+
+// Middleware
+app.use(cors({ origin: process.env.CORS_ORIGIN || 'http://localhost:5173' }))
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
+// Health route
+app.get('/', (_req, res) => {
+  res.json({ message: 'Daily English API Server', version: '1.0.0' })
+})
+
+// AI routes
+app.use('/api/ai', aiRoutes)
 
 // Start server
 const startServer = async () => {
@@ -28,20 +38,5 @@ const startServer = async () => {
 
 startServer()
 
-// // Middleware
-// app.use(cors({ origin: process.env.CORS_ORIGIN || 'http://localhost:5173' }))
-// app.use(express.json())
-// app.use(express.urlencoded({ extended: true }))
-
-// // Routes
-// app.get('/', (_req, res) => {
-//   res.json({ message: 'Daily English API Server', version: '1.0.0' })
-// })
-
-// app.use('/api/auth', authRoutes)
-// app.use('/api/lessons', lessonRoutes)
-
-// // Error handling middleware
-// app.use(errorHandler)
 
 

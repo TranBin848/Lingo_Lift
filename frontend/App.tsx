@@ -1,15 +1,16 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Suspense } from "react";
 import "./App.css";
-import NavBar from "./components/layout/NavBar";
-import Home from "./pages/Home";
-import Listening from "./pages/skills/Listening";
-import Speaking from "./pages/skills/Speaking";
-import Reading from "./pages/skills/Reading";
-import Writing from "./pages/skills/Writing";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import { AuthProvider } from "./context/AuthContext";
+import NavBar from "./src/components/layout/NavBar";
+import Home from "./src/pages/Home";
+import Listening from "./src/pages/skills/Listening";
+import Speaking from "./src/pages/skills/Speaking";
+import Reading from "./src/pages/skills/Reading";
+import Writing from "./src/pages/skills/Writing";
+import Login from "./src/pages/Login";
+import Register from "./src/pages/Register";
+import { AuthProvider } from "./src/context/AuthContext";
+import FloatingChatButton from "./src/components/chat/FloatingChatButton";
 
 export default function App() {
   return (
@@ -41,6 +42,8 @@ export default function App() {
                     <Route path="/writing" element={<Writing />} />
                   </Routes>
                 </Suspense>
+                {/* Floating Chat Button - available on all pages */}
+                <FloatingChatButton />
               </div>
             }
           />
