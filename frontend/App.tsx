@@ -11,11 +11,13 @@ import Login from "./src/pages/Login";
 import Register from "./src/pages/Register";
 import { AuthProvider } from "./src/context/AuthContext";
 import FloatingChatButton from "./src/components/chat/FloatingChatButton";
+import { Toaster } from "sonner";
 
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <Toaster position="top-right" richColors />
         <Routes>
           {/* Auth Routes - No NavBar */}
           <Route path="/login" element={<Login />} />
