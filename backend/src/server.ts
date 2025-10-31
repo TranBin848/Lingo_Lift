@@ -3,7 +3,8 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import { connectDB } from './config/database'
 import aiRoutes from './routes/ai.routes.js'
-import authRoutes from './routes/authRoutes.js'
+import authRoutes from './routes/auth.routes.js'
+import cookieParser from 'cookie-parser' 
 // // Load environment variables
 dotenv.config()
 
@@ -14,7 +15,7 @@ const PORT = process.env.PORT || 5000
 app.use(cors({ origin: process.env.CORS_ORIGIN || 'http://localhost:5173' }))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-
+app.use(cookieParser());
 // Health route
 app.get('/', (_req, res) => {
   res.json({ message: 'Daily English API Server', version: '1.0.0' })
