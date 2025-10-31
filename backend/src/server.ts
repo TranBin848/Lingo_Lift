@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import { connectDB } from './config/database'
 import aiRoutes from './routes/ai.routes.js'
-
+import authRoutes from './routes/authRoutes.js'
 // // Load environment variables
 dotenv.config()
 
@@ -22,6 +22,11 @@ app.get('/', (_req, res) => {
 
 // AI routes
 app.use('/api/ai', aiRoutes)
+
+//public routes
+app.use('/api/auth', authRoutes);
+
+//private routes
 
 // Start server
 const startServer = async () => {

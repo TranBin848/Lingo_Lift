@@ -1,22 +1,27 @@
 import mongoose, { Schema, type Document } from 'mongoose'
 
 export interface IUser extends Document {
-  name: string
+  username: string
+  displayName: string
   email: string
   password: string
-  avatar?: string
+  avatarUrl: string
+  avatarId?: string
+  bio?: string
+  phone?: string
   createdAt: Date
   updatedAt: Date
 }
 
 const userSchema = new Schema<IUser>(
   {
-    name: {
+    username: {
       type: String,
-      required: [true, 'Name is required'],
+      required: [true, 'Username is required'],
       trim: true,
-      minlength: [2, 'Name must be at least 2 characters'],
-      maxlength: [50, 'Name cannot exceed 50 characters'],
+      minlength: [2, 'Username must be at least 2 characters'],
+      maxlength: [50, 'Username cannot exceed 50 characters'],
+      unique: true,
     },
     email: {
       type: String,
@@ -32,8 +37,25 @@ const userSchema = new Schema<IUser>(
       minlength: [6, 'Password must be at least 6 characters'],
       select: false, // Don't return password by default
     },
-    avatar: {
+    avatarUrl: {
       type: String,
+    },
+    displayName: {
+      type: String,
+      required: [true, 'Display name is required'],
+      trim: true,
+    },
+    avatarId: {
+      type: String,
+    },
+    bio: {
+      type: String,
+      maxlength: [500, 'Bio cannot exceed 500 characters'],
+    },
+    phone: {
+      type: String,
+      sparse: true,
+      match: [/^\+?[1-9]\d{1,14}$/, 'Please provide a valid phone number'],
     },
   },
   {
