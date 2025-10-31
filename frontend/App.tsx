@@ -9,6 +9,7 @@ import Reading from "./src/pages/skills/Reading";
 import Writing from "./src/pages/skills/Writing";
 import Login from "./src/pages/Login";
 import Register from "./src/pages/Register";
+import UserPage from "./src/pages/UserPage";
 import { AuthProvider } from "./src/context/AuthContext";
 import FloatingChatButton from "./src/components/chat/FloatingChatButton";
 import { Toaster } from "sonner";
@@ -38,6 +39,7 @@ export default function App() {
                 >
                   <Routes>
                     <Route path="/" element={<Home />} />
+                    <Route path="/user" element={<UserPage />} />
                     <Route path="/listening" element={<Listening />} />
                     <Route path="/speaking" element={<Speaking />} />
                     <Route path="/reading" element={<Reading />} />
