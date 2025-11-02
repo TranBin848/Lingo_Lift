@@ -65,10 +65,14 @@ export const signIn = async (req, res) => {
             expiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL),
         });
 
+        const isProd = process.env.NODE_ENV === 'production';
+
+        // In production we need secure + sameSite='none' for cross-site cookies over HTTPS.
+        // For local development (non-production) use lax + secure=false so the cookie can be set over http://localhost.
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
-            secure: true,
-            sameSite: 'strict',
+            secure: isProd,
+            sameSite: isProd ? 'none' : 'lax',
             maxAge: REFRESH_TOKEN_TTL,
         });
 
@@ -79,7 +83,7 @@ export const signIn = async (req, res) => {
         console.error('Error signing in:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
-}
+};
 
 export const signOut = async (req, res) => {
     try {
@@ -88,7 +92,8 @@ export const signOut = async (req, res) => {
         if (token) {
             await Session.deleteOne({ refreshToken: token });
 
-            res.clearCookie('refreshToken');
+            const isProd = process.env.NODE_ENV === 'production';
+            res.clearCookie('refreshToken', { secure: isProd, sameSite: isProd ? 'none' : 'lax' });
         }
             return res.sendStatus(204);
     }
@@ -96,4 +101,4 @@ export const signOut = async (req, res) => {
         console.error('Error signing out:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
-}
+};

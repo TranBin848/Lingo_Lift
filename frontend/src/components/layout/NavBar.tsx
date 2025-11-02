@@ -1,9 +1,22 @@
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
+import { useAuthStore } from "../../stores/useAuth.Store";
 
 export default function NavBar() {
   const linkBase = "px-3 py-2 rounded-md text-sm font-medium";
   const active = "bg-blue-600 text-white";
   const inactive = "text-blue-600 hover:bg-blue-50";
+
+  const { accessToken, signOut } = useAuthStore();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      navigate("/");
+    } catch (err) {
+      console.error("Sign out failed:", err);
+    }
+  };
 
   return (
     <nav className="w-full border-b border-gray-200 bg-white">
@@ -59,18 +72,29 @@ export default function NavBar() {
 
           {/* Auth Buttons */}
           <div className="ml-4 flex gap-2 items-center border-l border-gray-200 pl-4">
-            <Link
-              to="/login"
-              className="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 rounded-md hover:bg-blue-50"
-            >
-              Đăng nhập
-            </Link>
-            <Link
-              to="/register"
-              className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-md shadow-sm"
-            >
-              Đăng ký
-            </Link>
+            {!accessToken ? (
+              <>
+                <Link
+                  to="/login"
+                  className="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 rounded-md hover:bg-blue-50"
+                >
+                  Đăng nhập
+                </Link>
+                <Link
+                  to="/register"
+                  className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-md shadow-sm"
+                >
+                  Đăng ký
+                </Link>
+              </>
+            ) : (
+              <button
+                onClick={handleSignOut}
+                className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md shadow-sm"
+              >
+                Đăng xuất
+              </button>
+            )}
           </div>
         </div>
       </div>

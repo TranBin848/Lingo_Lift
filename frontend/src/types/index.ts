@@ -14,9 +14,13 @@ export interface ApiResponse<T> {
 export interface User {
   id: string
   email: string
-  name: string
-  avatar?: string
+  username: string
+  displayName: string
+  avatarUrl?: string
+  bio?: string
+  phone?: string
   createdAt: string
+  updatedAt: string
 }
 
 export interface AuthResponse {

@@ -1,29 +1,30 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "../components/auth/AuthLayout";
-import FormInput from "../components/auth/FormInput";
+import { Input } from "../components/ui/input";
 import PasswordInput from "../components/auth/PasswordInput";
 import SocialLoginButtons from "../components/auth/SocialLoginButtons";
 import LoadingSpinner from "../components/auth/LoadingSpinner";
+import { useAuthStore } from "../stores/useAuth.Store";
 
 export default function Login() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    email: "",
+    username: "",
     password: "",
   });
-  const [isLoading, setIsLoading] = useState(false);
+  const { signIn, loading } = useAuthStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      console.log("Login data:", formData);
-      setIsLoading(false);
+    try {
+      await signIn(formData.username, formData.password);
       navigate("/");
-    }, 1000);
+    } catch (error) {
+      // signIn already toasts errors; keep console log for debugging
+      console.error("Login failed:", error);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,19 +41,30 @@ export default function Login() {
       gradientFrom="from-blue-50"
       gradientTo="to-purple-50"
       logoGradient="from-blue-600 to-purple-600"
+      center={true}
     >
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <FormInput
-          id="email"
-          name="email"
-          type="email"
-          label="Email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="your.email@example.com"
-          required
-          focusColor="focus:ring-blue-500"
-        />
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-3 max-w-sm mx-auto w-full text-sm"
+      >
+        <div>
+          <label
+            htmlFor="username"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Tên đăng nhập
+          </label>
+          <Input
+            id="username"
+            name="username"
+            type="text"
+            value={formData.username}
+            onChange={handleChange}
+            placeholder="username"
+            className="mt-1"
+            required
+          />
+        </div>
 
         <PasswordInput
           id="password"
@@ -86,14 +98,10 @@ export default function Login() {
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={isLoading}
-          className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+          disabled={loading}
+          className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 rounded-md font-medium hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-sm text-sm"
         >
-          {isLoading ? (
-            <LoadingSpinner text="Đang đăng nhập..." />
-          ) : (
-            "Đăng nhập"
-          )}
+          {loading ? <LoadingSpinner text="Đang đăng nhập..." /> : "Đăng nhập"}
         </button>
       </form>
 

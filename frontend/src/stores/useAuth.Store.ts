@@ -1,0 +1,88 @@
+import { create } from "zustand";
+import { toast } from "sonner";
+import { authService } from "../services/auth.Service";
+import type { AuthState } from "@/types/store";
+
+export const useAuthStore = create<AuthState>((set, get) => ({
+  accessToken: null,
+  user: null,
+  loading: false,
+
+    clearState: () => set({
+    accessToken: null,
+    user: null,
+    loading: false,
+  }),
+
+  signUp: async (
+    username: string,
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string
+  ) => {
+    try {
+      set({ loading: true });
+      const data = await authService.signUp({
+        username,
+        email,
+        password,
+        firstName,
+        lastName,
+      });
+
+      // If API returns tokens/user, store them. Adjust as your backend returns.
+      if (data?.accessToken) {
+        set({ accessToken: data.accessToken });
+      }
+      if (data?.user) {
+        set({ user: data.user });
+      }
+
+      toast.success("Sign Up Successful!");
+      return;
+    } catch (error) {
+      console.error("Sign Up Error:", error);
+      toast.error("Sign Up Failed. Please try again.");
+      // Rethrow so callers can react (navigation, form errors)
+      throw error;
+    } finally {
+      set({ loading: false });
+    }
+  },
+  signIn: async (username, password) => {
+    try {
+      set({ loading: true });
+
+      const data = await authService.signIn({ username, password });
+      if (data?.accessToken) {
+        set({ accessToken: data.accessToken });
+      }
+      if (data?.user) {
+        set({ user: data.user });
+      }
+
+      toast.success("Welcome back to LingoLift! 🎉");
+      return data;
+    } catch (error) {
+      console.error("Sign In Error:", error);
+      toast.error("Sign In Failed. Please check your credentials and try again.");
+      throw error;
+    } finally {
+      set({ loading: false });
+    }
+
+  },
+  signOut: async () => {
+    try {
+      get().clearState();
+      await authService.signOut();
+      toast.success("Signed out successfully.");
+    } catch (error) {
+      console.error("Sign Out Error:", error);
+      toast.error("Sign Out Failed. Please try again.");
+      throw error;
+    }
+  },
+
+}));

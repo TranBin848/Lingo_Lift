@@ -1,54 +1,79 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "../components/auth/AuthLayout";
-import FormInput from "../components/auth/FormInput";
-import PasswordInput from "../components/auth/PasswordInput";
 import SocialLoginButtons from "../components/auth/SocialLoginButtons";
 import LoadingSpinner from "../components/auth/LoadingSpinner";
-
+import { Input } from "../components/ui/input";
+import PasswordInput from "../components/auth/PasswordInput";
+import { Button } from "../components/ui/button";
+import { useAuthStore } from "../stores/useAuth.Store";
+import { z } from "zod";
 export default function Register() {
+  // Toggle to show/hide social login buttons temporarily
+  const SHOW_SOCIAL_LOGIN = false;
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
+    username: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isLoading, setIsLoading] = useState(false);
+  const { signUp, loading } = useAuthStore();
 
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-
-    if (formData.name.length < 2) {
-      newErrors.name = "Tên phải có ít nhất 2 ký tự";
-    }
-
-    if (formData.password.length < 6) {
-      newErrors.password = "Mật khẩu phải có ít nhất 6 ký tự";
-    }
-
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Mật khẩu xác nhận không khớp";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  // Zod schema for register form validation
+  const registerSchema = z
+    .object({
+      firstName: z.string().min(1, "Vui lòng nhập họ"),
+      lastName: z.string().min(1, "Vui lòng nhập tên"),
+      username: z.string().min(2, "Tên đăng nhập phải có ít nhất 2 ký tự"),
+      email: z.string().email("Email không hợp lệ"),
+      password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
+      confirmPassword: z
+        .string()
+        .min(6, "Xác nhận mật khẩu phải có ít nhất 6 ký tự"),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: "Mật khẩu xác nhận không khớp",
+      path: ["confirmPassword"],
+    });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!validateForm()) return;
+    // Validate with Zod
+    const result = registerSchema.safeParse(formData);
+    if (!result.success) {
+      // Convert Zod errors into our errors state shape
+      const fieldErrors = result.error.flatten().fieldErrors;
+      const newErrors: Record<string, string> = {};
+      for (const key of Object.keys(fieldErrors)) {
+        const v = (fieldErrors as Record<string, (string | undefined)[]>)[key];
+        if (v && v.length > 0) {
+          newErrors[key] = v[0] as string;
+        }
+      }
+      setErrors(newErrors);
+      return;
+    }
 
-    setIsLoading(true);
-
-    // Simulate API call
-    setTimeout(() => {
-      console.log("Register data:", formData);
-      setIsLoading(false);
+    try {
+      // Call the auth store signUp. This will show toasts and manage loading state.
+      await signUp(
+        formData.username,
+        formData.email,
+        formData.password,
+        formData.firstName,
+        formData.lastName
+      );
+      // On success navigate to login
       navigate("/login");
-    }, 1000);
+    } catch (error) {
+      // signUp already toasted the error; you can map server errors to fields here if needed
+      console.error("Register error (handled in store):", error);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,53 +99,110 @@ export default function Register() {
       gradientTo="to-pink-50"
       logoGradient="from-purple-600 to-pink-600"
     >
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <FormInput
-          id="name"
-          name="name"
-          type="text"
-          label="Họ và tên"
-          value={formData.name}
-          onChange={handleChange}
-          placeholder="Nguyễn Văn A"
-          error={errors.name}
-          required
-          focusColor="focus:ring-purple-500"
-        />
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-3 max-w-sm mx-auto w-full text-sm"
+      >
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <label
+              htmlFor="firstName"
+              className="text-sm font-medium text-gray-700"
+            >
+              Họ
+            </label>
+            <Input
+              id="firstName"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+              placeholder="Nguyễn"
+              className="mt-1"
+            />
+            {errors.firstName && (
+              <p className="text-xs text-red-600 mt-1">{errors.firstName}</p>
+            )}
+          </div>
+          <div>
+            <label
+              htmlFor="lastName"
+              className="text-sm font-medium text-gray-700"
+            >
+              Tên
+            </label>
+            <Input
+              id="lastName"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+              placeholder="Văn A"
+              className="mt-1"
+            />
+            {errors.lastName && (
+              <p className="text-xs text-red-600 mt-1">{errors.lastName}</p>
+            )}
+          </div>
+        </div>
 
-        <FormInput
-          id="email"
-          name="email"
-          type="email"
-          label="Email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="your.email@example.com"
-          required
-          focusColor="focus:ring-purple-500"
-        />
+        <div>
+          <label
+            htmlFor="username"
+            className="text-sm font-medium text-gray-700"
+          >
+            Tên đăng nhập
+          </label>
+          <Input
+            id="username"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            placeholder="username"
+            className="mt-1"
+          />
+          {errors.username && (
+            <p className="text-xs text-red-600 mt-1">{errors.username}</p>
+          )}
+        </div>
 
-        <PasswordInput
-          id="password"
-          name="password"
-          label="Mật khẩu"
-          value={formData.password}
-          onChange={handleChange}
-          error={errors.password}
-          required
-          focusColor="focus:ring-purple-500"
-        />
+        <div>
+          <label htmlFor="email" className="text-sm font-medium text-gray-700">
+            Email
+          </label>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="your.email@example.com"
+            className="mt-1"
+            required
+          />
+        </div>
 
-        <PasswordInput
-          id="confirmPassword"
-          name="confirmPassword"
-          label="Xác nhận mật khẩu"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          error={errors.confirmPassword}
-          required
-          focusColor="focus:ring-purple-500"
-        />
+        <div className="space-y-2">
+          <div>
+            <PasswordInput
+              id="password"
+              name="password"
+              label="Mật khẩu"
+              value={formData.password}
+              onChange={handleChange}
+              error={errors.password}
+            />
+          </div>
+
+          <div>
+            <PasswordInput
+              id="confirmPassword"
+              name="confirmPassword"
+              label="Xác nhận mật khẩu"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              error={errors.confirmPassword}
+            />
+          </div>
+        </div>
 
         {/* Terms & Conditions */}
         <label className="flex items-start">
@@ -148,20 +230,20 @@ export default function Register() {
         </label>
 
         {/* Submit Button */}
-        <button
+        <Button
           type="submit"
-          disabled={isLoading}
-          className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg font-medium hover:from-purple-700 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+          className="w-full py-2 text-sm"
+          disabled={loading}
         >
-          {isLoading ? (
+          {loading ? (
             <LoadingSpinner text="Đang tạo tài khoản..." />
           ) : (
             "Đăng ký"
           )}
-        </button>
+        </Button>
       </form>
 
-      <SocialLoginButtons />
+      {SHOW_SOCIAL_LOGIN && <SocialLoginButtons />}
 
       {/* Login Link */}
       <p className="mt-6 text-center text-sm text-gray-600">
