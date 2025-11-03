@@ -3,7 +3,8 @@ import { toast } from "sonner";
 import { authService } from "../services/auth.Service";
 import type { AuthState } from "@/types/store";
 
-export const useAuthStore = create<AuthState>((set, get) => ({
+export const useAuthStore = create<AuthState>((set, get) => {
+  return {
   accessToken: null,
   user: null,
   loading: false,
@@ -61,7 +62,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       if (data?.user) {
         set({ user: data.user });
       }
-
+      await get().fetchMe();
       toast.success("Welcome back to LingoLift! 🎉");
       return data;
     } catch (error) {
@@ -85,4 +86,43 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-}));
+  fetchMe: async () => {
+    try {
+      set({ loading: true });
+      const user = await authService.fetchMe();
+      set({ user });
+    }
+    catch (error) {
+      console.error("Fetch Me Error:", error);
+      set({ user: null, accessToken: null });
+      toast.error("Failed to fetch user data. Please try again.");
+      throw error;
+    }
+    finally {
+      set({ loading: false });
+    }
+  },
+
+  refresh: async () => {
+      try {
+        const {user, fetchMe} = get();
+        set({ loading: true });
+        const accessToken = await authService.refresh();
+        set({ accessToken });
+        if (user == null) {
+          await fetchMe();
+        }
+
+      } catch (error) {
+        console.error("Token Refresh Error:", error);
+        get().clearState();
+        set({ accessToken: null, user: null });
+        toast.error("Session expired. Please sign in again.");
+        throw error;
+      }
+      finally {
+        set({ loading: false });
+      }
+    },
+  };
+});

@@ -102,3 +102,33 @@ export const signOut = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+
+export const refreshToken = async (req, res) => {
+    try {
+        const token = req.cookies?.refreshToken;
+
+        if(!token) {
+            return res.status(401).json({ message: 'No refresh token provided' });
+        }
+
+        const session = await Session.findOne({ refreshToken: token });
+
+        if (!session || session.expiresAt < new Date()) {
+            return res.status(401).json({ message: 'Invalid or expired refresh token' });
+        }
+
+        const accessToken = jwt.sign({
+            userId: session.userId
+
+        }, 
+        // @ts-ignore
+        process.env.ACCESS_TOKEN_SECRET, { expiresIn: ACCESS_TOKEN_TTL });
+
+        return res.status(200).json({ accessToken });
+
+    }
+    catch (error) {
+        console.error('Error refreshing token:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};

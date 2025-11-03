@@ -6,7 +6,7 @@ export default function NavBar() {
   const active = "bg-blue-600 text-white";
   const inactive = "text-blue-600 hover:bg-blue-50";
 
-  const { accessToken, signOut } = useAuthStore();
+  const { accessToken, signOut, loading } = useAuthStore();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -72,7 +72,9 @@ export default function NavBar() {
 
           {/* Auth Buttons */}
           <div className="ml-4 flex gap-2 items-center border-l border-gray-200 pl-4">
-            {!accessToken ? (
+            {loading ? (
+              <div className="px-4 py-2 text-sm text-gray-500">...</div>
+            ) : !accessToken ? (
               <>
                 <Link
                   to="/login"

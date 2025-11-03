@@ -1,5 +1,5 @@
 import express from 'express';
-import { signIn, signUp, signOut } from '../controllers/auth.Controller.js';
+import { signIn, signUp, signOut, refreshToken } from '../controllers/auth.Controller.js';
 const router = express.Router();
 
 router.post('/signup', signUp);
@@ -7,4 +7,6 @@ router.post('/signup', signUp);
 router.post('/signin', signIn);
 
 router.post('/signout', signOut);
+
+router.post('/refresh', refreshToken);;
 export default router;
