@@ -5,12 +5,13 @@ import grammarQuestions from "../../mocks/grammarQuestions";
 
 interface GrammarSectionProps {
   onComplete?: (score: { correct: number; total: number }) => void;
+  reviewMode?: boolean;
 }
 
-export default function GrammarSection({ onComplete }: GrammarSectionProps) {
+export default function GrammarSection({ onComplete, reviewMode = false }: GrammarSectionProps) {
   // Store answers: for multiple-choice and error-correction: selected option index
   const [answers, setAnswers] = useState<Record<number, number>>({});
-  const [submitted, setSubmitted] = useState(false);
+  const [submitted, setSubmitted] = useState(reviewMode);
   const [results, setResults] = useState<{
     correct: number;
     total: number;

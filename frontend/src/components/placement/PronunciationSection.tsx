@@ -37,17 +37,19 @@ function wordOverlapScore(target: string, actual: string) {
 
 interface PronunciationSectionProps {
   onComplete?: (score: { correct: number; total: number }) => void;
+  reviewMode?: boolean;
 }
 
 export default function PronunciationSection({
   onComplete,
+  reviewMode = false,
 }: PronunciationSectionProps) {
   // Pronunciation flow: store transcripts and selected options per question id
   const [transcripts, setTranscripts] = useState<Record<number, string>>({});
   const [linkingAnswers, setLinkingAnswers] = useState<Record<number, number>>(
     {}
   );
-  const [submitted, setSubmitted] = useState(false);
+  const [submitted, setSubmitted] = useState(reviewMode);
   const [results, setResults] = useState<{
     correct: number;
     total: number;
