@@ -1,8 +1,8 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import "./App.css";
 import NavBar from "./src/components/layout/NavBar";
-import ProtectedRoute from "./src/components/auth/protectedRoute";
+import ProtectedRoute from "./src/components/auth/ProtectedRoute";
 import Home from "./src/pages/Home";
 import Listening from "./src/pages/skills/Listening";
 import Speaking from "./src/pages/skills/Speaking";
@@ -11,10 +11,10 @@ import Writing from "./src/pages/skills/Writing";
 import Login from "./src/pages/Login";
 import Register from "./src/pages/Register";
 import UserPage from "./src/pages/UserPage";
+import PlacementTest from "./src/pages/PlacementTest";
 import { AuthProvider } from "./src/context/AuthContext";
 import FloatingChatButton from "./src/components/chat/FloatingChatButton";
 import { Toaster } from "sonner";
-import { useEffect } from "react";
 import { useAuthStore } from "./src/stores/useAuth.Store";
 
 export default function App() {
@@ -51,6 +51,24 @@ export default function App() {
 
           {/* Protected routes - require auth */}
           <Route element={<ProtectedRoute />}>
+            <Route
+              path="/placement"
+              element={
+                <div className="min-h-screen bg-gray-50">
+                  <NavBar />
+                  <Suspense
+                    fallback={
+                      <div className="flex items-center justify-center min-h-screen">
+                        Đang tải...
+                      </div>
+                    }
+                  >
+                    <PlacementTest />
+                  </Suspense>
+                  <FloatingChatButton />
+                </div>
+              }
+            />
             <Route
               path="/user"
               element={
@@ -152,9 +170,12 @@ function AuthBootstrap() {
   // Trigger refresh on mount (non-blocking)
   useEffect(() => {
     // call refresh but don't await here
-    useAuthStore.getState().refresh().catch(() => {
-      /* ignore */
-    });
+    useAuthStore
+      .getState()
+      .refresh()
+      .catch(() => {
+        /* ignore */
+      });
   }, []);
 
   return null;

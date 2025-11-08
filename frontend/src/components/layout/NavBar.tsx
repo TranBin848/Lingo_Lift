@@ -37,37 +37,14 @@ export default function NavBar() {
           >
             Trang chủ
           </NavLink>
+
           <NavLink
             className={({ isActive }) =>
               `${linkBase} ${isActive ? active : inactive}`
             }
-            to="/listening"
+            to="/placement"
           >
-            Listening
-          </NavLink>
-          <NavLink
-            className={({ isActive }) =>
-              `${linkBase} ${isActive ? active : inactive}`
-            }
-            to="/speaking"
-          >
-            Speaking
-          </NavLink>
-          <NavLink
-            className={({ isActive }) =>
-              `${linkBase} ${isActive ? active : inactive}`
-            }
-            to="/reading"
-          >
-            Reading
-          </NavLink>
-          <NavLink
-            className={({ isActive }) =>
-              `${linkBase} ${isActive ? active : inactive}`
-            }
-            to="/writing"
-          >
-            Writing
+            Kiểm tra đầu vào
           </NavLink>
 
           {/* Auth Buttons */}
