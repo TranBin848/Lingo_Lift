@@ -39,7 +39,7 @@ app.use('/api/auth', authRoutes);
 
 //private routes
 app.use(protectRoute);
-app.use('/api/user', userRoutes);
+app.use('/api/users', userRoutes);
 
 // Start server
 const startServer = async () => {

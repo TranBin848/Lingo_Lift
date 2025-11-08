@@ -19,6 +19,7 @@ export interface User {
   avatarUrl?: string
   bio?: string
   phone?: string
+  role: 'user' | 'admin' | 'teacher'
   createdAt: string
   updatedAt: string
 }

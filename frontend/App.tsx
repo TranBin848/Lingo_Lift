@@ -12,6 +12,7 @@ import Login from "./src/pages/Login";
 import Register from "./src/pages/Register";
 import UserPage from "./src/pages/UserPage";
 import PlacementTest from "./src/pages/PlacementTest";
+import AdminUsersPage from "./src/pages/AdminUsersPage";
 import { AuthProvider } from "./src/context/AuthContext";
 import FloatingChatButton from "./src/components/chat/FloatingChatButton";
 import { Toaster } from "sonner";
@@ -51,6 +52,23 @@ export default function App() {
 
           {/* Protected routes - require auth */}
           <Route element={<ProtectedRoute />}>
+            <Route
+              path="/admin/users"
+              element={
+                <div className="min-h-screen bg-gray-50">
+                  <NavBar />
+                  <Suspense
+                    fallback={
+                      <div className="flex items-center justify-center min-h-screen">
+                        Đang tải...
+                      </div>
+                    }
+                  >
+                    <AdminUsersPage />
+                  </Suspense>
+                </div>
+              }
+            />
             <Route
               path="/placement"
               element={
