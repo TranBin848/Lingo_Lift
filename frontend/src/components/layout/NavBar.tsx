@@ -6,7 +6,7 @@ export default function NavBar() {
   const active = "bg-blue-600 text-white";
   const inactive = "text-blue-600 hover:bg-blue-50";
 
-  const { accessToken, signOut, loading } = useAuthStore();
+  const { accessToken, user, signOut, loading } = useAuthStore();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -46,6 +46,18 @@ export default function NavBar() {
           >
             Kiểm tra đầu vào
           </NavLink>
+
+          {/* Admin Only - User Management */}
+          {user?.role === "admin" && (
+            <NavLink
+              className={({ isActive }) =>
+                `${linkBase} ${isActive ? active : inactive}`
+              }
+              to="/admin/users"
+            >
+              Quản lý tài khoản
+            </NavLink>
+          )}
 
           {/* Auth Buttons */}
           <div className="ml-4 flex gap-2 items-center border-l border-gray-200 pl-4">

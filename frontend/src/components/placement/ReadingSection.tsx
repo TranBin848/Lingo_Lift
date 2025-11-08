@@ -8,7 +8,10 @@ interface ReadingSectionProps {
   reviewMode?: boolean;
 }
 
-export default function ReadingSection({ onComplete, reviewMode = false }: ReadingSectionProps) {
+export default function ReadingSection({
+  onComplete,
+  reviewMode = false,
+}: ReadingSectionProps) {
   const [answers, setAnswers] = useState<
     Record<number, Record<number, number | string>>
   >({});

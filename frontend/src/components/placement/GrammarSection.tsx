@@ -8,7 +8,10 @@ interface GrammarSectionProps {
   reviewMode?: boolean;
 }
 
-export default function GrammarSection({ onComplete, reviewMode = false }: GrammarSectionProps) {
+export default function GrammarSection({
+  onComplete,
+  reviewMode = false,
+}: GrammarSectionProps) {
   // Store answers: for multiple-choice and error-correction: selected option index
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [submitted, setSubmitted] = useState(reviewMode);

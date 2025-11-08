@@ -130,57 +130,57 @@ export default function PlacementTest() {
       {/* Section navigation tabs - hide in review mode */}
       {!isReviewMode && (
         <div className="flex gap-2 mb-6 flex-wrap">
-        <button
-          onClick={() => setCurrentSection("pronunciation")}
-          className={`px-4 py-2 rounded-md text-sm font-medium ${
-            currentSection === "pronunciation"
-              ? "bg-blue-600 text-white"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-          }`}
-        >
-          Pronunciation
-        </button>
-        <button
-          onClick={() => setCurrentSection("grammar")}
-          className={`px-4 py-2 rounded-md text-sm font-medium ${
-            currentSection === "grammar"
-              ? "bg-blue-600 text-white"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-          }`}
-        >
-          Grammar
-        </button>
-        <button
-          onClick={() => setCurrentSection("vocabulary")}
-          className={`px-4 py-2 rounded-md text-sm font-medium ${
-            currentSection === "vocabulary"
-              ? "bg-blue-600 text-white"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-          }`}
-        >
-          Vocabulary
-        </button>
-        <button
-          onClick={() => setCurrentSection("listening")}
-          className={`px-4 py-2 rounded-md text-sm font-medium ${
-            currentSection === "listening"
-              ? "bg-blue-600 text-white"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-          }`}
-        >
-          Listening
-        </button>
-        <button
-          onClick={() => setCurrentSection("reading")}
-          className={`px-4 py-2 rounded-md text-sm font-medium ${
-            currentSection === "reading"
-              ? "bg-blue-600 text-white"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-          }`}
-        >
-          Reading
-        </button>
-      </div>
+          <button
+            onClick={() => setCurrentSection("pronunciation")}
+            className={`px-4 py-2 rounded-md text-sm font-medium ${
+              currentSection === "pronunciation"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+          >
+            Pronunciation
+          </button>
+          <button
+            onClick={() => setCurrentSection("grammar")}
+            className={`px-4 py-2 rounded-md text-sm font-medium ${
+              currentSection === "grammar"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+          >
+            Grammar
+          </button>
+          <button
+            onClick={() => setCurrentSection("vocabulary")}
+            className={`px-4 py-2 rounded-md text-sm font-medium ${
+              currentSection === "vocabulary"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+          >
+            Vocabulary
+          </button>
+          <button
+            onClick={() => setCurrentSection("listening")}
+            className={`px-4 py-2 rounded-md text-sm font-medium ${
+              currentSection === "listening"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+          >
+            Listening
+          </button>
+          <button
+            onClick={() => setCurrentSection("reading")}
+            className={`px-4 py-2 rounded-md text-sm font-medium ${
+              currentSection === "reading"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+          >
+            Reading
+          </button>
+        </div>
       )}
 
       {/* Back to Results button when in review mode */}
