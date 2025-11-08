@@ -1,161 +1,131 @@
 import { useState } from "react";
-import { Input } from "../components/ui/input";
-import { Button } from "../components/ui/button";
-import { toast } from "sonner";
+import PronunciationSection from "../components/placement/PronunciationSection";
 
 export default function PlacementTest() {
-  const [active, setActive] = useState<"listening" | "reading">("listening");
+  const [currentSection, setCurrentSection] = useState<
+    "pronunciation" | "grammar" | "vocabulary" | "listening" | "reading"
+  >("pronunciation");
 
-  // Listening state
-  const [listeningAnswer, setListeningAnswer] = useState("");
-  const listeningPrompt = "The quick brown fox jumps over the lazy dog.";
+  const [scores, setScores] = useState<
+    Record<string, { correct: number; total: number }>
+  >({});
 
-  // Reading state (simple multiple choice)
-  const readingPassage = `
-  Tom is a student who likes reading. He has two books. One book is about animals and the other is about space.
-  `;
-  const readingQuestions = [
-    {
-      id: 1,
-      question: "What does Tom like?",
-      options: ["Cooking", "Reading", "Sleeping"],
-      answer: 1,
-    },
-    {
-      id: 2,
-      question: "One of Tom's books is about",
-      options: ["Cars", "Animals", "Music"],
-      answer: 1,
-    },
-  ];
-  const [readingAnswers, setReadingAnswers] = useState<
-    Record<number, number | null>
-  >(() => ({}));
-
-  const playAudio = () => {
-    const utter = new SpeechSynthesisUtterance(listeningPrompt);
-    utter.lang = "en-US";
-    speechSynthesis.cancel();
-    speechSynthesis.speak(utter);
-    toast.info("🔊 Playing audio...", { duration: 1500 });
-  };
-
-  const checkListening = () => {
-    const normalize = (s: string) => s.trim().toLowerCase();
-    if (normalize(listeningAnswer) === normalize(listeningPrompt)) {
-      toast.success("🎉 Listening: Perfect match!");
-    } else {
-      toast.error("Not exact. Try again or listen more closely.");
-    }
-  };
-
-  const setReadingAnswer = (qId: number, optionIndex: number) => {
-    setReadingAnswers((prev) => ({ ...prev, [qId]: optionIndex }));
-  };
-
-  const checkReading = () => {
-    const total = readingQuestions.length;
-    let correct = 0;
-    for (const q of readingQuestions) {
-      const given = readingAnswers[q.id];
-      if (typeof given === "number" && given === q.answer) correct++;
-    }
-    toast("Reading: You got " + correct + " / " + total);
+  const handleSectionComplete = (
+    section: string,
+    score: { correct: number; total: number }
+  ) => {
+    setScores((prev) => ({ ...prev, [section]: score }));
+    // You can automatically move to next section or require manual navigation
+    // For now, we just save the score
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">
-        Placement Test (Listening & Reading)
-      </h1>
+    <div className="max-w-4xl mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-6">Placement Test</h1>
 
-      <div className="flex gap-2 mb-6">
+      {/* Section navigation tabs */}
+      <div className="flex gap-2 mb-6 flex-wrap">
         <button
-          onClick={() => setActive("listening")}
-          className={`px-4 py-2 rounded-md ${
-            active === "listening" ? "bg-blue-600 text-white" : "border"
+          onClick={() => setCurrentSection("pronunciation")}
+          className={`px-4 py-2 rounded-md text-sm font-medium ${
+            currentSection === "pronunciation"
+              ? "bg-blue-600 text-white"
+              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+          }`}
+        >
+          Pronunciation
+        </button>
+        <button
+          onClick={() => setCurrentSection("grammar")}
+          className={`px-4 py-2 rounded-md text-sm font-medium ${
+            currentSection === "grammar"
+              ? "bg-blue-600 text-white"
+              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+          }`}
+        >
+          Grammar
+        </button>
+        <button
+          onClick={() => setCurrentSection("vocabulary")}
+          className={`px-4 py-2 rounded-md text-sm font-medium ${
+            currentSection === "vocabulary"
+              ? "bg-blue-600 text-white"
+              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+          }`}
+        >
+          Vocabulary
+        </button>
+        <button
+          onClick={() => setCurrentSection("listening")}
+          className={`px-4 py-2 rounded-md text-sm font-medium ${
+            currentSection === "listening"
+              ? "bg-blue-600 text-white"
+              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
           }`}
         >
           Listening
         </button>
         <button
-          onClick={() => setActive("reading")}
-          className={`px-4 py-2 rounded-md ${
-            active === "reading" ? "bg-blue-600 text-white" : "border"
+          onClick={() => setCurrentSection("reading")}
+          className={`px-4 py-2 rounded-md text-sm font-medium ${
+            currentSection === "reading"
+              ? "bg-blue-600 text-white"
+              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
           }`}
         >
           Reading
         </button>
       </div>
 
-      {active === "listening" ? (
-        <section className="bg-white p-6 rounded-md shadow-sm">
-          <h2 className="text-xl font-semibold mb-2">Listening</h2>
-          <p className="text-gray-700 mb-3">
-            Listen to the sentence and type what you hear.
-          </p>
-
-          <div className="flex items-center gap-3 mb-4">
-            <Button onClick={playAudio}>Play</Button>
-            <Button
-              onClick={() => {
-                setListeningAnswer("");
-                toast("Cleared");
-              }}
-              variant="outline"
-            >
-              Clear
-            </Button>
-          </div>
-
-          <Input
-            value={listeningAnswer}
-            onChange={(e) => setListeningAnswer(e.target.value)}
-            placeholder="Type what you heard..."
-          />
-
-          <div className="mt-4">
-            <Button onClick={checkListening}>Check</Button>
-          </div>
-        </section>
-      ) : (
-        <section className="bg-white p-6 rounded-md shadow-sm">
-          <h2 className="text-xl font-semibold mb-2">Reading</h2>
-          <p className="text-gray-700 mb-4">
-            Read the short passage and answer the questions.
-          </p>
-
-          <div className="mb-4 p-4 bg-gray-50 rounded">
-            <p className="text-sm text-gray-800 whitespace-pre-line">
-              {readingPassage}
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            {readingQuestions.map((q) => (
-              <div key={q.id} className="p-3 border rounded">
-                <p className="font-medium">{q.question}</p>
-                <div className="mt-2 space-y-2">
-                  {q.options.map((opt, idx) => (
-                    <label key={idx} className="flex items-center gap-2">
-                      <input
-                        type="radio"
-                        name={`q-${q.id}`}
-                        checked={readingAnswers[q.id] === idx}
-                        onChange={() => setReadingAnswer(q.id, idx)}
-                      />
-                      <span>{opt}</span>
-                    </label>
-                  ))}
-                </div>
+      {/* Display scores summary if any */}
+      {Object.keys(scores).length > 0 && (
+        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-md">
+          <h2 className="text-lg font-semibold mb-2">Progress</h2>
+          <div className="space-y-1 text-sm">
+            {Object.entries(scores).map(([section, score]) => (
+              <div key={section}>
+                <strong className="capitalize">{section}:</strong>{" "}
+                {score.correct} / {score.total} (
+                {Math.round((score.correct / score.total) * 100)}%)
               </div>
             ))}
           </div>
+        </div>
+      )}
 
-          <div className="mt-4">
-            <Button onClick={checkReading}>Submit Reading</Button>
-          </div>
-        </section>
+      {/* Render current section */}
+      {currentSection === "pronunciation" && (
+        <PronunciationSection
+          onComplete={(score) => handleSectionComplete("pronunciation", score)}
+        />
+      )}
+
+      {currentSection === "grammar" && (
+        <div className="p-6 bg-white rounded-md shadow-sm border">
+          <h2 className="text-xl font-bold mb-3">Grammar</h2>
+          <p className="text-gray-600">Coming soon...</p>
+        </div>
+      )}
+
+      {currentSection === "vocabulary" && (
+        <div className="p-6 bg-white rounded-md shadow-sm border">
+          <h2 className="text-xl font-bold mb-3">Vocabulary</h2>
+          <p className="text-gray-600">Coming soon...</p>
+        </div>
+      )}
+
+      {currentSection === "listening" && (
+        <div className="p-6 bg-white rounded-md shadow-sm border">
+          <h2 className="text-xl font-bold mb-3">Listening</h2>
+          <p className="text-gray-600">Coming soon...</p>
+        </div>
+      )}
+
+      {currentSection === "reading" && (
+        <div className="p-6 bg-white rounded-md shadow-sm border">
+          <h2 className="text-xl font-bold mb-3">Reading</h2>
+          <p className="text-gray-600">Coming soon...</p>
+        </div>
       )}
     </div>
   );
