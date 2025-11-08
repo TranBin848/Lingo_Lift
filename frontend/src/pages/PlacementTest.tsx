@@ -1,5 +1,7 @@
 import { useState } from "react";
 import PronunciationSection from "../components/placement/PronunciationSection";
+import GrammarSection from "../components/placement/GrammarSection";
+import VocabularySection from "../components/placement/VocabularySection";
 
 export default function PlacementTest() {
   const [currentSection, setCurrentSection] = useState<
@@ -15,8 +17,21 @@ export default function PlacementTest() {
     score: { correct: number; total: number }
   ) => {
     setScores((prev) => ({ ...prev, [section]: score }));
-    // You can automatically move to next section or require manual navigation
-    // For now, we just save the score
+
+    // Auto-navigate to next section and scroll to top
+    if (section === "pronunciation") {
+      setCurrentSection("grammar");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else if (section === "grammar") {
+      setCurrentSection("vocabulary");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else if (section === "vocabulary") {
+      setCurrentSection("listening");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else if (section === "listening") {
+      setCurrentSection("reading");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   return (
@@ -101,17 +116,15 @@ export default function PlacementTest() {
       )}
 
       {currentSection === "grammar" && (
-        <div className="p-6 bg-white rounded-md shadow-sm border">
-          <h2 className="text-xl font-bold mb-3">Grammar</h2>
-          <p className="text-gray-600">Coming soon...</p>
-        </div>
+        <GrammarSection
+          onComplete={(score) => handleSectionComplete("grammar", score)}
+        />
       )}
 
       {currentSection === "vocabulary" && (
-        <div className="p-6 bg-white rounded-md shadow-sm border">
-          <h2 className="text-xl font-bold mb-3">Vocabulary</h2>
-          <p className="text-gray-600">Coming soon...</p>
-        </div>
+        <VocabularySection
+          onComplete={(score) => handleSectionComplete("vocabulary", score)}
+        />
       )}
 
       {currentSection === "listening" && (
