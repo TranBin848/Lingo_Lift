@@ -5,6 +5,8 @@ import { connectDB } from './config/database'
 import aiRoutes from './routes/ai.routes.js'
 import authRoutes from './routes/auth.routes.js'
 import userRoutes from './routes/user.routes.js'
+import placementTestRoutes from './routes/placementTest.routes.js'
+import testResultRoutes from './routes/testResult.routes.js'
 import cookieParserPkg from 'cookie-parser'
 // cookie-parser may not have a default export depending on module interop settings.
 const cookieParser = (cookieParserPkg as any)?.default ?? cookieParserPkg
@@ -37,9 +39,13 @@ app.use('/api/ai', aiRoutes)
 //public routes
 app.use('/api/auth', authRoutes);
 
+// Placement test routes (has both public and private routes)
+app.use('/api/placement-tests', placementTestRoutes);
+
 //private routes
 app.use(protectRoute);
 app.use('/api/users', userRoutes);
+app.use('/api/test-results', testResultRoutes);
 
 // Start server
 const startServer = async () => {

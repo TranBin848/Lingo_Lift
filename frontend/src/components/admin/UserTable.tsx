@@ -216,7 +216,9 @@ export default function UserTable({
                       {/* Update Button - Always visible */}
                       <button
                         onClick={() => handleUpdateRole(u._id)}
-                        disabled={updating === u._id || !canEditRole || !roleChanged}
+                        disabled={
+                          updating === u._id || !canEditRole || !roleChanged
+                        }
                         className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors w-[90px] ${
                           roleChanged && canEditRole
                             ? "bg-green-600 text-white hover:bg-green-700"

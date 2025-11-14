@@ -47,6 +47,18 @@ export default function NavBar() {
             Kiểm tra đầu vào
           </NavLink>
 
+          {/* Admin & Teacher - Placement Test Management */}
+          {(user?.role === "admin" || user?.role === "teacher") && (
+            <NavLink
+              className={({ isActive }) =>
+                `${linkBase} ${isActive ? active : inactive}`
+              }
+              to="/placement-tests"
+            >
+              Quản lý kiểm tra
+            </NavLink>
+          )}
+
           {/* Admin Only - User Management */}
           {user?.role === "admin" && (
             <NavLink
