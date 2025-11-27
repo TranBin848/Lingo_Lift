@@ -13,7 +13,26 @@ export const apiClient = axios.create({
 // Request interceptor - add auth token
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN)
+    // Get token from Zustand persist storage
+    const authStorage = localStorage.getItem('auth-storage')
+    let token = null
+    
+    if (authStorage) {
+      try {
+        const parsed = JSON.parse(authStorage)
+        token = parsed.state?.accessToken
+      } catch (e) {
+        console.error('Failed to parse auth storage:', e)
+      }
+    }
+    
+    console.log('Request Interceptor:', {
+      url: config.url,
+      method: config.method,
+      hasToken: !!token,
+      token: token ? token.substring(0, 20) + '...' : 'none'
+    });
+    
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -26,12 +45,13 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => response.data,
   (error: AxiosError) => {
-    if (error.response?.status === 401) {
-      // Clear auth data on 401
-      localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN)
-      localStorage.removeItem(STORAGE_KEYS.USER_DATA)
-      window.location.href = '/login'
-    }
+    console.log('API Error:', error.response?.status, error.response?.data);
+    // Temporarily disable auto-logout for debugging
+    // if (error.response?.status === 401) {
+    //   localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN)
+    //   localStorage.removeItem(STORAGE_KEYS.USER_DATA)
+    //   window.location.href = '/login'
+    // }
     return Promise.reject(error.response?.data || error.message)
   }
 )

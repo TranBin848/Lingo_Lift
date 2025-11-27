@@ -1,10 +1,12 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import { toast } from "sonner";
 import { authService } from "../services/auth.Service";
 import type { AuthState } from "@/types/store";
 
-export const useAuthStore = create<AuthState>((set, get) => {
-  return {
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set, get) => ({
   accessToken: null,
   user: null,
   loading: false,
@@ -124,5 +126,13 @@ export const useAuthStore = create<AuthState>((set, get) => {
         set({ loading: false });
       }
     },
-  };
-});
+    }),
+    {
+      name: 'auth-storage',
+      partialize: (state) => ({
+        accessToken: state.accessToken,
+        user: state.user,
+      }),
+    }
+  )
+);

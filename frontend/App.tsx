@@ -12,7 +12,10 @@ import Login from "./src/pages/Login";
 import Register from "./src/pages/Register";
 import UserPage from "./src/pages/UserPage";
 import PlacementTest from "./src/pages/PlacementTest";
+import PlacementTestsPage from "./src/pages/placement/PlacementTestsPage";
 import AdminUsersPage from "./src/pages/AdminUsersPage";
+import TeacherStudentsPage from "./src/pages/TeacherStudentsPage";
+import ProfilePage from "./src/pages/ProfilePage";
 import { AuthProvider } from "./src/context/AuthContext";
 import FloatingChatButton from "./src/components/chat/FloatingChatButton";
 import { Toaster } from "sonner";
@@ -70,6 +73,24 @@ export default function App() {
               }
             />
             <Route
+              path="/placement-tests"
+              element={
+                <div className="min-h-screen bg-gray-50">
+                  <NavBar />
+                  <Suspense
+                    fallback={
+                      <div className="flex items-center justify-center min-h-screen">
+                        Đang tải...
+                      </div>
+                    }
+                  >
+                    <PlacementTestsPage />
+                  </Suspense>
+                  <FloatingChatButton />
+                </div>
+              }
+            />
+            <Route
               path="/placement"
               element={
                 <div className="min-h-screen bg-gray-50">
@@ -88,7 +109,61 @@ export default function App() {
               }
             />
             <Route
-              path="/user"
+              path="/placement-test/:id"
+              element={
+                <div className="min-h-screen bg-gray-50">
+                  <NavBar />
+                  <Suspense
+                    fallback={
+                      <div className="flex items-center justify-center min-h-screen">
+                        Đang tải...
+                      </div>
+                    }
+                  >
+                    <PlacementTest />
+                  </Suspense>
+                  <FloatingChatButton />
+                </div>
+              }
+            />
+            <Route
+              path="/admin/placement-test/edit/:id"
+              element={
+                <div className="min-h-screen bg-gray-50">
+                  <NavBar />
+                  <Suspense
+                    fallback={
+                      <div className="flex items-center justify-center min-h-screen">
+                        Đang tải...
+                      </div>
+                    }
+                  >
+                    <PlacementTestsPage />
+                  </Suspense>
+                  <FloatingChatButton />
+                </div>
+              }
+            />
+            <Route
+              path="/admin/placement-test/create"
+              element={
+                <div className="min-h-screen bg-gray-50">
+                  <NavBar />
+                  <Suspense
+                    fallback={
+                      <div className="flex items-center justify-center min-h-screen">
+                        Đang tải...
+                      </div>
+                    }
+                  >
+                    <PlacementTestsPage />
+                  </Suspense>
+                  <FloatingChatButton />
+                </div>
+              }
+            />
+            <Route
+              path="/user/dashboard"
               element={
                 <div className="min-h-screen bg-gray-50">
                   <NavBar />
@@ -100,6 +175,42 @@ export default function App() {
                     }
                   >
                     <UserPage />
+                  </Suspense>
+                  <FloatingChatButton />
+                </div>
+              }
+            />
+            <Route
+              path="/teacher/students"
+              element={
+                <div className="min-h-screen bg-gray-50">
+                  <NavBar />
+                  <Suspense
+                    fallback={
+                      <div className="flex items-center justify-center min-h-screen">
+                        Đang tải...
+                      </div>
+                    }
+                  >
+                    <TeacherStudentsPage />
+                  </Suspense>
+                  <FloatingChatButton />
+                </div>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <div className="min-h-screen bg-gray-50">
+                  <NavBar />
+                  <Suspense
+                    fallback={
+                      <div className="flex items-center justify-center min-h-screen">
+                        Đang tải...
+                      </div>
+                    }
+                  >
+                    <ProfilePage />
                   </Suspense>
                   <FloatingChatButton />
                 </div>

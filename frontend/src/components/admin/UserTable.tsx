@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import axios from "axios";
+import api from "../../lib/axios";
 import { RoleCombobox } from "./RoleCombobox";
 
 interface User {
@@ -44,15 +44,9 @@ export default function UserTable({
 
     try {
       setUpdating(userId);
-      const response = await axios.patch(
-        `${import.meta.env.VITE_API_URL}/api/users/${userId}/role`,
-        { role: newRole },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const response = await api.patch(`/users/${userId}/role`, {
+        role: newRole,
+      });
 
       if (response.data.success) {
         toast.success(`Cập nhật role thành ${newRole} thành công`);
@@ -86,14 +80,7 @@ export default function UserTable({
     }
 
     try {
-      const response = await axios.delete(
-        `${import.meta.env.VITE_API_URL}/api/users/${userId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const response = await api.delete(`/users/${userId}`);
 
       if (response.data.success) {
         toast.success("Xóa tài khoản thành công");
@@ -216,7 +203,9 @@ export default function UserTable({
                       {/* Update Button - Always visible */}
                       <button
                         onClick={() => handleUpdateRole(u._id)}
-                        disabled={updating === u._id || !canEditRole || !roleChanged}
+                        disabled={
+                          updating === u._id || !canEditRole || !roleChanged
+                        }
                         className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors w-[90px] ${
                           roleChanged && canEditRole
                             ? "bg-green-600 text-white hover:bg-green-700"

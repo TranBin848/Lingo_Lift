@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuthStore } from "../stores/useAuth.Store";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import axios from "axios";
+import api from "../lib/axios";
 import UserTable from "../components/admin/UserTable";
 
 interface User {
@@ -38,14 +38,7 @@ export default function AdminUsersPage() {
     const fetchUsers = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/users/all`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
+        const response = await api.get("/users/all");
 
         if (response.data.success) {
           setUsers(response.data.data);
@@ -81,9 +74,7 @@ export default function AdminUsersPage() {
           <h1 className="text-3xl font-bold text-gray-900">
             Quản lý tài khoản
           </h1>
-          <p className="text-gray-600 mt-2">
-            Quản lý người dùng và phân quyền
-          </p>
+          <p className="text-gray-600 mt-2">Quản lý người dùng và phân quyền</p>
         </div>
 
         {/* Stats */}

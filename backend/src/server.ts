@@ -5,6 +5,8 @@ import { connectDB } from './config/database'
 import aiRoutes from './routes/ai.routes.js'
 import authRoutes from './routes/auth.routes.js'
 import userRoutes from './routes/user.routes.js'
+import placementTestRoutes from './routes/placementTest.routes.js'
+import testResultRoutes from './routes/testResult.routes.js'
 import cookieParserPkg from 'cookie-parser'
 // cookie-parser may not have a default export depending on module interop settings.
 const cookieParser = (cookieParserPkg as any)?.default ?? cookieParserPkg
@@ -21,8 +23,15 @@ app.use(
   cors({
     origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
     credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['Content-Type', 'Authorization'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   })
 )
+
+// Handle preflight requests
+app.options('*', cors());
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser());
@@ -37,9 +46,12 @@ app.use('/api/ai', aiRoutes)
 //public routes
 app.use('/api/auth', authRoutes);
 
-//private routes
-app.use(protectRoute);
+// Placement test routes (has both public and private routes)
+app.use('/api/placement-tests', placementTestRoutes);
+
+//private routes - Apply protection middleware to specific routes
 app.use('/api/users', userRoutes);
+app.use('/api/test-results', protectRoute, testResultRoutes);
 
 // Start server
 const startServer = async () => {

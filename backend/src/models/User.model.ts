@@ -9,6 +9,7 @@ export interface IUser extends Document {
   avatarId?: string
   bio?: string
   phone?: string
+  dateOfBirth?: string
   role: 'user' | 'admin' | 'teacher'
   createdAt: Date
   updatedAt: Date
@@ -57,6 +58,9 @@ const userSchema = new Schema<IUser>(
       type: String,
       sparse: true,
       match: [/^\+?[1-9]\d{1,14}$/, 'Please provide a valid phone number'],
+    },
+    dateOfBirth: {
+      type: String,
     },
     role: {
       type: String,

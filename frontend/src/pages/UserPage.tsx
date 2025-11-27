@@ -1,5 +1,4 @@
-import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { useAuthStore } from "../stores/useAuth.Store";
 import { Button } from "../components/ui/button";
 import {
   Card,
@@ -29,8 +28,8 @@ const demoCourses: Course[] = [
 ];
 
 export default function UserPage() {
-  const auth = useContext(AuthContext);
-  const userName = auth?.user?.username ?? "Trần Bin";
+  const { user } = useAuthStore();
+  const userName = user?.displayName ?? user?.username ?? "Trần Bin";
 
   return (
     <div className="min-h-screen bg-gray-50">
