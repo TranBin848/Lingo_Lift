@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import axios from "axios";
+import api from "../../lib/axios";
 import { RoleCombobox } from "./RoleCombobox";
 
 interface User {
@@ -44,14 +44,9 @@ export default function UserTable({
 
     try {
       setUpdating(userId);
-      const response = await axios.patch(
-        `${import.meta.env.VITE_API_URL}/api/users/${userId}/role`,
-        { role: newRole },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
+      const response = await api.patch(
+        `/users/${userId}/role`,
+        { role: newRole }
       );
 
       if (response.data.success) {
@@ -86,14 +81,7 @@ export default function UserTable({
     }
 
     try {
-      const response = await axios.delete(
-        `${import.meta.env.VITE_API_URL}/api/users/${userId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const response = await api.delete(`/users/${userId}`);
 
       if (response.data.success) {
         toast.success("Xóa tài khoản thành công");

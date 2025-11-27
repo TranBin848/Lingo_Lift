@@ -42,10 +42,9 @@ app.use('/api/auth', authRoutes);
 // Placement test routes (has both public and private routes)
 app.use('/api/placement-tests', placementTestRoutes);
 
-//private routes
-app.use(protectRoute);
+//private routes - Apply protection middleware to specific routes
 app.use('/api/users', userRoutes);
-app.use('/api/test-results', testResultRoutes);
+app.use('/api/test-results', protectRoute, testResultRoutes);
 
 // Start server
 const startServer = async () => {
