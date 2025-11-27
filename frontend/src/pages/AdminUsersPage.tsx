@@ -38,7 +38,7 @@ export default function AdminUsersPage() {
     const fetchUsers = async () => {
       try {
         setLoading(true);
-        const response = await api.get('/users/all');
+        const response = await api.get("/users/all");
 
         if (response.data.success) {
           setUsers(response.data.data);
@@ -74,9 +74,7 @@ export default function AdminUsersPage() {
           <h1 className="text-3xl font-bold text-gray-900">
             Quản lý tài khoản
           </h1>
-          <p className="text-gray-600 mt-2">
-            Quản lý người dùng và phân quyền
-          </p>
+          <p className="text-gray-600 mt-2">Quản lý người dùng và phân quyền</p>
         </div>
 
         {/* Stats */}

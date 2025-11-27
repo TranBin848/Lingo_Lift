@@ -44,10 +44,9 @@ export default function UserTable({
 
     try {
       setUpdating(userId);
-      const response = await api.patch(
-        `/users/${userId}/role`,
-        { role: newRole }
-      );
+      const response = await api.patch(`/users/${userId}/role`, {
+        role: newRole,
+      });
 
       if (response.data.success) {
         toast.success(`Cập nhật role thành ${newRole} thành công`);

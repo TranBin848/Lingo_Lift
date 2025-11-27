@@ -15,6 +15,7 @@ import PlacementTest from "./src/pages/PlacementTest";
 import PlacementTestsPage from "./src/pages/placement/PlacementTestsPage";
 import AdminUsersPage from "./src/pages/AdminUsersPage";
 import TeacherStudentsPage from "./src/pages/TeacherStudentsPage";
+import ProfilePage from "./src/pages/ProfilePage";
 import { AuthProvider } from "./src/context/AuthContext";
 import FloatingChatButton from "./src/components/chat/FloatingChatButton";
 import { Toaster } from "sonner";
@@ -192,6 +193,24 @@ export default function App() {
                     }
                   >
                     <TeacherStudentsPage />
+                  </Suspense>
+                  <FloatingChatButton />
+                </div>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <div className="min-h-screen bg-gray-50">
+                  <NavBar />
+                  <Suspense
+                    fallback={
+                      <div className="flex items-center justify-center min-h-screen">
+                        Đang tải...
+                      </div>
+                    }
+                  >
+                    <ProfilePage />
                   </Suspense>
                   <FloatingChatButton />
                 </div>

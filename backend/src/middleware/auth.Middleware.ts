@@ -3,8 +3,17 @@ import { User } from '../models/User.model.js';
 
 export const protectRoute = async (req, res, next) => {
     try {
+        console.log('=== Auth Middleware ===');
+        console.log('Request originalUrl:', req.originalUrl);
+        console.log('Request path:', req.path);
+        console.log('Request method:', req.method);
+        console.log('All headers:', JSON.stringify(req.headers, null, 2));
+        
         const authHeader = req.headers['authorization'] || req.headers.authorization;
+        console.log('Auth header:', authHeader);
+        
         const token = authHeader && authHeader.split(' ')[1];
+        console.log('Token:', token ? 'exists' : 'missing');
 
         if (!token) {
             return res.status(401).json({ message: 'Access token is missing' });

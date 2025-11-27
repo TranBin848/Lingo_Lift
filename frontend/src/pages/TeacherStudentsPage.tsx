@@ -46,17 +46,17 @@ const mockStudents: Student[] = [
       totalLessons: 32,
       averageScore: 8.5,
       currentLevel: "Intermediate",
-      streak: 7
+      streak: 7,
     },
     progress: {
       listening: 75,
       speaking: 60,
       reading: 85,
-      writing: 70
-    }
+      writing: 70,
+    },
   },
   {
-    _id: "2", 
+    _id: "2",
     username: "student2",
     email: "student2@example.com",
     displayName: "Trần Thị B",
@@ -67,18 +67,18 @@ const mockStudents: Student[] = [
       totalLessons: 28,
       averageScore: 7.8,
       currentLevel: "Pre-Intermediate",
-      streak: 3
+      streak: 3,
     },
     progress: {
       listening: 65,
       speaking: 55,
       reading: 70,
-      writing: 60
-    }
+      writing: 60,
+    },
   },
   {
     _id: "3",
-    username: "student3", 
+    username: "student3",
     email: "student3@example.com",
     displayName: "Lê Văn C",
     createdAt: "2024-03-10",
@@ -87,16 +87,16 @@ const mockStudents: Student[] = [
       totalTests: 22,
       totalLessons: 45,
       averageScore: 9.2,
-      currentLevel: "Upper-Intermediate", 
-      streak: 12
+      currentLevel: "Upper-Intermediate",
+      streak: 12,
     },
     progress: {
       listening: 90,
       speaking: 85,
       reading: 95,
-      writing: 80
-    }
-  }
+      writing: 80,
+    },
+  },
 ];
 
 const formatStudyTime = (minutes: number) => {
@@ -107,18 +107,24 @@ const formatStudyTime = (minutes: number) => {
 
 const getProgressColor = (percentage: number) => {
   if (percentage >= 80) return "bg-green-500";
-  if (percentage >= 60) return "bg-yellow-500"; 
+  if (percentage >= 60) return "bg-yellow-500";
   return "bg-red-500";
 };
 
 const getLevelColor = (level: string) => {
   switch (level) {
-    case "Beginner": return "bg-gray-100 text-gray-800";
-    case "Pre-Intermediate": return "bg-blue-100 text-blue-800";
-    case "Intermediate": return "bg-yellow-100 text-yellow-800";
-    case "Upper-Intermediate": return "bg-orange-100 text-orange-800";
-    case "Advanced": return "bg-green-100 text-green-800";
-    default: return "bg-gray-100 text-gray-800";
+    case "Beginner":
+      return "bg-gray-100 text-gray-800";
+    case "Pre-Intermediate":
+      return "bg-blue-100 text-blue-800";
+    case "Intermediate":
+      return "bg-yellow-100 text-yellow-800";
+    case "Upper-Intermediate":
+      return "bg-orange-100 text-orange-800";
+    case "Advanced":
+      return "bg-green-100 text-green-800";
+    default:
+      return "bg-gray-100 text-gray-800";
   }
 };
 
@@ -148,7 +154,7 @@ export default function TeacherStudentsPage() {
       try {
         setLoading(true);
         // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         setStudents(mockStudents);
       } catch (error) {
         console.error("Error loading students:", error);
@@ -190,14 +196,23 @@ export default function TeacherStudentsPage() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <Card>
             <CardContent className="p-6">
-              <div className="text-2xl font-bold text-blue-600">{students.length}</div>
+              <div className="text-2xl font-bold text-blue-600">
+                {students.length}
+              </div>
               <p className="text-sm text-gray-600">Tổng số học sinh</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-6">
               <div className="text-2xl font-bold text-green-600">
-                {Math.round(students.reduce((acc, s) => acc + s.learningStats.averageScore, 0) / students.length * 10) / 10}
+                {Math.round(
+                  (students.reduce(
+                    (acc, s) => acc + s.learningStats.averageScore,
+                    0
+                  ) /
+                    students.length) *
+                    10
+                ) / 10}
               </div>
               <p className="text-sm text-gray-600">Điểm trung bình</p>
             </CardContent>
@@ -205,7 +220,13 @@ export default function TeacherStudentsPage() {
           <Card>
             <CardContent className="p-6">
               <div className="text-2xl font-bold text-orange-600">
-                {Math.round(students.reduce((acc, s) => acc + s.learningStats.totalStudyTime, 0) / 60)}h
+                {Math.round(
+                  students.reduce(
+                    (acc, s) => acc + s.learningStats.totalStudyTime,
+                    0
+                  ) / 60
+                )}
+                h
               </div>
               <p className="text-sm text-gray-600">Tổng thời gian học</p>
             </CardContent>
@@ -213,9 +234,11 @@ export default function TeacherStudentsPage() {
           <Card>
             <CardContent className="p-6">
               <div className="text-2xl font-bold text-purple-600">
-                {students.filter(s => s.learningStats.streak >= 7).length}
+                {students.filter((s) => s.learningStats.streak >= 7).length}
               </div>
-              <p className="text-sm text-gray-600">Học sinh có streak ≥7 ngày</p>
+              <p className="text-sm text-gray-600">
+                Học sinh có streak ≥7 ngày
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -233,7 +256,9 @@ export default function TeacherStudentsPage() {
                     <div
                       key={student._id}
                       className={`p-4 hover:bg-gray-50 cursor-pointer transition-colors ${
-                        selectedStudent?._id === student._id ? 'bg-blue-50 border-l-4 border-blue-500' : ''
+                        selectedStudent?._id === student._id
+                          ? "bg-blue-50 border-l-4 border-blue-500"
+                          : ""
                       }`}
                       onClick={() => setSelectedStudent(student)}
                     >
@@ -243,12 +268,20 @@ export default function TeacherStudentsPage() {
                             {student.displayName.charAt(0)}
                           </div>
                           <div>
-                            <h3 className="font-medium text-gray-900">{student.displayName}</h3>
-                            <p className="text-sm text-gray-500">{student.email}</p>
+                            <h3 className="font-medium text-gray-900">
+                              {student.displayName}
+                            </h3>
+                            <p className="text-sm text-gray-500">
+                              {student.email}
+                            </p>
                           </div>
                         </div>
                         <div className="text-right">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getLevelColor(student.learningStats.currentLevel)}`}>
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getLevelColor(
+                              student.learningStats.currentLevel
+                            )}`}
+                          >
                             {student.learningStats.currentLevel}
                           </span>
                           <div className="text-sm text-gray-500 mt-1">
@@ -256,47 +289,65 @@ export default function TeacherStudentsPage() {
                           </div>
                         </div>
                       </div>
-                      
+
                       <div className="mt-3 grid grid-cols-4 gap-2">
                         <div className="text-center">
                           <div className="text-xs text-gray-500">Listening</div>
                           <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
-                            <div 
-                              className={`h-2 rounded-full ${getProgressColor(student.progress.listening)}`}
-                              style={{ width: `${student.progress.listening}%` }}
+                            <div
+                              className={`h-2 rounded-full ${getProgressColor(
+                                student.progress.listening
+                              )}`}
+                              style={{
+                                width: `${student.progress.listening}%`,
+                              }}
                             ></div>
                           </div>
-                          <div className="text-xs font-medium">{student.progress.listening}%</div>
+                          <div className="text-xs font-medium">
+                            {student.progress.listening}%
+                          </div>
                         </div>
                         <div className="text-center">
                           <div className="text-xs text-gray-500">Speaking</div>
                           <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
-                            <div 
-                              className={`h-2 rounded-full ${getProgressColor(student.progress.speaking)}`}
+                            <div
+                              className={`h-2 rounded-full ${getProgressColor(
+                                student.progress.speaking
+                              )}`}
                               style={{ width: `${student.progress.speaking}%` }}
                             ></div>
                           </div>
-                          <div className="text-xs font-medium">{student.progress.speaking}%</div>
+                          <div className="text-xs font-medium">
+                            {student.progress.speaking}%
+                          </div>
                         </div>
                         <div className="text-center">
                           <div className="text-xs text-gray-500">Reading</div>
                           <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
-                            <div 
-                              className={`h-2 rounded-full ${getProgressColor(student.progress.reading)}`}
+                            <div
+                              className={`h-2 rounded-full ${getProgressColor(
+                                student.progress.reading
+                              )}`}
                               style={{ width: `${student.progress.reading}%` }}
                             ></div>
                           </div>
-                          <div className="text-xs font-medium">{student.progress.reading}%</div>
+                          <div className="text-xs font-medium">
+                            {student.progress.reading}%
+                          </div>
                         </div>
                         <div className="text-center">
                           <div className="text-xs text-gray-500">Writing</div>
                           <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
-                            <div 
-                              className={`h-2 rounded-full ${getProgressColor(student.progress.writing)}`}
+                            <div
+                              className={`h-2 rounded-full ${getProgressColor(
+                                student.progress.writing
+                              )}`}
                               style={{ width: `${student.progress.writing}%` }}
                             ></div>
                           </div>
-                          <div className="text-xs font-medium">{student.progress.writing}%</div>
+                          <div className="text-xs font-medium">
+                            {student.progress.writing}%
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -318,9 +369,15 @@ export default function TeacherStudentsPage() {
                     <div className="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-xl mx-auto">
                       {selectedStudent.displayName.charAt(0)}
                     </div>
-                    <h3 className="font-bold text-lg mt-2">{selectedStudent.displayName}</h3>
+                    <h3 className="font-bold text-lg mt-2">
+                      {selectedStudent.displayName}
+                    </h3>
                     <p className="text-gray-500">{selectedStudent.email}</p>
-                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium mt-2 ${getLevelColor(selectedStudent.learningStats.currentLevel)}`}>
+                    <span
+                      className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium mt-2 ${getLevelColor(
+                        selectedStudent.learningStats.currentLevel
+                      )}`}
+                    >
                       {selectedStudent.learningStats.currentLevel}
                     </span>
                   </div>
@@ -330,24 +387,46 @@ export default function TeacherStudentsPage() {
                       <h4 className="font-semibold mb-3">Thống kê học tập</h4>
                       <div className="space-y-3">
                         <div className="flex justify-between">
-                          <span className="text-sm text-gray-600">⏱️ Thời gian học:</span>
-                          <span className="font-medium">{formatStudyTime(selectedStudent.learningStats.totalStudyTime)}</span>
+                          <span className="text-sm text-gray-600">
+                            ⏱️ Thời gian học:
+                          </span>
+                          <span className="font-medium">
+                            {formatStudyTime(
+                              selectedStudent.learningStats.totalStudyTime
+                            )}
+                          </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-sm text-gray-600">🏆 Điểm trung bình:</span>
-                          <span className="font-medium">{selectedStudent.learningStats.averageScore}/10</span>
+                          <span className="text-sm text-gray-600">
+                            🏆 Điểm trung bình:
+                          </span>
+                          <span className="font-medium">
+                            {selectedStudent.learningStats.averageScore}/10
+                          </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-sm text-gray-600">🧾 Số bài test:</span>
-                          <span className="font-medium">{selectedStudent.learningStats.totalTests}</span>
+                          <span className="text-sm text-gray-600">
+                            🧾 Số bài test:
+                          </span>
+                          <span className="font-medium">
+                            {selectedStudent.learningStats.totalTests}
+                          </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-sm text-gray-600">📚 Số bài học:</span>
-                          <span className="font-medium">{selectedStudent.learningStats.totalLessons}</span>
+                          <span className="text-sm text-gray-600">
+                            📚 Số bài học:
+                          </span>
+                          <span className="font-medium">
+                            {selectedStudent.learningStats.totalLessons}
+                          </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-sm text-gray-600">🔥 Streak hiện tại:</span>
-                          <span className="font-medium">{selectedStudent.learningStats.streak} ngày</span>
+                          <span className="text-sm text-gray-600">
+                            🔥 Streak hiện tại:
+                          </span>
+                          <span className="font-medium">
+                            {selectedStudent.learningStats.streak} ngày
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -355,20 +434,32 @@ export default function TeacherStudentsPage() {
                     <div>
                       <h4 className="font-semibold mb-3">Tiến độ 4 kỹ năng</h4>
                       <div className="space-y-3">
-                        {Object.entries(selectedStudent.progress).map(([skill, progress]) => (
-                          <div key={skill}>
-                            <div className="flex justify-between text-sm mb-1">
-                              <span className="capitalize">{skill === 'listening' ? 'Nghe' : skill === 'speaking' ? 'Nói' : skill === 'reading' ? 'Đọc' : 'Viết'}</span>
-                              <span>{progress}%</span>
+                        {Object.entries(selectedStudent.progress).map(
+                          ([skill, progress]) => (
+                            <div key={skill}>
+                              <div className="flex justify-between text-sm mb-1">
+                                <span className="capitalize">
+                                  {skill === "listening"
+                                    ? "Nghe"
+                                    : skill === "speaking"
+                                    ? "Nói"
+                                    : skill === "reading"
+                                    ? "Đọc"
+                                    : "Viết"}
+                                </span>
+                                <span>{progress}%</span>
+                              </div>
+                              <div className="w-full bg-gray-200 rounded-full h-2">
+                                <div
+                                  className={`h-2 rounded-full ${getProgressColor(
+                                    progress
+                                  )}`}
+                                  style={{ width: `${progress}%` }}
+                                ></div>
+                              </div>
                             </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2">
-                              <div 
-                                className={`h-2 rounded-full ${getProgressColor(progress)}`}
-                                style={{ width: `${progress}%` }}
-                              ></div>
-                            </div>
-                          </div>
-                        ))}
+                          )
+                        )}
                       </div>
                     </div>
                   </div>
@@ -384,7 +475,9 @@ export default function TeacherStudentsPage() {
               <Card>
                 <CardContent className="p-8 text-center">
                   <div className="text-gray-400 text-lg mb-2">👥</div>
-                  <p className="text-gray-500">Chọn một học sinh để xem chi tiết</p>
+                  <p className="text-gray-500">
+                    Chọn một học sinh để xem chi tiết
+                  </p>
                 </CardContent>
               </Card>
             )}
