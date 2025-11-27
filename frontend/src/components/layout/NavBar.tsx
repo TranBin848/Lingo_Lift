@@ -59,6 +59,30 @@ export default function NavBar() {
             </NavLink>
           )}
 
+          {/* User Only - Start Learning */}
+          {user?.role === "user" && (
+            <NavLink
+              className={({ isActive }) =>
+                `${linkBase} ${isActive ? active : inactive}`
+              }
+              to="/user/dashboard"
+            >
+              Bắt đầu học
+            </NavLink>
+          )}
+
+          {/* Teacher Only - Student Progress */}
+          {user?.role === "teacher" && (
+            <NavLink
+              className={({ isActive }) =>
+                `${linkBase} ${isActive ? active : inactive}`
+              }
+              to="/teacher/students"
+            >
+              Theo dõi tiến trình học sinh
+            </NavLink>
+          )}
+
           {/* Admin Only - User Management */}
           {user?.role === "admin" && (
             <NavLink

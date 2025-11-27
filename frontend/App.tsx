@@ -14,6 +14,7 @@ import UserPage from "./src/pages/UserPage";
 import PlacementTest from "./src/pages/PlacementTest";
 import PlacementTestsPage from "./src/pages/placement/PlacementTestsPage";
 import AdminUsersPage from "./src/pages/AdminUsersPage";
+import TeacherStudentsPage from "./src/pages/TeacherStudentsPage";
 import { AuthProvider } from "./src/context/AuthContext";
 import FloatingChatButton from "./src/components/chat/FloatingChatButton";
 import { Toaster } from "sonner";
@@ -161,7 +162,7 @@ export default function App() {
               }
             />
             <Route
-              path="/user"
+              path="/user/dashboard"
               element={
                 <div className="min-h-screen bg-gray-50">
                   <NavBar />
@@ -173,6 +174,24 @@ export default function App() {
                     }
                   >
                     <UserPage />
+                  </Suspense>
+                  <FloatingChatButton />
+                </div>
+              }
+            />
+            <Route
+              path="/teacher/students"
+              element={
+                <div className="min-h-screen bg-gray-50">
+                  <NavBar />
+                  <Suspense
+                    fallback={
+                      <div className="flex items-center justify-center min-h-screen">
+                        Đang tải...
+                      </div>
+                    }
+                  >
+                    <TeacherStudentsPage />
                   </Suspense>
                   <FloatingChatButton />
                 </div>
