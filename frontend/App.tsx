@@ -296,15 +296,16 @@ export default function App() {
 }
 
 function AuthBootstrap() {
-  // Trigger refresh on mount (non-blocking)
+  // Kiểm tra token và chỉ refresh nếu cần thiết
   useEffect(() => {
-    // call refresh but don't await here
-    useAuthStore
-      .getState()
-      .refresh()
-      .catch(() => {
-        /* ignore */
-      });
+    const { accessToken, user } = useAuthStore.getState();
+    
+    // Nếu đã có token trong localStorage, không cần refresh ngay
+    // Chỉ refresh khi token sắp hết hạn (xử lý bởi interceptor)
+    if (accessToken && !user) {
+      // Nếu có token nhưng chưa có user info, thử fetch user
+      // TODO: Implement fetchMe khi có API
+    }
   }, []);
 
   return null;

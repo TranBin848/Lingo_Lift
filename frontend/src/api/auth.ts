@@ -1,26 +1,27 @@
 import { apiClient } from './client'
-import type { User, AuthResponse, ApiResponse } from '../types'
+import type { User, AuthResponse, ApiResponse, RegisterRequest, RegisterResponse, LoginRequest, LoginResponse, RefreshTokenResponse } from '../types'
 
-// Register new user
-export const register = async (data: {
-  name: string
-  email: string
-  password: string
-}): Promise<AuthResponse> => {
-  return apiClient.post<unknown, AuthResponse>('/auth/register', data)
+// Register new user - .NET API
+export const register = async (data: RegisterRequest): Promise<RegisterResponse> => {
+  return apiClient.post<unknown, RegisterResponse>('/Auth/register', data)
 }
 
-// Login user
-export const login = async (data: { email: string; password: string }): Promise<AuthResponse> => {
-  return apiClient.post<unknown, AuthResponse>('/auth/login', data)
+// Login user - .NET API
+export const login = async (data: LoginRequest): Promise<LoginResponse> => {
+  return apiClient.post<unknown, LoginResponse>('/Auth/login', data)
+}
+
+// Logout - .NET API
+export const logout = async (): Promise<void> => {
+  return apiClient.post<unknown, void>('/Auth/logout')
+}
+
+// Refresh Token - .NET API (uses cookies, withCredentials already set in client)
+export const refreshToken = async (): Promise<RefreshTokenResponse> => {
+  return apiClient.post<unknown, RefreshTokenResponse>('/Auth/refresh-token')
 }
 
 // Get current user
 export const getCurrentUser = async (): Promise<User> => {
   return apiClient.get<unknown, User>('/auth/me')
-}
-
-// Logout
-export const logout = async (): Promise<ApiResponse<null>> => {
-  return apiClient.post<unknown, ApiResponse<null>>('/auth/logout')
 }

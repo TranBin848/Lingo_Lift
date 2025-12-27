@@ -29,6 +29,38 @@ export interface AuthResponse {
   token: string
 }
 
+// .NET API Auth Types
+export interface RegisterRequest {
+  fullName: string
+  email: string
+  password: string
+}
+
+export interface RegisterResponse {
+  message: string
+  email: string
+  fullName: string
+}
+
+export interface LoginRequest {
+  email: string
+  password: string
+}
+
+export interface LoginResponse {
+  token: string
+  refreshToken: string
+  email: string
+  fullName: string
+}
+
+export interface RefreshTokenResponse {
+  token: string
+  refreshToken: string
+  email: string
+  fullName: string
+}
+
 // Progress Types
 export interface UserProgress {
   userId: string
