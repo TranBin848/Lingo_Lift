@@ -48,6 +48,18 @@ export default function NavBar() {
             Kiểm tra đầu vào
           </NavLink>
 
+          {/* Placement Test History - Available for logged-in users */}
+          {accessToken && (
+            <NavLink
+              className={({ isActive }) =>
+                `${linkBase} ${isActive ? active : inactive}`
+              }
+              to="/placement-test-history"
+            >
+              Lịch sử
+            </NavLink>
+          )}
+
           {/* Admin & Teacher - Placement Test Management */}
           {(user?.role === "admin" || user?.role === "teacher") && (
             <NavLink

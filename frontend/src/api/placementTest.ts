@@ -92,3 +92,17 @@ export const submitTask1 = async (testId: number, data: Task1SubmitRequest): Pro
 export const submitTask2 = async (testId: number, data: Task2SubmitRequest): Promise<Task2Result> => {
   return apiClient.post<unknown, Task2Result>(`/placement-tests/${testId}/task2/submit`, data);
 };
+
+/**
+ * Lấy chi tiết một placement test của user
+ */
+export const getPlacementTestById = async (testId: number): Promise<StartTestResponse> => {
+  return apiClient.get<unknown, StartTestResponse>(`/placement-tests/${testId}`);
+};
+
+/**
+ * Lấy placement test hiện tại của user
+ */
+export const getCurrentPlacementTest = async (): Promise<StartTestResponse> => {
+  return apiClient.get<unknown, StartTestResponse>('/placement-tests/current');
+};
