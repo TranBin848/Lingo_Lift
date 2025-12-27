@@ -35,7 +35,6 @@ export const authService = {
     },
 
     fetchMe: async() => {
-        // TODO: Cập nhật khi có getCurrentUser endpoint từ .NET API
         const user = await getCurrentUser();
         return user;
     },

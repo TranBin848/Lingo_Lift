@@ -108,19 +108,27 @@ export const useAuthStore = create<AuthState>()(
 
   refresh: async () => {
       try {
-        const {user, fetchMe} = get();
+        const {user, fetchMe, accessToken} = get();
+        
+        // Nếu không có token, không cần refresh
+        if (!accessToken) {
+          return;
+        }
+        
         set({ loading: true });
-        const accessToken = await authService.refresh();
-        set({ accessToken });
+        const newAccessToken = await authService.refresh();
+        set({ accessToken: newAccessToken });
         if (user == null) {
-          await fetchMe();
+          // TODO: await fetchMe() khi có API
         }
 
       } catch (error) {
         console.error("Token Refresh Error:", error);
-        get().clearState();
-        set({ accessToken: null, user: null });
-        toast.error("Session expired. Please sign in again.");
+        // KHÔNG clear state ngay, chỉ log error
+        // Chỉ clear state khi người dùng thực sự gọi API và nhận 401
+        // get().clearState();
+        // set({ accessToken: null, user: null });
+        // toast.error("Session expired. Please sign in again.");
         throw error;
       }
       finally {
