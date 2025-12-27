@@ -1,5 +1,5 @@
 import { apiClient } from './client'
-import type { User, AuthResponse, ApiResponse, RegisterRequest, RegisterResponse, LoginRequest, LoginResponse, RefreshTokenResponse } from '../types'
+import type { User, RegisterRequest, RegisterResponse, LoginRequest, LoginResponse, RefreshTokenResponse } from '../types'
 
 // Register new user - .NET API
 export const register = async (data: RegisterRequest): Promise<RegisterResponse> => {

@@ -16,6 +16,7 @@ import PlacementTestsPage from "./src/pages/placement/PlacementTestsPage";
 import AdminUsersPage from "./src/pages/AdminUsersPage";
 import TeacherStudentsPage from "./src/pages/TeacherStudentsPage";
 import ProfilePage from "./src/pages/ProfilePage";
+import WritingTestPage from "./src/pages/WritingTestPage";
 import { AuthProvider } from "./src/context/AuthContext";
 import FloatingChatButton from "./src/components/chat/FloatingChatButton";
 import { Toaster } from "sonner";
@@ -111,7 +112,7 @@ export default function App() {
             <Route
               path="/placement-test/:id"
               element={
-                <div className="min-h-screen bg-gray-50">
+                <div className="min-h-screen">
                   <NavBar />
                   <Suspense
                     fallback={
@@ -120,9 +121,8 @@ export default function App() {
                       </div>
                     }
                   >
-                    <PlacementTest />
+                    <WritingTestPage />
                   </Suspense>
-                  <FloatingChatButton />
                 </div>
               }
             />

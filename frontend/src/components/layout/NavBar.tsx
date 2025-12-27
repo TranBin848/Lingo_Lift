@@ -43,7 +43,7 @@ export default function NavBar() {
             className={({ isActive }) =>
               `${linkBase} ${isActive ? active : inactive}`
             }
-            to="/placement"
+            to="/placement-tests"
           >
             Kiểm tra đầu vào
           </NavLink>

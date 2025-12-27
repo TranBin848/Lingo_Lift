@@ -1,5 +1,4 @@
 import { register, login, logout, refreshToken, getCurrentUser } from '../api/auth'
-import type { RegisterRequest, LoginRequest } from '../types'
 
 export const authService = {
     signUp: async({ username, email, password, firstName, lastName }: { username: string; email: string; password: string; firstName: string; lastName: string; }) => {
