@@ -1,5 +1,5 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig, type AxiosResponse } from 'axios'
-import { API_BASE_URL, STORAGE_KEYS } from '../constants'
+import { API_BASE_URL } from '../constants'
 
 // Create axios instance
 export const apiClient = axios.create({
