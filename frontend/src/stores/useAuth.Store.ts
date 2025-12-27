@@ -64,7 +64,8 @@ export const useAuthStore = create<AuthState>()(
       if (data?.user) {
         set({ user: data.user });
       }
-      await get().fetchMe();
+      // ✅ Bỏ fetchMe() vì .NET API đã trả về đầy đủ user info
+      // await get().fetchMe();
       toast.success("Welcome back to LingoLift! 🎉");
       return data;
     } catch (error) {
