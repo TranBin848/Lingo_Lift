@@ -49,19 +49,27 @@ export default function NavBar() {
           </NavLink>
 
           {/* Placement Test History - Available for logged-in users */}
-          {accessToken && (
-            <NavLink
-              className={({ isActive }) =>
-                `${linkBase} ${isActive ? active : inactive}`
-              }
-              to="/placement-test-history"
-            >
-              Lịch sử
-            </NavLink>
-          )}
+          <NavLink
+            className={({ isActive }) =>
+              `${linkBase} ${isActive ? active : inactive}`
+            }
+            to="/placement-test-history"
+          >
+            Lịch sử
+          </NavLink>
+
+          {/* Learning Path */}
+          <NavLink
+            className={({ isActive }) =>
+              `${linkBase} ${isActive ? active : inactive}`
+            }
+            to="/learning-path"
+          >
+            Bắt đầu học
+          </NavLink>
 
           {/* Admin & Teacher - Placement Test Management */}
-          {(user?.role === "admin" || user?.role === "teacher") && (
+          {/* {(user?.role === "admin" || user?.role === "teacher") && (
             <NavLink
               className={({ isActive }) =>
                 `${linkBase} ${isActive ? active : inactive}`
@@ -70,22 +78,10 @@ export default function NavBar() {
             >
               Quản lý kiểm tra
             </NavLink>
-          )}
-
-          {/* User Only - Start Learning */}
-          {user?.role === "user" && (
-            <NavLink
-              className={({ isActive }) =>
-                `${linkBase} ${isActive ? active : inactive}`
-              }
-              to="/user/dashboard"
-            >
-              Bắt đầu học
-            </NavLink>
-          )}
+          )} */}
 
           {/* Teacher Only - Student Progress */}
-          {user?.role === "teacher" && (
+          {/* {user?.role === "teacher" && (
             <NavLink
               className={({ isActive }) =>
                 `${linkBase} ${isActive ? active : inactive}`
@@ -94,10 +90,10 @@ export default function NavBar() {
             >
               Theo dõi tiến trình học sinh
             </NavLink>
-          )}
+          )} */}
 
           {/* Admin Only - User Management */}
-          {user?.role === "admin" && (
+          {/* {user?.role === "admin" && (
             <NavLink
               className={({ isActive }) =>
                 `${linkBase} ${isActive ? active : inactive}`
@@ -106,7 +102,7 @@ export default function NavBar() {
             >
               Quản lý tài khoản
             </NavLink>
-          )}
+          )} */}
 
           {/* Auth Section */}
           <div className="ml-4 flex gap-2 items-center border-l border-gray-200 pl-4">

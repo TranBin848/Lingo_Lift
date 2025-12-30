@@ -18,6 +18,7 @@ import TeacherStudentsPage from "./src/pages/TeacherStudentsPage";
 import ProfilePage from "./src/pages/ProfilePage";
 import WritingTestPage from "./src/pages/WritingTestPage";
 import PlacementTestHistoryPage from "./src/pages/PlacementTestHistoryPage";
+import LearningPathPage from "./src/pages/LearningPathPage";
 import { AuthProvider } from "./src/context/AuthContext";
 import FloatingChatButton from "./src/components/chat/FloatingChatButton";
 import { Toaster } from "sonner";
@@ -106,6 +107,24 @@ export default function App() {
                   >
                     <PlacementTestHistoryPage />
                   </Suspense>
+                </div>
+              }
+            />
+            <Route
+              path="/learning-path"
+              element={
+                <div className="min-h-screen">
+                  <NavBar />
+                  <Suspense
+                    fallback={
+                      <div className="flex items-center justify-center min-h-screen">
+                        Đang tải...
+                      </div>
+                    }
+                  >
+                    <LearningPathPage />
+                  </Suspense>
+                  <FloatingChatButton />
                 </div>
               }
             />
