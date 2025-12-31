@@ -4,6 +4,7 @@ import "./App.css";
 import NavBar from "./src/components/layout/NavBar";
 import ProtectedRoute from "./src/components/auth/ProtectedRoute";
 import Home from "./src/pages/Home";
+import LandingPage from "./src/pages/LandingPage";
 import Listening from "./src/pages/skills/Listening";
 import Speaking from "./src/pages/skills/Speaking";
 import Reading from "./src/pages/skills/Reading";
@@ -36,9 +37,25 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          {/* Public Home - no protection needed */}
+          {/* Landing Page - Public */}
           <Route
             path="/"
+            element={
+              <Suspense
+                fallback={
+                  <div className="flex items-center justify-center min-h-screen">
+                    Đang tải...
+                  </div>
+                }
+              >
+                <LandingPage />
+              </Suspense>
+            }
+          />
+
+          {/* Dashboard - Public */}
+          <Route
+            path="/dashboard"
             element={
               <div className="min-h-screen bg-gray-50">
                 <NavBar />

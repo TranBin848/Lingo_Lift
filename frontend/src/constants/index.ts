@@ -7,7 +7,8 @@ export const APP_VERSION = '1.0.0'
 
 // Routes
 export const ROUTES = {
-  HOME: '/',
+  LANDING: '/',
+  HOME: '/dashboard',
   LISTENING: '/listening',
   SPEAKING: '/speaking',
   READING: '/reading',

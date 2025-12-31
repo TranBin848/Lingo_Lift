@@ -1,6 +1,23 @@
 import { apiClient } from './client';
 import type { LearningPath, Phase } from '../types/learningPath';
 
+// Tạo lộ trình học mới
+export interface CreateLearningPathRequest {
+  targetBandScore: number;
+  targetDate: string;
+}
+
+export const createLearningPath = async (data: CreateLearningPathRequest): Promise<LearningPath> => {
+  const response = await apiClient.post('/learning-paths', data);
+  return response.data;
+};
+
+// Lấy tất cả lộ trình học của user
+export const getAllLearningPaths = async (): Promise<LearningPath[]> => {
+  const response = await apiClient.get('/learning-paths');
+  return response.data;
+};
+
 // Lấy lộ trình học hiện tại
 export const getCurrentLearningPath = async (): Promise<LearningPath> => {
   const response = await apiClient.get('/learning-paths/current');
