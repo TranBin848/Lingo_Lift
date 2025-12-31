@@ -15,20 +15,25 @@ import { Task1TopicCard, Task2TopicCard } from './TopicCard';
 import { Task1FilterBar, Task2FilterBar } from './TopicFilterBar';
 import { Task1EssayEditor, Task2EssayEditor } from './EssayEditor';
 import { Task1EssayList, Task2EssayList, EssayStats } from './EssayHistoryList';
+import { Task1EssayViewer, Task2EssayViewer } from './EssayViewer';
 import type { 
   Task1Topic, 
   Task2Topic,
   Task1Essay,
   Task2Essay,
   Task1TopicFilters,
-  Task2TopicFilters
+  Task2TopicFilters,
+  Task1EssayWithTopic,
+  Task2EssayWithTopic
 } from '../../types/essay';
 import { 
   getTask1TopicsPublished, 
   getTask2TopicsPublished,
   getTask1EssaysWithTopics,
   getTask2EssaysWithTopics,
-  getEssayStats
+  getEssayStats,
+  getTask1Feedback,
+  getTask2Feedback
 } from '../../mocks/essays';
 
 type TaskTab = 'task1' | 'task2';
@@ -58,7 +63,7 @@ function TabButton({ active, onClick, children, icon }: TabButtonProps) {
       </span>
       {active && (
         <motion.div
-          layoutId="activeTab"
+          layoutId="activeEssayTab"
           className="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg"
           transition={{ type: 'spring' as const, stiffness: 400, damping: 30 }}
         />
@@ -121,6 +126,10 @@ export function EssaysPage() {
   // Selected topic for writing
   const [selectedTask1Topic, setSelectedTask1Topic] = useState<Task1Topic | null>(null);
   const [selectedTask2Topic, setSelectedTask2Topic] = useState<Task2Topic | null>(null);
+  
+  // Selected essay for viewing
+  const [viewingTask1Essay, setViewingTask1Essay] = useState<Task1EssayWithTopic | null>(null);
+  const [viewingTask2Essay, setViewingTask2Essay] = useState<Task2EssayWithTopic | null>(null);
 
   // Filter states
   const [task1Filters, setTask1Filters] = useState<Task1TopicFilters>({
@@ -234,13 +243,24 @@ export function EssaysPage() {
   };
 
   const handleViewTask1Essay = (essay: Task1Essay) => {
-    console.log('Viewing essay:', essay.id);
-    // TODO: Implement essay detail view
+    // Find the full essay with topic
+    const essayWithTopic = task1Essays.find(e => e.id === essay.id);
+    if (essayWithTopic) {
+      setViewingTask1Essay(essayWithTopic);
+    }
   };
 
   const handleViewTask2Essay = (essay: Task2Essay) => {
-    console.log('Viewing essay:', essay.id);
-    // TODO: Implement essay detail view
+    // Find the full essay with topic
+    const essayWithTopic = task2Essays.find(e => e.id === essay.id);
+    if (essayWithTopic) {
+      setViewingTask2Essay(essayWithTopic);
+    }
+  };
+
+  const handleCloseViewer = () => {
+    setViewingTask1Essay(null);
+    setViewingTask2Essay(null);
   };
 
   // Animation variants
@@ -294,8 +314,8 @@ export function EssaysPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 lg:px-6 py-6">
+    <div className="w-full">
+      <div className="max-w-7xl mx-auto">
         {/* Hero */}
         <EssaysHero />
 
@@ -470,6 +490,7 @@ export function EssaysPage() {
               <Task1EssayList
                 essays={task1Essays}
                 topics={task1Topics}
+                getBandScore={(essayId) => getTask1Feedback(essayId)?.estimatedBandScore}
                 onViewEssay={handleViewTask1Essay}
                 onRewriteTopic={handleStartWritingTask1}
                 emptyMessage="Bạn chưa có bài viết Task 1 nào"
@@ -489,6 +510,7 @@ export function EssaysPage() {
               <Task2EssayList
                 essays={task2Essays}
                 topics={task2Topics}
+                getBandScore={(essayId) => getTask2Feedback(essayId)?.estimatedBandScore}
                 onViewEssay={handleViewTask2Essay}
                 onRewriteTopic={handleStartWritingTask2}
                 emptyMessage="Bạn chưa có bài viết Task 2 nào"
@@ -497,6 +519,24 @@ export function EssaysPage() {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Essay Viewer Modals */}
+      <AnimatePresence>
+        {viewingTask1Essay && (
+          <Task1EssayViewer
+            essay={viewingTask1Essay}
+            feedback={getTask1Feedback(viewingTask1Essay.id)}
+            onClose={handleCloseViewer}
+          />
+        )}
+        {viewingTask2Essay && (
+          <Task2EssayViewer
+            essay={viewingTask2Essay}
+            feedback={getTask2Feedback(viewingTask2Essay.id)}
+            onClose={handleCloseViewer}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

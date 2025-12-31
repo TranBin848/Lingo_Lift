@@ -16,16 +16,20 @@ import {
   Shuffle,
   Mail,
   Image as ImageIcon,
-  AlertCircle
+  AlertCircle,
+  CheckCircle
 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
-import { EssayStatusBadge, GradingStatusIndicator } from './EssayStatusBadge';
+import { EssayStatusBadge } from './EssayStatusBadge';
+import { Task1FeedbackPanel, Task2FeedbackPanel, GradingInProgress } from './EssayFeedbackPanel';
 import type { 
   Task1Topic, 
   Task2Topic,
   EssayStatus,
-  ChartType
+  ChartType,
+  Task1Feedback,
+  Task2Feedback
 } from '../../types/essay';
 import {
   chartTypeLabels,
@@ -33,6 +37,167 @@ import {
   topicDifficultyColors,
   topicCategoryLabels
 } from '../../types/essay';
+
+// Mock AI grading function for Task 1
+function generateMockTask1Feedback(_content: string, wordCount: number, _timeSpent: number): Task1Feedback {
+  // Calculate scores based on word count and some randomness
+  const baseScore = Math.min(5.0 + (wordCount / 100) * 0.5, 7.5);
+  const variation = () => (Math.random() - 0.5) * 1.0;
+  
+  const taskAchievementScore = Math.max(4.0, Math.min(9.0, baseScore + variation()));
+  const coherenceScore = Math.max(4.0, Math.min(9.0, baseScore + variation()));
+  const lexicalScore = Math.max(4.0, Math.min(9.0, baseScore + variation()));
+  const grammaticalScore = Math.max(4.0, Math.min(9.0, baseScore + variation()));
+  
+  const avgScore = (taskAchievementScore + coherenceScore + lexicalScore + grammaticalScore) / 4;
+  const roundedScore = Math.round(avgScore * 2) / 2; // Round to nearest 0.5
+
+  return {
+    essayId: 'new-essay-' + Date.now(),
+    taskAchievement: {
+      score: Math.round(taskAchievementScore * 2) / 2,
+      comments: 'Bài viết đã mô tả được các thông tin chính từ biểu đồ. Cần thêm chi tiết số liệu cụ thể để đạt điểm cao hơn.',
+      strengths: [
+        'Giới thiệu rõ ràng về biểu đồ',
+        'Nêu được các xu hướng chính',
+        wordCount >= 150 ? 'Độ dài bài viết phù hợp' : 'Cần viết thêm để đạt số từ tối thiểu',
+      ],
+      improvements: [
+        'Cần thêm số liệu cụ thể để minh họa',
+        'Nên làm nổi bật các điểm đặc biệt trong biểu đồ',
+        'Phần tổng kết có thể chi tiết hơn',
+      ],
+    },
+    coherenceCohesion: {
+      score: Math.round(coherenceScore * 2) / 2,
+      comments: 'Cấu trúc bài viết rõ ràng với các đoạn văn được tổ chức tốt.',
+      strengths: [
+        'Cấu trúc bài viết logic',
+        'Chia đoạn văn hợp lý',
+      ],
+      improvements: [
+        'Cần đa dạng hơn trong việc sử dụng từ nối',
+        'Một số đoạn văn có thể được kết nối mượt mà hơn',
+      ],
+    },
+    lexicalResource: {
+      score: Math.round(lexicalScore * 2) / 2,
+      comments: 'Từ vựng sử dụng phù hợp với task. Cần mở rộng vốn từ học thuật.',
+      strengths: [
+        'Sử dụng từ vựng phù hợp ngữ cảnh',
+        'Có paraphrase đề bài',
+      ],
+      improvements: [
+        'Tránh lặp lại từ vựng',
+        'Nên sử dụng thêm từ đồng nghĩa',
+      ],
+    },
+    grammaticalRange: {
+      score: Math.round(grammaticalScore * 2) / 2,
+      comments: 'Ngữ pháp cơ bản chính xác. Cần sử dụng thêm câu phức.',
+      strengths: [
+        'Ít lỗi ngữ pháp nghiêm trọng',
+        'Sử dụng đúng thì cơ bản',
+      ],
+      improvements: [
+        'Nên sử dụng thêm câu phức',
+        'Có thể đa dạng hóa cấu trúc câu hơn',
+      ],
+    },
+    estimatedBandScore: roundedScore,
+    overallScore: roundedScore,
+    overallComments: `Bài viết Task 1 đạt band ${roundedScore}. Bạn đã hoàn thành nhiệm vụ mô tả biểu đồ. Để đạt điểm cao hơn, hãy tập trung vào việc thêm số liệu cụ thể, đa dạng từ vựng và sử dụng cấu trúc câu phức tạp hơn.`,
+    recommendations: [
+      'Luyện tập thêm về cách mô tả xu hướng với các cụm từ đa dạng',
+      'Học thêm từ vựng về so sánh và tương phản',
+      'Thực hành viết câu phức với nhiều mệnh đề',
+      'Thử viết lại bài với nhiều chi tiết số liệu hơn',
+    ],
+    aiModel: 'GPT-4',
+    processingTimeMs: 1500 + Math.random() * 1000,
+    gradedAt: new Date().toISOString(),
+  };
+}
+
+// Mock AI grading function for Task 2
+function generateMockTask2Feedback(_content: string, wordCount: number, _timeSpent: number): Task2Feedback {
+  const baseScore = Math.min(5.0 + (wordCount / 150) * 0.5, 7.5);
+  const variation = () => (Math.random() - 0.5) * 1.0;
+  
+  const taskResponseScore = Math.max(4.0, Math.min(9.0, baseScore + variation()));
+  const coherenceScore = Math.max(4.0, Math.min(9.0, baseScore + variation()));
+  const lexicalScore = Math.max(4.0, Math.min(9.0, baseScore + variation()));
+  const grammaticalScore = Math.max(4.0, Math.min(9.0, baseScore + variation()));
+  
+  const avgScore = (taskResponseScore + coherenceScore + lexicalScore + grammaticalScore) / 4;
+  const roundedScore = Math.round(avgScore * 2) / 2;
+
+  return {
+    essayId: 'new-essay-' + Date.now(),
+    taskResponse: {
+      score: Math.round(taskResponseScore * 2) / 2,
+      comments: 'Bài viết đã trả lời câu hỏi và đưa ra quan điểm. Cần phát triển lập luận sâu hơn.',
+      strengths: [
+        'Quan điểm cá nhân rõ ràng',
+        'Có ví dụ để minh họa',
+        wordCount >= 250 ? 'Độ dài phù hợp' : 'Cần viết thêm để đạt số từ tối thiểu',
+      ],
+      improvements: [
+        'Một số lập luận cần được phát triển sâu hơn',
+        'Nên thêm ví dụ thực tế cho một số điểm',
+        'Có thể phân tích counter-argument chi tiết hơn',
+      ],
+    },
+    coherenceCohesion: {
+      score: Math.round(coherenceScore * 2) / 2,
+      comments: 'Bài viết có cấu trúc tốt với các đoạn văn được tổ chức logic.',
+      strengths: [
+        'Cấu trúc bài viết rõ ràng (intro-body-conclusion)',
+        'Mỗi đoạn có topic sentence rõ ràng',
+      ],
+      improvements: [
+        'Có thể cải thiện internal coherence trong một số đoạn',
+        'Nên sử dụng đa dạng hơn các discourse markers',
+      ],
+    },
+    lexicalResource: {
+      score: Math.round(lexicalScore * 2) / 2,
+      comments: 'Từ vựng phù hợp với topic. Có thể mở rộng thêm academic vocabulary.',
+      strengths: [
+        'Sử dụng từ vựng phù hợp',
+        'Paraphrase đề bài tốt',
+      ],
+      improvements: [
+        'Nên sử dụng thêm academic vocabulary',
+        'Tránh lặp từ',
+      ],
+    },
+    grammaticalRange: {
+      score: Math.round(grammaticalScore * 2) / 2,
+      comments: 'Ngữ pháp tốt với một số cấu trúc đa dạng. Cần thêm câu phức.',
+      strengths: [
+        'Sử dụng nhiều loại câu',
+        'Ít lỗi ngữ pháp',
+      ],
+      improvements: [
+        'Nên sử dụng thêm câu phức',
+        'Có thể thử các cấu trúc nâng cao hơn',
+      ],
+    },
+    estimatedBandScore: roundedScore,
+    overallScore: roundedScore,
+    overallComments: `Bài viết Task 2 đạt band ${roundedScore}. Bạn đã trình bày quan điểm rõ ràng và có lập luận hợp lý. Để đạt điểm cao hơn, hãy tập trung phát triển lập luận sâu hơn, sử dụng từ vựng học thuật và cấu trúc câu đa dạng.`,
+    recommendations: [
+      'Học cách phát triển ideas với more depth',
+      'Thực hành thêm complex sentences',
+      'Đọc các bài mẫu band 8.0 để học cách lập luận',
+      'Thử viết lại bài với sophisticated arguments',
+    ],
+    aiModel: 'GPT-4',
+    processingTimeMs: 1800 + Math.random() * 1200,
+    gradedAt: new Date().toISOString(),
+  };
+}
 
 // Chart type icon component
 function ChartTypeIcon({ type, className = '' }: { type: ChartType; className?: string }) {
@@ -133,6 +298,7 @@ export function Task1EssayEditor({
   const [isTimerRunning, setIsTimerRunning] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [feedback, setFeedback] = useState<Task1Feedback | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const difficultyColor = topicDifficultyColors[topic.difficulty];
@@ -174,11 +340,20 @@ export function Task1EssayEditor({
     
     setIsSubmitting(true);
     setIsTimerRunning(false);
+    
     // Simulate submit delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 500));
     setStatus('Submitted');
     onSubmit(content, wordCount, seconds);
     setIsSubmitting(false);
+    
+    // Simulate AI grading (2-3 seconds delay)
+    await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 1000));
+    
+    // Generate mock feedback
+    const generatedFeedback = generateMockTask1Feedback(content, wordCount, seconds);
+    setFeedback(generatedFeedback);
+    setStatus('Graded');
   }, [content, wordCount, seconds, onSubmit]);
 
   return (
@@ -298,19 +473,29 @@ export function Task1EssayEditor({
                   onChange={(e) => setContent(e.target.value)}
                   placeholder="Bắt đầu viết bài của bạn tại đây..."
                   className="w-full h-[400px] p-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 leading-relaxed"
-                  disabled={status === 'Submitted'}
+                  disabled={status === 'Submitted' || status === 'Graded'}
                 />
               </Card>
 
-              {/* Grading status */}
-              <AnimatePresence>
-                {status === 'Submitted' && (
+              {/* Grading status / Feedback */}
+              <AnimatePresence mode="wait">
+                {status === 'Submitted' && !feedback && (
                   <motion.div
+                    key="grading-task1"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                   >
-                    <GradingStatusIndicator />
+                    <GradingInProgress />
+                  </motion.div>
+                )}
+                {status === 'Graded' && feedback && (
+                  <motion.div
+                    key="feedback-task1"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <Task1FeedbackPanel feedback={feedback} />
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -329,7 +514,7 @@ export function Task1EssayEditor({
             <Button
               variant="outline"
               onClick={handleSaveDraft}
-              disabled={isSaving || status === 'Submitted'}
+              disabled={isSaving || status === 'Submitted' || status === 'Graded'}
               className="border-gray-200 dark:border-gray-700"
             >
               {isSaving ? (
@@ -345,7 +530,7 @@ export function Task1EssayEditor({
             </Button>
             <Button
               onClick={handleSubmit}
-              disabled={isSubmitting || status === 'Submitted' || wordCount < 150}
+              disabled={isSubmitting || status === 'Submitted' || status === 'Graded' || wordCount < 150}
               className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-90 text-white shadow-md"
             >
               {isSubmitting ? (
@@ -357,7 +542,7 @@ export function Task1EssayEditor({
               ) : (
                 <Send className="w-4 h-4 mr-2" />
               )}
-              Nộp bài cho AI chấm
+              {status === 'Graded' ? 'Đã chấm xong' : 'Nộp bài cho AI chấm'}
             </Button>
           </div>
         </div>
@@ -390,6 +575,7 @@ export function Task2EssayEditor({
   const [isTimerRunning, setIsTimerRunning] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [feedback, setFeedback] = useState<Task2Feedback | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const difficultyColor = topicDifficultyColors[topic.difficulty];
@@ -430,10 +616,20 @@ export function Task2EssayEditor({
     
     setIsSubmitting(true);
     setIsTimerRunning(false);
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Simulate submit delay
+    await new Promise(resolve => setTimeout(resolve, 500));
     setStatus('Submitted');
     onSubmit(content, wordCount, seconds);
     setIsSubmitting(false);
+    
+    // Simulate AI grading (2-3 seconds delay)
+    await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 1000));
+    
+    // Generate mock feedback
+    const generatedFeedback = generateMockTask2Feedback(content, wordCount, seconds);
+    setFeedback(generatedFeedback);
+    setStatus('Graded');
   }, [content, wordCount, seconds, onSubmit]);
 
   return (
@@ -549,19 +745,31 @@ export function Task2EssayEditor({
                   onChange={(e) => setContent(e.target.value)}
                   placeholder="Bắt đầu viết bài của bạn tại đây..."
                   className="w-full h-[450px] p-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 leading-relaxed"
-                  disabled={status === 'Submitted'}
+                  disabled={status === 'Submitted' || status === 'Graded'}
                 />
               </Card>
 
-              {/* Grading status */}
-              <AnimatePresence>
-                {status === 'Submitted' && (
+              {/* Grading status / Feedback */}
+              <AnimatePresence mode="wait">
+                {status === 'Submitted' && !feedback && (
                   <motion.div
+                    key="grading-task2"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                   >
-                    <GradingStatusIndicator />
+                    <GradingInProgress />
+                  </motion.div>
+                )}
+                {status === 'Graded' && feedback && (
+                  <motion.div
+                    key="feedback-task2"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <Task2FeedbackPanel feedback={feedback} />
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -580,7 +788,7 @@ export function Task2EssayEditor({
             <Button
               variant="outline"
               onClick={handleSaveDraft}
-              disabled={isSaving || status === 'Submitted'}
+              disabled={isSaving || status === 'Submitted' || status === 'Graded'}
               className="border-gray-200 dark:border-gray-700"
             >
               {isSaving ? (
@@ -596,10 +804,15 @@ export function Task2EssayEditor({
             </Button>
             <Button
               onClick={handleSubmit}
-              disabled={isSubmitting || status === 'Submitted' || wordCount < 250}
+              disabled={isSubmitting || status === 'Submitted' || status === 'Graded' || wordCount < 250}
               className="bg-gradient-to-r from-purple-500 to-pink-600 hover:opacity-90 text-white shadow-md"
             >
-              {isSubmitting ? (
+              {status === 'Graded' ? (
+                <>
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  Đã chấm xong
+                </>
+              ) : isSubmitting ? (
                 <motion.div
                   animate={{ rotate: 360 }}
                   transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
@@ -608,7 +821,7 @@ export function Task2EssayEditor({
               ) : (
                 <Send className="w-4 h-4 mr-2" />
               )}
-              Nộp bài cho AI chấm
+              {status !== 'Graded' && 'Nộp bài cho AI chấm'}
             </Button>
           </div>
         </div>

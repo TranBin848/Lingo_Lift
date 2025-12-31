@@ -4,7 +4,11 @@ import type {
   Task1Essay,
   Task2Essay,
   Task1EssayWithTopic,
-  Task2EssayWithTopic
+  Task2EssayWithTopic,
+  Task1Feedback,
+  Task2Feedback,
+  Task1EssayWithFeedback,
+  Task2EssayWithFeedback
 } from '../types/essay';
 
 // Mock Task 1 Topics
@@ -483,4 +487,327 @@ export function getEssayStats() {
     totalWords: allEssays.reduce((acc, e) => acc + e.wordCount, 0),
     totalTimeMinutes: Math.round(allEssays.reduce((acc, e) => acc + e.timeSpentSeconds, 0) / 60),
   };
+}
+
+// ===== MOCK FEEDBACK DATA =====
+
+// Task 1 Feedback Examples
+export const mockTask1Feedback: Record<string, Task1Feedback> = {
+  'task1-essay-001': {
+    essayId: 'task1-essay-001',
+    taskAchievement: {
+      score: 6.5,
+      comments: 'Bài viết đã đáp ứng tốt yêu cầu của đề bài. Bạn đã mô tả chính xác các xu hướng chính và đưa ra so sánh hợp lý.',
+      strengths: [
+        'Giới thiệu rõ ràng về biểu đồ',
+        'Nêu được các xu hướng chính',
+        'Có so sánh giữa các dữ liệu',
+        'Độ dài bài viết phù hợp (177 từ)',
+      ],
+      improvements: [
+        'Cần thêm một số chi tiết cụ thể về số liệu',
+        'Nên làm nổi bật hơn các điểm đặc biệt trong biểu đồ',
+        'Phần tổng kết có thể chi tiết hơn',
+      ],
+    },
+    coherenceCohesion: {
+      score: 6.0,
+      comments: 'Bài viết có cấu trúc hợp lý với phần mở bài, thân bài và kết bài rõ ràng. Tuy nhiên, cần cải thiện việc sử dụng từ nối.',
+      strengths: [
+        'Cấu trúc bài viết logic',
+        'Chia đoạn văn hợp lý',
+        'Các câu liên kết với nhau tương đối tốt',
+      ],
+      improvements: [
+        'Cần đa dạng hơn trong việc sử dụng từ nối (linking words)',
+        'Một số đoạn văn có thể được kết nối mượt mà hơn',
+        'Nên sử dụng thêm các cụm từ chỉ xu hướng (trend phrases)',
+      ],
+    },
+    lexicalResource: {
+      score: 6.5,
+      comments: 'Từ vựng sử dụng khá tốt với một số cụm từ học thuật phù hợp. Tuy nhiên, vẫn còn lặp từ ở một số chỗ.',
+      strengths: [
+        'Sử dụng từ vựng học thuật phù hợp',
+        'Có paraphrase đề bài',
+        'Từ vựng chính xác và phù hợp ngữ cảnh',
+      ],
+      improvements: [
+        'Tránh lặp lại các từ như "show", "increase"',
+        'Nên sử dụng thêm từ đồng nghĩa',
+        'Có thể thêm các cụm từ mô tả số liệu chính xác hơn',
+      ],
+    },
+    grammaticalRange: {
+      score: 6.0,
+      comments: 'Ngữ pháp tương đối chính xác với một số câu phức. Tuy nhiên, cần đa dạng hơn về cấu trúc câu.',
+      strengths: [
+        'Sử dụng đúng các thì (simple past, present perfect)',
+        'Ít lỗi ngữ pháp nghiêm trọng',
+        'Có một số câu phức hợp lý',
+      ],
+      improvements: [
+        'Nên sử dụng thêm câu phức (complex sentences)',
+        'Có thể đa dạng hóa cấu trúc câu hơn',
+        'Một số lỗi nhỏ về mạo từ (articles)',
+      ],
+    },
+    estimatedBandScore: 6.5,
+    overallScore: 6.5,
+    overallComments: 'Đây là một bài viết Task 1 ở mức tốt (band 6.5). Bạn đã hoàn thành nhiệm vụ và trình bày thông tin một cách rõ ràng. Để đạt điểm cao hơn, hãy tập trung vào việc sử dụng đa dạng từ vựng và cấu trúc câu, đồng thời thêm chi tiết cụ thể hơn về số liệu.',
+    recommendations: [
+      'Luyện tập thêm về cách mô tả xu hướng với các cụm từ đa dạng',
+      'Học thêm từ vựng về so sánh và tương phản',
+      'Thực hành viết câu phức với nhiều mệnh đề',
+      'Học các lesson về "Describing Trends" và "Comparing Data"',
+      'Thử viết lại bài này với nhiều chi tiết số liệu hơn',
+    ],
+    aiModel: 'GPT-4',
+    processingTimeMs: 1247,
+    gradedAt: '2025-12-29T10:20:00Z',
+  },
+  'task1-essay-002': {
+    essayId: 'task1-essay-002',
+    taskAchievement: {
+      score: 7.0,
+      comments: 'Bài viết xuất sắc trong việc đáp ứng yêu cầu. Bạn đã mô tả đầy đủ các xu hướng và cung cấp số liệu cụ thể.',
+      strengths: [
+        'Mô tả chi tiết và chính xác các xu hướng',
+        'Có số liệu cụ thể để minh họa',
+        'So sánh tốt giữa các category',
+        'Overview rõ ràng và súc tích',
+      ],
+      improvements: [
+        'Có thể thêm một vài điểm nổi bật khác',
+        'Nên làm nổi bật hơn sự khác biệt lớn nhất',
+      ],
+    },
+    coherenceCohesion: {
+      score: 7.0,
+      comments: 'Cấu trúc bài viết xuất sắc với sự kết nối mượt mà giữa các ý tưởng.',
+      strengths: [
+        'Sử dụng từ nối đa dạng và chính xác',
+        'Các đoạn văn liên kết tốt',
+        'Progression logic rõ ràng',
+      ],
+      improvements: [
+        'Có thể tối ưu hơn một vài chỗ chuyển ý',
+      ],
+    },
+    lexicalResource: {
+      score: 7.0,
+      comments: 'Từ vựng phong phú và chính xác, với nhiều collocations học thuật.',
+      strengths: [
+        'Sử dụng từ vựng học thuật cao cấp',
+        'Paraphrase hiệu quả',
+        'Không lặp từ',
+      ],
+      improvements: [
+        'Có thể thêm một vài less common words',
+      ],
+    },
+    grammaticalRange: {
+      score: 6.5,
+      comments: 'Ngữ pháp tốt với đa dạng cấu trúc câu, có vài lỗi nhỏ.',
+      strengths: [
+        'Sử dụng nhiều câu phức',
+        'Thì sử dụng chính xác',
+        'Ít lỗi ngữ pháp',
+      ],
+      improvements: [
+        'Có một vài lỗi nhỏ về article',
+        'Nên kiểm tra lại subject-verb agreement',
+      ],
+    },
+    estimatedBandScore: 7.0,
+    overallScore: 7.0,
+    overallComments: 'Bài viết Task 1 xuất sắc ở band 7.0! Bạn đã thể hiện kỹ năng mô tả và phân tích dữ liệu rất tốt. Từ vựng và cấu trúc câu đa dạng. Chỉ cần chú ý một số chi tiết nhỏ về ngữ pháp là có thể đạt band 7.5.',
+    recommendations: [
+      'Tiếp tục duy trì cách viết overview chi tiết',
+      'Học thêm các cấu trúc câu phức tạp hơn',
+      'Ôn lại quy tắc sử dụng articles',
+      'Thử thách với các đề bài map hoặc process diagram',
+    ],
+    aiModel: 'GPT-4',
+    processingTimeMs: 1389,
+    gradedAt: '2025-12-27T15:35:00Z',
+  },
+};
+
+// Task 2 Feedback Examples
+export const mockTask2Feedback: Record<string, Task2Feedback> = {
+  'task2-essay-002': {
+    essayId: 'task2-essay-002',
+    taskResponse: {
+      score: 6.5,
+      comments: 'Bài viết đã trả lời câu hỏi một cách hợp lý và đưa ra quan điểm rõ ràng. Các lập luận được phát triển tốt.',
+      strengths: [
+        'Quan điểm cá nhân rõ ràng',
+        'Có ví dụ cụ thể để minh họa',
+        'Đáp ứng đầy đủ yêu cầu của đề bài',
+        'Độ dài phù hợp (256 từ)',
+      ],
+      improvements: [
+        'Một số lập luận có thể được phát triển sâu hơn',
+        'Nên thêm ví dụ thực tế cho một số điểm',
+        'Có thể phân tích counter-argument chi tiết hơn',
+      ],
+    },
+    coherenceCohesion: {
+      score: 6.5,
+      comments: 'Bài viết có cấu trúc tốt với các đoạn văn được tổ chức logic. Sử dụng từ nối hiệu quả.',
+      strengths: [
+        'Cấu trúc bài viết rõ ràng (intro-body-conclusion)',
+        'Mỗi đoạn có topic sentence rõ ràng',
+        'Sử dụng linking words phù hợp',
+      ],
+      improvements: [
+        'Có thể cải thiện internal coherence trong một số đoạn',
+        'Nên sử dụng đa dạng hơn các discourse markers',
+      ],
+    },
+    lexicalResource: {
+      score: 7.0,
+      comments: 'Từ vựng phong phú và chính xác với nhiều collocations học thuật. Paraphrase hiệu quả.',
+      strengths: [
+        'Sử dụng từ vựng academic một cách tự nhiên',
+        'Có nhiều less common words',
+        'Paraphrase đề bài tốt',
+        'Collocations chính xác',
+      ],
+      improvements: [
+        'Một vài từ có thể chọn chính xác hơn về nuance',
+      ],
+    },
+    grammaticalRange: {
+      score: 6.5,
+      comments: 'Ngữ pháp tốt với nhiều cấu trúc câu đa dạng. Có một vài lỗi nhỏ nhưng không ảnh hưởng đến nghĩa.',
+      strengths: [
+        'Sử dụng nhiều câu phức',
+        'Mix giữa simple và complex sentences hiệu quả',
+        'Punctuation chính xác',
+      ],
+      improvements: [
+        'Có một vài lỗi về relative clause',
+        'Nên kiểm tra lại modal verbs',
+        'Một số chỗ có thể dùng passive voice',
+      ],
+    },
+    estimatedBandScore: 7.0,
+    overallScore: 7.0,
+    overallComments: 'Bài viết Task 2 ở mức tốt (band 7.0)! Bạn đã trình bày quan điểm rõ ràng và lập luận có logic. Từ vựng phong phú và ngữ pháp chính xác. Để đạt band 7.5-8.0, hãy tập trung phát triển lập luận sâu hơn và giảm thiểu các lỗi ngữ pháp nhỏ.',
+    recommendations: [
+      'Học cách phát triển ideas với more depth',
+      'Thực hành thêm relative clauses và conditional sentences',
+      'Học các essay structures nâng cao',
+      'Đọc các bài mẫu band 8.0 để học cách lập luận',
+      'Thử viết lại bài với more sophisticated arguments',
+    ],
+    aiModel: 'GPT-4',
+    processingTimeMs: 1876,
+    gradedAt: '2025-12-26T09:40:00Z',
+  },
+  'task2-essay-004': {
+    essayId: 'task2-essay-004',
+    taskResponse: {
+      score: 7.0,
+      comments: 'Bài viết trả lời câu hỏi một cách toàn diện với nhiều góc nhìn khác nhau. Quan điểm rõ ràng và được bảo vệ tốt.',
+      strengths: [
+        'Phân tích vấn đề từ nhiều góc độ',
+        'Lập luận được phát triển đầy đủ',
+        'Có ví dụ cụ thể và relevant',
+        'Conclusion tổng hợp tốt các ý chính',
+      ],
+      improvements: [
+        'Có thể thêm một counter-argument mạnh hơn',
+        'Một số ví dụ có thể specific hơn',
+      ],
+    },
+    coherenceCohesion: {
+      score: 7.0,
+      comments: 'Cấu trúc bài viết logic và mạch lạc. Các ý tưởng được kết nối tự nhiên.',
+      strengths: [
+        'Progression of ideas rất tốt',
+        'Paragraphing hiệu quả',
+        'Sử dụng cohesive devices đa dạng',
+        'Topic sentences rõ ràng',
+      ],
+      improvements: [
+        'Có thể improve một vài transitions giữa paragraphs',
+      ],
+    },
+    lexicalResource: {
+      score: 7.5,
+      comments: 'Từ vựng xuất sắc với nhiều academic words và phrases. Paraphrase rất tốt.',
+      strengths: [
+        'Wide range of vocabulary',
+        'Less common words được sử dụng chính xác',
+        'Collocations tự nhiên',
+        'Không có spelling errors',
+      ],
+      improvements: [
+        'Duy trì level này!',
+      ],
+    },
+    grammaticalRange: {
+      score: 7.0,
+      comments: 'Ngữ pháp chính xác với cấu trúc câu đa dạng và phức tạp.',
+      strengths: [
+        'Variety of complex structures',
+        'Conditional sentences chính xác',
+        'Passive voice sử dụng tốt',
+        'Rất ít lỗi',
+      ],
+      improvements: [
+        'Có một vài chỗ article không chính xác lắm',
+        'Một subject-verb agreement minor',
+      ],
+    },
+    estimatedBandScore: 7.5,
+    overallScore: 7.5,
+    overallComments: 'Bài viết Task 2 xuất sắc ở band 7.5! Bạn đã thể hiện kỹ năng lập luận và viết học thuật rất tốt. Từ vựng phong phú, ngữ pháp chính xác và ideas được phát triển đầy đủ. Để đạt band 8.0, chỉ cần hoàn thiện thêm một vài chi tiết nhỏ về grammar và thêm sophisticated arguments.',
+    recommendations: [
+      'Duy trì cách viết này!',
+      'Thực hành với các đề bài khó hơn',
+      'Học thêm idiomatic expressions',
+      'Đọc academic journals để học cách lập luận cao cấp',
+      'Thử các discussion essays và two-part questions',
+    ],
+    aiModel: 'GPT-4',
+    processingTimeMs: 2103,
+    gradedAt: '2025-12-30T15:10:00Z',
+  },
+};
+
+// Helper functions to get feedback
+export function getTask1Feedback(essayId: string): Task1Feedback | undefined {
+  return mockTask1Feedback[essayId];
+}
+
+export function getTask2Feedback(essayId: string): Task2Feedback | undefined {
+  return mockTask2Feedback[essayId];
+}
+
+export function getTask1EssaysWithFeedback(): Task1EssayWithFeedback[] {
+  return mockTask1Essays.map(essay => {
+    const topic = mockTask1Topics.find(t => t.id === essay.topicId);
+    const feedback = essay.status === 'Graded' ? getTask1Feedback(essay.id) : undefined;
+    return {
+      ...essay,
+      topic: topic!,
+      feedback,
+    };
+  });
+}
+
+export function getTask2EssaysWithFeedback(): Task2EssayWithFeedback[] {
+  return mockTask2Essays.map(essay => {
+    const topic = mockTask2Topics.find(t => t.id === essay.topicId);
+    const feedback = essay.status === 'Graded' ? getTask2Feedback(essay.id) : undefined;
+    return {
+      ...essay,
+      topic: topic!,
+      feedback,
+    };
+  });
 }

@@ -32,10 +32,10 @@ const sidebarItems: SidebarItem[] = [
   },
   {
     id: "courses",
-    label: "Các khóa học",
+    label: "Khóa học của bạn",
     icon: BookOpen,
-    path: "courses",
-    type: "tab",
+    type: "link",
+    to: "/learning-path-v2",
   },
   {
     id: "practice",
@@ -50,7 +50,7 @@ const sidebarItems: SidebarItem[] = [
     label: "Kiểm tra đầu vào",
     icon: FileText,
     type: "link",
-    to: "/placement-tests",
+    to: "/placement-test",
   },
   {
     id: "test-history",
@@ -207,7 +207,7 @@ export function LearningSidebar({
       initial="hidden"
       animate="visible"
       variants={sidebarVariants}
-      className="w-72 bg-white/80 backdrop-blur-xl border-r border-gray-100 min-h-screen sticky top-0"
+      className="w-72 bg-white/80 backdrop-blur-xl border-r border-gray-100 min-h-screen sticky top-0 z-50"
     >
       <div className="p-6">
         {/* Header */}

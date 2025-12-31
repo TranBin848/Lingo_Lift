@@ -7,7 +7,8 @@ import {
   Trophy,
   TrendingUp,
   ChevronRight,
-  Target
+  Target,
+  Award
 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
@@ -16,12 +17,13 @@ import type {
   Task1Essay, 
   Task2Essay, 
   Task1Topic, 
-  Task2Topic 
+  Task2Topic
 } from '../../types/essay';
 import {
   chartTypeLabels,
   questionTypeLabels,
-  topicCategoryLabels
+  topicCategoryLabels,
+  getBandScoreGradient
 } from '../../types/essay';
 
 // Format time from seconds
@@ -51,11 +53,12 @@ function formatDate(dateString: string): string {
 interface Task1EssayItemProps {
   essay: Task1Essay;
   topic: Task1Topic;
+  bandScore?: number;
   onView: (essay: Task1Essay) => void;
   onRewrite: (topic: Task1Topic) => void;
 }
 
-function Task1EssayItem({ essay, topic, onView, onRewrite }: Task1EssayItemProps) {
+function Task1EssayItem({ essay, topic, bandScore, onView, onRewrite }: Task1EssayItemProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -105,12 +108,14 @@ function Task1EssayItem({ essay, topic, onView, onRewrite }: Task1EssayItemProps
             </div>
           </div>
 
-          {/* Score if graded - placeholder for future grading feature */}
+          {/* Score if graded */}
           {essay.status === 'Graded' && (
-            <div className="flex-shrink-0 text-center px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg">
+            <div className={`flex-shrink-0 text-center px-4 py-2 bg-gradient-to-r ${bandScore ? getBandScoreGradient(bandScore) : 'from-green-500 to-emerald-600'} rounded-lg`}>
               <div className="flex items-center gap-1">
-                <Trophy className="w-4 h-4 text-white" />
-                <span className="text-lg font-bold text-white">-</span>
+                <Award className="w-4 h-4 text-white" />
+                <span className="text-lg font-bold text-white">
+                  {bandScore ? bandScore.toFixed(1) : '-'}
+                </span>
               </div>
               <p className="text-xs text-white/80">Band</p>
             </div>
@@ -147,11 +152,12 @@ function Task1EssayItem({ essay, topic, onView, onRewrite }: Task1EssayItemProps
 interface Task2EssayItemProps {
   essay: Task2Essay;
   topic: Task2Topic;
+  bandScore?: number;
   onView: (essay: Task2Essay) => void;
   onRewrite: (topic: Task2Topic) => void;
 }
 
-function Task2EssayItem({ essay, topic, onView, onRewrite }: Task2EssayItemProps) {
+function Task2EssayItem({ essay, topic, bandScore, onView, onRewrite }: Task2EssayItemProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -201,12 +207,14 @@ function Task2EssayItem({ essay, topic, onView, onRewrite }: Task2EssayItemProps
             </div>
           </div>
 
-          {/* Score if graded - placeholder for future grading feature */}
+          {/* Score if graded */}
           {essay.status === 'Graded' && (
-            <div className="flex-shrink-0 text-center px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg">
+            <div className={`flex-shrink-0 text-center px-4 py-2 bg-gradient-to-r ${bandScore ? getBandScoreGradient(bandScore) : 'from-purple-500 to-pink-600'} rounded-lg`}>
               <div className="flex items-center gap-1">
-                <Trophy className="w-4 h-4 text-white" />
-                <span className="text-lg font-bold text-white">-</span>
+                <Award className="w-4 h-4 text-white" />
+                <span className="text-lg font-bold text-white">
+                  {bandScore ? bandScore.toFixed(1) : '-'}
+                </span>
               </div>
               <p className="text-xs text-white/80">Band</p>
             </div>
@@ -243,6 +251,7 @@ function Task2EssayItem({ essay, topic, onView, onRewrite }: Task2EssayItemProps
 interface Task1EssayListProps {
   essays: Task1Essay[];
   topics: Task1Topic[];
+  getBandScore?: (essayId: string) => number | undefined;
   onViewEssay: (essay: Task1Essay) => void;
   onRewriteTopic: (topic: Task1Topic) => void;
   emptyMessage?: string;
@@ -251,6 +260,7 @@ interface Task1EssayListProps {
 export function Task1EssayList({
   essays,
   topics,
+  getBandScore,
   onViewEssay,
   onRewriteTopic,
   emptyMessage = 'Bạn chưa có bài viết nào'
@@ -280,6 +290,7 @@ export function Task1EssayList({
             <Task1EssayItem
               essay={essay}
               topic={topic}
+              bandScore={getBandScore?.(essay.id)}
               onView={onViewEssay}
               onRewrite={onRewriteTopic}
             />
@@ -294,6 +305,7 @@ export function Task1EssayList({
 interface Task2EssayListProps {
   essays: Task2Essay[];
   topics: Task2Topic[];
+  getBandScore?: (essayId: string) => number | undefined;
   onViewEssay: (essay: Task2Essay) => void;
   onRewriteTopic: (topic: Task2Topic) => void;
   emptyMessage?: string;
@@ -302,6 +314,7 @@ interface Task2EssayListProps {
 export function Task2EssayList({
   essays,
   topics,
+  getBandScore,
   onViewEssay,
   onRewriteTopic,
   emptyMessage = 'Bạn chưa có bài viết nào'
@@ -331,6 +344,7 @@ export function Task2EssayList({
             <Task2EssayItem
               essay={essay}
               topic={topic}
+              bandScore={getBandScore?.(essay.id)}
               onView={onViewEssay}
               onRewrite={onRewriteTopic}
             />
