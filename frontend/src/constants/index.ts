@@ -16,6 +16,7 @@ export const ROUTES = {
   LOGIN: '/login',
   REGISTER: '/register',
   PROFILE: '/profile',
+  PLACEMENT_TEST: '/placement-test',
 } as const
 
 // Skills

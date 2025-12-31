@@ -1,6 +1,7 @@
 import { lazy } from "react";
 import type { RouteObject } from "react-router-dom";
 import { ROUTES } from "../constants";
+import { PlacementTestPage } from "../components/placement-test";
 
 // Lazy load pages
 const LandingPage = lazy(() => import("../pages/LandingPage"));
@@ -34,5 +35,9 @@ export const routes: RouteObject[] = [
   {
     path: ROUTES.WRITING,
     element: <Writing />,
+  },
+  {
+    path: ROUTES.PLACEMENT_TEST,
+    element: <PlacementTestPage />,
   },
 ];
