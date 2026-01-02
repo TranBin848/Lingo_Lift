@@ -20,4 +20,8 @@ export {
   EssayFeedbackDisplay 
 } from './EssayFeedbackPanel';
 
+// Annotation components
+export { AnnotatedEssay } from './AnnotatedEssay';
+export { AnnotationTooltip, MiniAnnotationTooltip } from './AnnotationTooltip';
+
 

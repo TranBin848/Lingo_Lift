@@ -49,7 +49,7 @@ function SkeletonCard() {
     <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm overflow-hidden relative">
       {/* Shimmer effect */}
       <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/60 to-transparent" />
-      
+
       <div className="space-y-4">
         <div className="flex items-start justify-between">
           <div className="space-y-2">
@@ -92,7 +92,10 @@ function StatsCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay }}
-      whileHover={{ y: -2, boxShadow: "0 10px 40px -10px rgba(99, 102, 241, 0.2)" }}
+      whileHover={{
+        y: -2,
+        boxShadow: "0 10px 40px -10px rgba(99, 102, 241, 0.2)",
+      }}
       className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:border-indigo-200 transition-all duration-300"
     >
       <div className="flex items-center gap-4">
@@ -115,7 +118,9 @@ export default function PlacementTestsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all");
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "active" | "inactive"
+  >("all");
 
   const canManage = user?.role === "admin" || user?.role === "teacher";
 
@@ -218,14 +223,18 @@ export default function PlacementTestsPage() {
                     </h1>
                     <motion.div
                       animate={{ rotate: [0, 15, -15, 0] }}
-                      transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        repeatDelay: 3,
+                      }}
                     >
                       <Sparkles className="w-6 h-6 text-amber-400" />
                     </motion.div>
                   </div>
                   <p className="text-gray-600 text-lg max-w-xl">
-                    Đánh giá chính xác trình độ tiếng Anh của bạn với các bài kiểm tra
-                    được thiết kế theo chuẩn IELTS
+                    Đánh giá chính xác trình độ tiếng Anh của bạn với các bài
+                    kiểm tra được thiết kế theo chuẩn IELTS
                   </p>
                 </div>
               </div>
@@ -291,7 +300,9 @@ export default function PlacementTestsPage() {
               <select
                 value={statusFilter}
                 onChange={(e) =>
-                  setStatusFilter(e.target.value as "all" | "active" | "inactive")
+                  setStatusFilter(
+                    e.target.value as "all" | "active" | "inactive"
+                  )
                 }
                 className="pl-12 pr-10 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 appearance-none bg-white shadow-sm min-w-[200px] cursor-pointer hover:border-gray-300 transition-all duration-300"
               >
@@ -316,7 +327,9 @@ export default function PlacementTestsPage() {
                     <AlertCircle className="w-6 h-6 text-red-600" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-red-900">Có lỗi xảy ra</h3>
+                    <h3 className="font-semibold text-red-900">
+                      Có lỗi xảy ra
+                    </h3>
                     <p className="text-red-700">{error}</p>
                   </div>
                   <motion.button

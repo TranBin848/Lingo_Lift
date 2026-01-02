@@ -378,3 +378,146 @@ export function getBandScoreGradient(score: number): string {
   if (score >= 5.0) return 'from-yellow-500 to-orange-600';
   return 'from-red-500 to-orange-600';
 }
+
+// ===== ANNOTATION TYPES =====
+
+// Annotation Type
+export type AnnotationType = 'Error' | 'Suggestion' | 'Highlight';
+
+// Annotation Category
+export type AnnotationCategory = 'Grammar' | 'Vocabulary' | 'Coherence' | 'TaskResponse';
+
+// Annotation Severity
+export type AnnotationSeverity = 'Critical' | 'Major' | 'Minor';
+
+// Base Annotation interface
+export interface BaseAnnotation {
+  id: string;
+  feedbackId: string;
+  startIndex: number; // Character index in essay content
+  endIndex: number;   // Character index in essay content
+  type: AnnotationType;
+  category: AnnotationCategory;
+  severity: AnnotationSeverity;
+  message: string;
+  suggestedCorrection?: string;
+  explanation?: string;
+  createdAt: string;
+}
+
+// Task 1 Annotation
+export interface Task1Annotation extends BaseAnnotation {
+  essayId: string;
+}
+
+// Task 2 Annotation
+export interface Task2Annotation extends BaseAnnotation {
+  essayId: string;
+}
+
+// Annotation type labels (Vietnamese)
+export const annotationTypeLabels: Record<AnnotationType, string> = {
+  Error: 'Lỗi',
+  Suggestion: 'Gợi ý',
+  Highlight: 'Điểm tốt',
+};
+
+// Annotation category labels (Vietnamese)
+export const annotationCategoryLabels: Record<AnnotationCategory, string> = {
+  Grammar: 'Ngữ pháp',
+  Vocabulary: 'Từ vựng',
+  Coherence: 'Mạch lạc',
+  TaskResponse: 'Trả lời đề',
+};
+
+// Annotation severity labels (Vietnamese)
+export const annotationSeverityLabels: Record<AnnotationSeverity, string> = {
+  Critical: 'Nghiêm trọng',
+  Major: 'Quan trọng',
+  Minor: 'Nhỏ',
+};
+
+// Annotation type colors
+export const annotationTypeColors: Record<AnnotationType, { 
+  bg: string; 
+  text: string; 
+  underline: string;
+  border: string;
+  hoverBg: string;
+}> = {
+  Error: {
+    bg: 'bg-red-100 dark:bg-red-900/30',
+    text: 'text-red-700 dark:text-red-300',
+    underline: 'decoration-red-500',
+    border: 'border-red-300 dark:border-red-700',
+    hoverBg: 'hover:bg-red-200 dark:hover:bg-red-900/50',
+  },
+  Suggestion: {
+    bg: 'bg-blue-100 dark:bg-blue-900/30',
+    text: 'text-blue-700 dark:text-blue-300',
+    underline: 'decoration-blue-500',
+    border: 'border-blue-300 dark:border-blue-700',
+    hoverBg: 'hover:bg-blue-200 dark:hover:bg-blue-900/50',
+  },
+  Highlight: {
+    bg: 'bg-green-100 dark:bg-green-900/30',
+    text: 'text-green-700 dark:text-green-300',
+    underline: 'decoration-green-500',
+    border: 'border-green-300 dark:border-green-700',
+    hoverBg: 'hover:bg-green-200 dark:hover:bg-green-900/50',
+  },
+};
+
+// Annotation severity colors
+export const annotationSeverityColors: Record<AnnotationSeverity, { bg: string; text: string }> = {
+  Critical: {
+    bg: 'bg-red-100 dark:bg-red-900/30',
+    text: 'text-red-700 dark:text-red-300',
+  },
+  Major: {
+    bg: 'bg-orange-100 dark:bg-orange-900/30',
+    text: 'text-orange-700 dark:text-orange-300',
+  },
+  Minor: {
+    bg: 'bg-yellow-100 dark:bg-yellow-900/30',
+    text: 'text-yellow-700 dark:text-yellow-300',
+  },
+};
+
+// Annotation category colors
+export const annotationCategoryColors: Record<AnnotationCategory, { bg: string; text: string }> = {
+  Grammar: {
+    bg: 'bg-purple-100 dark:bg-purple-900/30',
+    text: 'text-purple-700 dark:text-purple-300',
+  },
+  Vocabulary: {
+    bg: 'bg-indigo-100 dark:bg-indigo-900/30',
+    text: 'text-indigo-700 dark:text-indigo-300',
+  },
+  Coherence: {
+    bg: 'bg-teal-100 dark:bg-teal-900/30',
+    text: 'text-teal-700 dark:text-teal-300',
+  },
+  TaskResponse: {
+    bg: 'bg-cyan-100 dark:bg-cyan-900/30',
+    text: 'text-cyan-700 dark:text-cyan-300',
+  },
+};
+
+// Filter state for annotations
+export interface AnnotationFilters {
+  category: AnnotationCategory | 'all';
+  severity: AnnotationSeverity | 'all';
+  type: AnnotationType | 'all';
+}
+
+// Essay with annotations (for display)
+export interface Task1EssayWithAnnotations extends Task1EssayWithTopic {
+  feedback?: Task1Feedback;
+  annotations?: Task1Annotation[];
+}
+
+export interface Task2EssayWithAnnotations extends Task2EssayWithTopic {
+  feedback?: Task2Feedback;
+  annotations?: Task2Annotation[];
+}

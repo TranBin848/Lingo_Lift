@@ -8,7 +8,11 @@ import type {
   Task1Feedback,
   Task2Feedback,
   Task1EssayWithFeedback,
-  Task2EssayWithFeedback
+  Task2EssayWithFeedback,
+  Task1Annotation,
+  Task2Annotation,
+  Task1EssayWithAnnotations,
+  Task2EssayWithAnnotations
 } from '../types/essay';
 
 // Mock Task 1 Topics
@@ -808,6 +812,276 @@ export function getTask2EssaysWithFeedback(): Task2EssayWithFeedback[] {
       ...essay,
       topic: topic!,
       feedback,
+    };
+  });
+}
+
+// ===== MOCK ANNOTATION DATA =====
+
+// Task 1 Annotations - aligned with essay content indices
+export const mockTask1Annotations: Record<string, Task1Annotation[]> = {
+  'task1-essay-003': [
+    // Essay content: "The two pie charts compare water usage patterns in San Diego, California with global water consumption..."
+    {
+      id: 'ann-t1-001',
+      essayId: 'task1-essay-003',
+      feedbackId: 'task1-essay-002',
+      startIndex: 0,
+      endIndex: 18,
+      type: 'Highlight',
+      category: 'TaskResponse',
+      severity: 'Minor',
+      message: 'Câu mở đầu paraphrase tốt đề bài, giới thiệu rõ ràng nội dung biểu đồ.',
+      explanation: 'Việc paraphrase đề bài thay vì copy nguyên văn cho thấy khả năng ngôn ngữ tốt.',
+      createdAt: '2025-12-27T16:00:00Z',
+    },
+    {
+      id: 'ann-t1-002',
+      essayId: 'task1-essay-003',
+      feedbackId: 'task1-essay-002',
+      startIndex: 95,
+      endIndex: 115,
+      type: 'Highlight',
+      category: 'Coherence',
+      severity: 'Minor',
+      message: 'Overview rõ ràng và súc tích, nêu được xu hướng chính.',
+      explanation: 'Một overview tốt giúp người đọc nắm được ý chính trước khi đi vào chi tiết.',
+      createdAt: '2025-12-27T16:00:00Z',
+    },
+    {
+      id: 'ann-t1-003',
+      essayId: 'task1-essay-003',
+      feedbackId: 'task1-essay-002',
+      startIndex: 200,
+      endIndex: 215,
+      type: 'Suggestion',
+      category: 'Vocabulary',
+      severity: 'Minor',
+      message: 'Có thể sử dụng từ vựng đa dạng hơn.',
+      suggestedCorrection: 'constitutes / makes up / comprises',
+      explanation: 'Thay vì dùng "accounts for" nhiều lần, bạn có thể dùng các từ đồng nghĩa.',
+      createdAt: '2025-12-27T16:00:00Z',
+    },
+    {
+      id: 'ann-t1-004',
+      essayId: 'task1-essay-003',
+      feedbackId: 'task1-essay-002',
+      startIndex: 350,
+      endIndex: 380,
+      type: 'Error',
+      category: 'Grammar',
+      severity: 'Major',
+      message: 'Thiếu mạo từ "the" trước danh từ xác định.',
+      suggestedCorrection: 'In contrast, globally, the agriculture is...',
+      explanation: 'Khi nói về một lĩnh vực cụ thể đã được đề cập, cần dùng "the".',
+      createdAt: '2025-12-27T16:00:00Z',
+    },
+    {
+      id: 'ann-t1-005',
+      essayId: 'task1-essay-003',
+      feedbackId: 'task1-essay-002',
+      startIndex: 420,
+      endIndex: 450,
+      type: 'Suggestion',
+      category: 'Coherence',
+      severity: 'Minor',
+      message: 'Cần thêm liên kết giữa các số liệu.',
+      suggestedCorrection: 'Thêm "while" hoặc "whereas" để so sánh',
+      explanation: 'Sử dụng từ nối so sánh giúp bài viết mạch lạc hơn.',
+      createdAt: '2025-12-27T16:00:00Z',
+    },
+    {
+      id: 'ann-t1-006',
+      essayId: 'task1-essay-003',
+      feedbackId: 'task1-essay-002',
+      startIndex: 480,
+      endIndex: 530,
+      type: 'Highlight',
+      category: 'TaskResponse',
+      severity: 'Minor',
+      message: 'Kết luận tốt, giải thích được sự khác biệt.',
+      explanation: 'Việc đưa ra lý giải cho sự khác biệt thể hiện tư duy phân tích tốt.',
+      createdAt: '2025-12-27T16:00:00Z',
+    },
+  ],
+};
+
+// Task 2 Annotations
+export const mockTask2Annotations: Record<string, Task2Annotation[]> = {
+  'task2-essay-001': [
+    // Essay content: "The purpose of universities has been debated for decades..."
+    {
+      id: 'ann-t2-001',
+      essayId: 'task2-essay-001',
+      feedbackId: 'task2-essay-002',
+      startIndex: 0,
+      endIndex: 55,
+      type: 'Highlight',
+      category: 'TaskResponse',
+      severity: 'Minor',
+      message: 'Mở bài thu hút, giới thiệu chủ đề rõ ràng.',
+      explanation: 'Cách mở bài bằng việc đề cập đến cuộc tranh luận giúp thu hút người đọc.',
+      createdAt: '2025-12-26T15:30:00Z',
+    },
+    {
+      id: 'ann-t2-002',
+      essayId: 'task2-essay-001',
+      feedbackId: 'task2-essay-002',
+      startIndex: 100,
+      endIndex: 130,
+      type: 'Highlight',
+      category: 'TaskResponse',
+      severity: 'Minor',
+      message: 'Thesis statement rõ ràng, nêu được quan điểm cá nhân.',
+      explanation: 'Thesis statement mạnh giúp định hướng toàn bộ bài viết.',
+      createdAt: '2025-12-26T15:30:00Z',
+    },
+    {
+      id: 'ann-t2-003',
+      essayId: 'task2-essay-001',
+      feedbackId: 'task2-essay-002',
+      startIndex: 200,
+      endIndex: 240,
+      type: 'Suggestion',
+      category: 'Vocabulary',
+      severity: 'Minor',
+      message: 'Có thể dùng từ học thuật hơn.',
+      suggestedCorrection: 'enroll in / pursue tertiary education',
+      explanation: 'Thay "attend university" bằng các cụm từ học thuật hơn.',
+      createdAt: '2025-12-26T15:30:00Z',
+    },
+    {
+      id: 'ann-t2-004',
+      essayId: 'task2-essay-001',
+      feedbackId: 'task2-essay-002',
+      startIndex: 280,
+      endIndex: 320,
+      type: 'Error',
+      category: 'Grammar',
+      severity: 'Major',
+      message: 'Lỗi cấu trúc câu - thiếu liên từ.',
+      suggestedCorrection: 'They invest significant time and money, and therefore, they expect...',
+      explanation: 'Câu ghép cần có liên từ phù hợp để nối các mệnh đề.',
+      createdAt: '2025-12-26T15:30:00Z',
+    },
+    {
+      id: 'ann-t2-005',
+      essayId: 'task2-essay-001',
+      feedbackId: 'task2-essay-002',
+      startIndex: 400,
+      endIndex: 430,
+      type: 'Error',
+      category: 'Grammar',
+      severity: 'Minor',
+      message: 'Nên dùng "may" thay vì "can" để diễn tả khả năng.',
+      suggestedCorrection: 'Universities that fail to provide relevant skills may leave graduates struggling...',
+      explanation: '"May" phù hợp hơn khi nói về khả năng xảy ra trong tương lai.',
+      createdAt: '2025-12-26T15:30:00Z',
+    },
+    {
+      id: 'ann-t2-006',
+      essayId: 'task2-essay-001',
+      feedbackId: 'task2-essay-002',
+      startIndex: 480,
+      endIndex: 520,
+      type: 'Highlight',
+      category: 'Coherence',
+      severity: 'Minor',
+      message: 'Chuyển ý tốt với "However".',
+      explanation: 'Sử dụng từ nối tương phản giúp bài viết có sự cân bằng.',
+      createdAt: '2025-12-26T15:30:00Z',
+    },
+    {
+      id: 'ann-t2-007',
+      essayId: 'task2-essay-001',
+      feedbackId: 'task2-essay-002',
+      startIndex: 550,
+      endIndex: 590,
+      type: 'Suggestion',
+      category: 'TaskResponse',
+      severity: 'Major',
+      message: 'Cần thêm ví dụ cụ thể để minh họa.',
+      suggestedCorrection: 'Thêm ví dụ: "For instance, the discovery of penicillin..."',
+      explanation: 'Ví dụ cụ thể giúp lập luận thuyết phục hơn.',
+      createdAt: '2025-12-26T15:30:00Z',
+    },
+    {
+      id: 'ann-t2-008',
+      essayId: 'task2-essay-001',
+      feedbackId: 'task2-essay-002',
+      startIndex: 650,
+      endIndex: 700,
+      type: 'Highlight',
+      category: 'Vocabulary',
+      severity: 'Minor',
+      message: 'Sử dụng collocations tốt: "groundbreaking discoveries".',
+      explanation: 'Collocations học thuật thể hiện vốn từ vựng phong phú.',
+      createdAt: '2025-12-26T15:30:00Z',
+    },
+    {
+      id: 'ann-t2-009',
+      essayId: 'task2-essay-001',
+      feedbackId: 'task2-essay-002',
+      startIndex: 750,
+      endIndex: 800,
+      type: 'Suggestion',
+      category: 'Coherence',
+      severity: 'Minor',
+      message: 'Có thể kết nối chặt chẽ hơn với đoạn trước.',
+      suggestedCorrection: 'Thêm "Building on this point,..." hoặc "Furthermore,..."',
+      explanation: 'Từ nối giữa các đoạn giúp bài viết mạch lạc hơn.',
+      createdAt: '2025-12-26T15:30:00Z',
+    },
+    {
+      id: 'ann-t2-010',
+      essayId: 'task2-essay-001',
+      feedbackId: 'task2-essay-002',
+      startIndex: 850,
+      endIndex: 920,
+      type: 'Highlight',
+      category: 'TaskResponse',
+      severity: 'Minor',
+      message: 'Kết luận tốt, tổng hợp được các ý chính và khẳng định lại quan điểm.',
+      explanation: 'Một kết luận tốt giúp để lại ấn tượng với người đọc.',
+      createdAt: '2025-12-26T15:30:00Z',
+    },
+  ],
+};
+
+// Helper functions for annotations
+export function getTask1Annotations(essayId: string): Task1Annotation[] {
+  return mockTask1Annotations[essayId] || [];
+}
+
+export function getTask2Annotations(essayId: string): Task2Annotation[] {
+  return mockTask2Annotations[essayId] || [];
+}
+
+// Get essays with annotations
+export function getTask1EssaysWithAnnotations(): Task1EssayWithAnnotations[] {
+  return mockTask1Essays.map(essay => {
+    const topic = mockTask1Topics.find(t => t.id === essay.topicId);
+    const feedback = essay.status === 'Graded' ? getTask1Feedback(essay.id) : undefined;
+    const annotations = essay.status === 'Graded' ? getTask1Annotations(essay.id) : undefined;
+    return {
+      ...essay,
+      topic: topic!,
+      feedback,
+      annotations,
+    };
+  });
+}
+
+export function getTask2EssaysWithAnnotations(): Task2EssayWithAnnotations[] {
+  return mockTask2Essays.map(essay => {
+    const topic = mockTask2Topics.find(t => t.id === essay.topicId);
+    const feedback = essay.status === 'Graded' ? getTask2Feedback(essay.id) : undefined;
+    const annotations = essay.status === 'Graded' ? getTask2Annotations(essay.id) : undefined;
+    return {
+      ...essay,
+      topic: topic!,
+      feedback,
+      annotations,
     };
   });
 }

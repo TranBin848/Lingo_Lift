@@ -148,7 +148,9 @@ function StatCard({
             : value}
         </div>
         {subtext && (
-          <div className="text-xs text-gray-400 mt-1 font-medium">{subtext}</div>
+          <div className="text-xs text-gray-400 mt-1 font-medium">
+            {subtext}
+          </div>
         )}
       </div>
     </motion.div>
@@ -339,14 +341,18 @@ export default function PlacementTestHistoryPage() {
                   </h1>
                   <motion.div
                     animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 2 }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      repeatDelay: 2,
+                    }}
                   >
                     <Sparkles className="w-6 h-6 text-amber-400" />
                   </motion.div>
                 </div>
                 <p className="text-gray-600 text-lg max-w-xl">
-                  Theo dõi tiến trình học tập và xem lại kết quả các bài kiểm tra
-                  của bạn
+                  Theo dõi tiến trình học tập và xem lại kết quả các bài kiểm
+                  tra của bạn
                 </p>
               </div>
             </div>
@@ -453,7 +459,9 @@ export default function PlacementTestHistoryPage() {
                     <AlertCircle className="w-6 h-6 text-red-600" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-red-900">Có lỗi xảy ra</h3>
+                    <h3 className="font-semibold text-red-900">
+                      Có lỗi xảy ra
+                    </h3>
                     <p className="text-red-700">{error}</p>
                   </div>
                 </div>

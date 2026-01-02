@@ -1,83 +1,108 @@
-import { useState, useCallback } from 'react';
-import { motion } from 'framer-motion';
-import { 
-  ArrowLeft, 
-  Settings,
-  HelpCircle
-} from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '../components/ui/button';
+import { useCallback } from "react";
+import { motion } from "framer-motion";
+import { ArrowLeft, Settings, HelpCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "../components/ui/button";
 import {
   LearningPathHero,
   PhaseTimeline,
   TodayFocusPanel,
   ProgressSummary,
-  PathAdjustmentHistory
-} from '../components/learning-path-v2';
+  PathAdjustmentHistory,
+} from "../components/learning-path-v2";
 import {
   mockLearningPath,
   mockPhases,
   mockAdjustments,
   mockProgressRecords,
   mockTodayTasks,
-  getCurrentPhase
-} from '../mocks/learningPathMock';
-import type { PhaseTask1Topic, PhaseTask2Topic, TodayTask } from '../types/learningPathTypes';
+  getCurrentPhase,
+} from "../mocks/learningPathMock";
+import type { TodayTask } from "../types/learningPathTypes";
+import { ROUTES } from "../constants";
 
 export default function LearningPathPageV2() {
   const navigate = useNavigate();
-  const [showAdjustments, setShowAdjustments] = useState(false);
-  
+
   const currentPhase = getCurrentPhase(mockPhases);
 
   // Handler for continuing learning
   const handleContinue = useCallback(() => {
     // Navigate to the current active topic or lesson
     if (currentPhase) {
-      const activeTask1 = currentPhase.task1Topics.find(t => t.status === 'in-progress');
-      const activeTask2 = currentPhase.task2Topics.find(t => t.status === 'in-progress');
-      
+      const activeTask1 = currentPhase.task1Topics.find(
+        (t) => t.status === "in-progress"
+      );
+      const activeTask2 = currentPhase.task2Topics.find(
+        (t) => t.status === "in-progress"
+      );
+
       if (activeTask1) {
-        navigate(`/writing/task1/${activeTask1.topicId}`);
+        navigate(
+          `${ROUTES.WRITING_PRACTICE}?task=task1&topicId=${activeTask1.topicId}`
+        );
       } else if (activeTask2) {
-        navigate(`/writing/task2/${activeTask2.topicId}`);
+        navigate(
+          `${ROUTES.WRITING_PRACTICE}?task=task2&topicId=${activeTask2.topicId}`
+        );
       } else {
         // Default to practice page
-        navigate('/skills/writing');
+        navigate(ROUTES.WRITING_PRACTICE);
       }
     }
   }, [currentPhase, navigate]);
 
   // Handler for starting a specific topic
-  const handleStartTopic = useCallback((topic: PhaseTask1Topic | PhaseTask2Topic) => {
-    const taskType = 'chartType' in topic ? 'task1' : 'task2';
-    navigate(`/writing/${taskType}/${topic.topicId}`);
-  }, [navigate]);
+  const handleStartTopic = useCallback(
+    (topicId: string, type: "task1" | "task2") => {
+      // Navigate to writing practice page with topic selected
+      navigate(`${ROUTES.WRITING_PRACTICE}?task=${type}&topicId=${topicId}`);
+    },
+    [navigate]
+  );
 
   // Handler for starting a today task
-  const handleStartTask = useCallback((task: TodayTask) => {
-    switch (task.taskType) {
-      case 'essay':
-        navigate(`/writing/${task.relatedTopicId}`);
-        break;
-      case 'lesson':
-        navigate(`/lessons/${task.relatedTopicId}`);
-        break;
-      case 'practice':
-        navigate(`/practice/${task.relatedTopicId}`);
-        break;
-      default:
-        navigate('/skills/writing');
-    }
-  }, [navigate]);
+  const handleStartTask = useCallback(
+    (task: TodayTask) => {
+      switch (task.type) {
+        case "essay":
+          if (task.relatedTopicId) {
+            navigate(
+              `${ROUTES.WRITING_PRACTICE}?topicId=${task.relatedTopicId}`
+            );
+          } else {
+            navigate(ROUTES.WRITING_PRACTICE);
+          }
+          break;
+        case "lesson":
+          if (task.relatedTopicId) {
+            navigate(`/lessons/${task.relatedTopicId}`);
+          } else {
+            navigate("/lessons");
+          }
+          break;
+        case "practice":
+          if (task.relatedTopicId) {
+            navigate(
+              `${ROUTES.WRITING_PRACTICE}?topicId=${task.relatedTopicId}`
+            );
+          } else {
+            navigate(ROUTES.WRITING_PRACTICE);
+          }
+          break;
+        default:
+          navigate(ROUTES.WRITING_PRACTICE);
+      }
+    },
+    [navigate]
+  );
 
   // Handler for viewing adjustments
   const handleViewAdjustments = useCallback(() => {
-    setShowAdjustments(true);
     // Scroll to adjustments section
-    document.getElementById('adjustments-section')?.scrollIntoView({ 
-      behavior: 'smooth',
-      block: 'start'
+    document.getElementById("adjustments-section")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
     });
   }, []);
 
@@ -172,7 +197,7 @@ export default function LearningPathPageV2() {
             <div className="sticky top-24">
               <TodayFocusPanel
                 tasks={mockTodayTasks}
-                currentPhaseName={currentPhase?.phaseName || 'Giai đoạn hiện tại'}
+                currentPhaseName={currentPhase?.title || "Giai đoạn hiện tại"}
                 onStartTask={handleStartTask}
               />
 
@@ -190,9 +215,10 @@ export default function LearningPathPageV2() {
                   </h3>
                 </div>
                 <p className="text-sm text-amber-700 dark:text-amber-300 leading-relaxed">
-                  Để đạt hiệu quả tốt nhất, hãy hoàn thành ít nhất 1 bài viết mỗi ngày 
-                  và dành 15-20 phút ôn lại feedback từ AI. Điều này giúp bạn 
-                  cải thiện nhanh hơn 40% so với việc chỉ viết mà không review.
+                  Để đạt hiệu quả tốt nhất, hãy hoàn thành ít nhất 1 bài viết
+                  mỗi ngày và dành 15-20 phút ôn lại feedback từ AI. Điều này
+                  giúp bạn cải thiện nhanh hơn 40% so với việc chỉ viết mà không
+                  review.
                 </p>
               </motion.div>
 

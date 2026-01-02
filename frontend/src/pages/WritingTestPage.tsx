@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Trophy, Loader2, Star } from "lucide-react";
 import { toast } from "sonner";
@@ -6,24 +6,12 @@ import Task1Section from "../components/placement/Task1Section";
 import Task2Section from "../components/placement/Task2Section";
 import { startPlacementTest, submitTask1, submitTask2 } from "../api/placementTest";
 import type { StartTestResponse, Task1Result, Task2Result } from "../api/placementTest";
+import { getRandomTask1Topic } from "../services/task1Topic.service";
+import { getRandomTask2Topic } from "../services/task2Topic.service";
+import type { Task1Topic } from "../types/task1-topic";
+import type { Task2Topic } from "../types/task2-topic";
 
 type TestStage = 'start' | 'task1' | 'task2' | 'results';
-
-// Mock questions - sẽ lấy từ API trong tương lai
-const MOCK_TASK1_QUESTION = {
-  taskType: "Academic",
-  prompt: "The chart below shows the number of visitors to a local museum over a 6-month period. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.",
-  imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop",
-  minWords: 150,
-  timeLimit: 1200, // 20 minutes
-};
-
-const MOCK_TASK2_QUESTION = {
-  prompt: "Some people think that strict punishments for traffic offences are the key to reducing traffic accidents. Others, however, believe that other measures would be more effective in improving road safety. Discuss both these views and give your own opinion.",
-  questionType: "DiscussionEssay" as const,
-  minWords: 250,
-  timeLimit: 2400, // 40 minutes
-};
 
 export default function WritingTestPage() {
   const navigate = useNavigate();
@@ -33,6 +21,47 @@ export default function WritingTestPage() {
   const [testSession, setTestSession] = useState<StartTestResponse | null>(null);
   const [task1Result, setTask1Result] = useState<Task1Result | null>(null);
   const [task2Result, setTask2Result] = useState<Task2Result | null>(null);
+  
+  // Random topics from API
+  const [task1Topic, setTask1Topic] = useState<Task1Topic | null>(null);
+  const [task2Topic, setTask2Topic] = useState<Task2Topic | null>(null);
+  const [topicsLoading, setTopicsLoading] = useState(false);
+
+  // Fetch random topics when test starts
+  useEffect(() => {
+    if (stage === 'task1' && !task1Topic) {
+      fetchTask1Topic();
+    }
+    if (stage === 'task2' && !task2Topic) {
+      fetchTask2Topic();
+    }
+  }, [stage]);
+
+  const fetchTask1Topic = async () => {
+    try {
+      setTopicsLoading(true);
+      const topic = await getRandomTask1Topic();
+      setTask1Topic(topic);
+    } catch (error) {
+      console.error('Error fetching Task 1 topic:', error);
+      toast.error('Không thể tải đề Task 1. Vui lòng thử lại.');
+    } finally {
+      setTopicsLoading(false);
+    }
+  };
+
+  const fetchTask2Topic = async () => {
+    try {
+      setTopicsLoading(true);
+      const topic = await getRandomTask2Topic();
+      setTask2Topic(topic);
+    } catch (error) {
+      console.error('Error fetching Task 2 topic:', error);
+      toast.error('Không thể tải đề Task 2. Vui lòng thử lại.');
+    } finally {
+      setTopicsLoading(false);
+    }
+  };
 
   const handleStartTest = async () => {
     try {
@@ -50,14 +79,14 @@ export default function WritingTestPage() {
   };
 
   const handleTask1Complete = async (essayText: string, timeTaken: number) => {
-    if (!testSession) return;
+    if (!testSession || !task1Topic) return;
 
     try {
       setLoading(true);
       const result = await submitTask1(testSession.id, {
-        taskType: MOCK_TASK1_QUESTION.taskType,
-        prompt: MOCK_TASK1_QUESTION.prompt,
-        imageUrl: MOCK_TASK1_QUESTION.imageUrl,
+        taskType: task1Topic.task_type || 'Academic',
+        prompt: task1Topic.description || '',
+        imageUrl: task1Topic.image_url || '',
         essayText,
         timeTaken,
       });
@@ -75,13 +104,13 @@ export default function WritingTestPage() {
   };
 
   const handleTask2Complete = async (essayText: string, timeTaken: number) => {
-    if (!testSession) return;
+    if (!testSession || !task2Topic) return;
 
     try {
       setLoading(true);
       const result = await submitTask2(testSession.id, {
-        prompt: MOCK_TASK2_QUESTION.prompt,
-        questionType: MOCK_TASK2_QUESTION.questionType,
+        prompt: task2Topic.question || '',
+        questionType: task2Topic.question_type || 'Opinion',
         essayText,
         timeTaken,
       });
@@ -177,11 +206,30 @@ export default function WritingTestPage() {
 
   // Task 1
   if (stage === 'task1') {
+    if (topicsLoading || !task1Topic) {
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="bg-white rounded-xl shadow-lg p-8 text-center">
+              <Loader2 className="w-12 h-12 animate-spin text-blue-600 mx-auto mb-4" />
+              <p className="text-gray-600">Đang tải đề bài Task 1...</p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8">
         <div className="max-w-7xl mx-auto px-4">
           <Task1Section
-            question={MOCK_TASK1_QUESTION}
+            question={{
+              taskType: task1Topic.task_type || 'Academic',
+              prompt: task1Topic.description || '',
+              imageUrl: task1Topic.image_url || '',
+              minWords: 150,
+              timeLimit: 1200, // 20 minutes
+            }}
             onComplete={handleTask1Complete}
           />
         </div>
@@ -191,11 +239,29 @@ export default function WritingTestPage() {
 
   // Task 2
   if (stage === 'task2') {
+    if (topicsLoading || !task2Topic) {
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 py-8">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="bg-white rounded-xl shadow-lg p-8 text-center">
+              <Loader2 className="w-12 h-12 animate-spin text-purple-600 mx-auto mb-4" />
+              <p className="text-gray-600">Đang tải đề bài Task 2...</p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 py-8">
         <div className="max-w-7xl mx-auto px-4">
           <Task2Section
-            question={MOCK_TASK2_QUESTION}
+            question={{
+              prompt: task2Topic.question || '',
+              questionType: 'DiscussionEssay' as const,
+              minWords: 250,
+              timeLimit: 2400, // 40 minutes
+            }}
             onComplete={handleTask2Complete}
           />
         </div>

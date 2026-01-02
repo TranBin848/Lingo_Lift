@@ -35,7 +35,7 @@ const sidebarItems: SidebarItem[] = [
     label: "Khóa học của bạn",
     icon: BookOpen,
     type: "link",
-    to: "/learning-path-v2",
+    to: "/mycourse",
   },
   {
     id: "practice",

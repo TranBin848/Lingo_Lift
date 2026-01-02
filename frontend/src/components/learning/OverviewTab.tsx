@@ -66,26 +66,26 @@ function useAnimatedCounter(end: number, duration: number = 1500) {
 
   useEffect(() => {
     if (!hasStarted) return;
-    
+
     const startTime = Date.now();
     const startValue = countRef.current;
-    
+
     const animate = () => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      
+
       // Easing function for smooth animation
       const easeOutQuart = 1 - Math.pow(1 - progress, 4);
       const currentValue = startValue + (end - startValue) * easeOutQuart;
-      
+
       countRef.current = currentValue;
       setCount(Math.round(currentValue * 10) / 10);
-      
+
       if (progress < 1) {
         requestAnimationFrame(animate);
       }
     };
-    
+
     requestAnimationFrame(animate);
   }, [end, duration, hasStarted]);
 
@@ -93,7 +93,15 @@ function useAnimatedCounter(end: number, duration: number = 1500) {
 }
 
 // Progress Ring Component
-function ProgressRing({ progress, size = 120, strokeWidth = 8 }: { progress: number; size?: number; strokeWidth?: number }) {
+function ProgressRing({
+  progress,
+  size = 120,
+  strokeWidth = 8,
+}: {
+  progress: number;
+  size?: number;
+  strokeWidth?: number;
+}) {
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
   const offset = circumference - (progress / 100) * circumference;
@@ -126,7 +134,9 @@ function ProgressRing({ progress, size = 120, strokeWidth = 8 }: { progress: num
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-2xl font-bold text-gray-900 dark:text-white">{progress}%</span>
+        <span className="text-2xl font-bold text-gray-900 dark:text-white">
+          {progress}%
+        </span>
       </div>
     </div>
   );
@@ -149,10 +159,12 @@ function StatCard({ icon, label, value, subtext, color }: StatCardProps) {
     >
       <Card className="relative p-6 overflow-hidden bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 group">
         {/* Gradient glow on hover */}
-        <div className={`absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300 ${color}`} />
-        
+        <div
+          className={`absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300 ${color}`}
+        />
+
         <div className="relative flex items-start gap-4">
-          <motion.div 
+          <motion.div
             className={`p-3 rounded-xl ${color} shadow-lg`}
             whileHover={{ rotate: [0, -10, 10, 0] }}
             transition={{ duration: 0.5 }}
@@ -185,14 +197,17 @@ function OverviewSkeleton() {
     <div className="space-y-6 animate-pulse">
       {/* Hero skeleton */}
       <div className="h-48 bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 rounded-2xl" />
-      
+
       {/* Stats grid skeleton */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="h-32 bg-gray-200 dark:bg-gray-700 rounded-xl" />
+          <div
+            key={i}
+            className="h-32 bg-gray-200 dark:bg-gray-700 rounded-xl"
+          />
         ))}
       </div>
-      
+
       {/* Cards skeleton */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded-xl" />
@@ -207,9 +222,15 @@ export function OverviewTab() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuthStore();
-  
-  const bandScore = useAnimatedCounter(learningPath?.currentBandScore || 0, 1500);
-  const targetScore = useAnimatedCounter(learningPath?.targetBandScore || 0, 1500);
+
+  const bandScore = useAnimatedCounter(
+    learningPath?.currentBandScore || 0,
+    1500
+  );
+  const targetScore = useAnimatedCounter(
+    learningPath?.targetBandScore || 0,
+    1500
+  );
 
   useEffect(() => {
     fetchLearningPath();
@@ -287,7 +308,8 @@ export function OverviewTab() {
       title: "Hoàn thành bài học: Linking Devices",
       time: "2 giờ trước",
       icon: BookOpen,
-      color: "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400",
+      color:
+        "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400",
     },
     {
       id: 2,
@@ -301,7 +323,8 @@ export function OverviewTab() {
       title: "Đạt chuỗi học 7 ngày!",
       time: "Hôm nay",
       icon: Award,
-      color: "bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400",
+      color:
+        "bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400",
     },
   ];
 
@@ -317,7 +340,7 @@ export function OverviewTab() {
         transition={{ duration: 0.3 }}
       >
         <Card className="p-12 text-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-xl">
-          <motion.div 
+          <motion.div
             className="w-20 h-20 mx-auto mb-6 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center"
             animate={{ scale: [1, 1.05, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
@@ -328,9 +351,13 @@ export function OverviewTab() {
             Không thể tải dữ liệu
           </h3>
           <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
-            {error || "Bạn chưa có lộ trình học nào. Hãy tạo lộ trình học để bắt đầu hành trình chinh phục IELTS!"}
+            {error ||
+              "Bạn chưa có lộ trình học nào. Hãy tạo lộ trình học để bắt đầu hành trình chinh phục IELTS!"}
           </p>
-          <Button onClick={fetchLearningPath} className="bg-blue-600 hover:bg-blue-700">
+          <Button
+            onClick={fetchLearningPath}
+            className="bg-blue-600 hover:bg-blue-700"
+          >
             <Sparkles className="w-4 h-4 mr-2" />
             Thử lại
           </Button>
@@ -374,9 +401,11 @@ export function OverviewTab() {
               className="flex items-center gap-2 mb-4"
             >
               <Sparkles className="w-5 h-5 text-yellow-300" />
-              <span className="text-sm font-medium text-blue-100">Chào buổi sáng!</span>
+              <span className="text-sm font-medium text-blue-100">
+                Chào buổi sáng!
+              </span>
             </motion.div>
-            
+
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -385,14 +414,15 @@ export function OverviewTab() {
             >
               Chào {user?.displayName || "bạn"} 👋
             </motion.h1>
-            
+
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
               className="text-blue-100 text-lg max-w-lg"
             >
-              Tiếp tục hành trình chinh phục IELTS của bạn. Bạn đang làm rất tốt!
+              Tiếp tục hành trình chinh phục IELTS của bạn. Bạn đang làm rất
+              tốt!
             </motion.p>
 
             {/* Streak badge */}
@@ -403,7 +433,9 @@ export function OverviewTab() {
               className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full"
             >
               <Flame className="w-5 h-5 text-orange-300" />
-              <span className="font-semibold">{stats.currentStreak} ngày liên tiếp</span>
+              <span className="font-semibold">
+                {stats.currentStreak} ngày liên tiếp
+              </span>
               <span className="text-blue-200">🔥</span>
             </motion.div>
           </div>
@@ -424,7 +456,9 @@ export function OverviewTab() {
                   className="flex items-center text-green-300"
                 >
                   <ArrowRight className="w-4 h-4" />
-                  <span className="text-2xl font-bold ml-1">{targetScore.count}</span>
+                  <span className="text-2xl font-bold ml-1">
+                    {targetScore.count}
+                  </span>
                 </motion.div>
               </div>
               <p className="text-xs text-blue-200 mt-2">Mục tiêu của bạn</p>
@@ -434,7 +468,10 @@ export function OverviewTab() {
       </motion.div>
 
       {/* Quick Stats Grid */}
-      <motion.div variants={containerVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <motion.div
+        variants={containerVariants}
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+      >
         <StatCard
           icon={<Clock className="w-6 h-6 text-white" />}
           label="Giờ học"
@@ -446,14 +483,18 @@ export function OverviewTab() {
           icon={<BookOpen className="w-6 h-6 text-white" />}
           label="Bài học"
           value={`${stats.completedLessons}/${stats.totalLessons}`}
-          subtext={`${Math.round((stats.completedLessons / stats.totalLessons) * 100)}% hoàn thành`}
+          subtext={`${Math.round(
+            (stats.completedLessons / stats.totalLessons) * 100
+          )}% hoàn thành`}
           color="bg-gradient-to-br from-blue-500 to-blue-600"
         />
         <StatCard
           icon={<FileText className="w-6 h-6 text-white" />}
           label="Bài test"
           value={`${stats.completedTests}/${stats.totalTests}`}
-          subtext={`${Math.round((stats.completedTests / stats.totalTests) * 100)}% hoàn thành`}
+          subtext={`${Math.round(
+            (stats.completedTests / stats.totalTests) * 100
+          )}% hoàn thành`}
           color="bg-gradient-to-br from-green-500 to-green-600"
         />
         <StatCard
@@ -497,14 +538,28 @@ export function OverviewTab() {
                     whileHover={{ x: 4 }}
                     className="group flex items-start gap-4 p-4 rounded-xl bg-gray-50 dark:bg-gray-700/50 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors cursor-pointer"
                   >
-                    <div className={`p-2 rounded-lg ${
-                      activity.priority === 'high' 
-                        ? 'bg-red-100 dark:bg-red-900/30' 
-                        : 'bg-blue-100 dark:bg-blue-900/30'
-                    }`}>
-                      {activity.type === 'lesson' && <BookOpen className={`w-5 h-5 ${activity.priority === 'high' ? 'text-red-600' : 'text-blue-600'}`} />}
-                      {activity.type === 'vocabulary' && <FileText className="w-5 h-5 text-blue-600" />}
-                      {activity.type === 'test' && <Target className="w-5 h-5 text-blue-600" />}
+                    <div
+                      className={`p-2 rounded-lg ${
+                        activity.priority === "high"
+                          ? "bg-red-100 dark:bg-red-900/30"
+                          : "bg-blue-100 dark:bg-blue-900/30"
+                      }`}
+                    >
+                      {activity.type === "lesson" && (
+                        <BookOpen
+                          className={`w-5 h-5 ${
+                            activity.priority === "high"
+                              ? "text-red-600"
+                              : "text-blue-600"
+                          }`}
+                        />
+                      )}
+                      {activity.type === "vocabulary" && (
+                        <FileText className="w-5 h-5 text-blue-600" />
+                      )}
+                      {activity.type === "test" && (
+                        <Target className="w-5 h-5 text-blue-600" />
+                      )}
                     </div>
                     <div className="flex-1">
                       <h4 className="font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
@@ -515,8 +570,10 @@ export function OverviewTab() {
                       </p>
                       <div className="flex items-center gap-2 mt-2">
                         <Clock className="w-4 h-4 text-gray-400" />
-                        <span className="text-xs text-gray-500">{activity.duration}</span>
-                        {activity.priority === 'high' && (
+                        <span className="text-xs text-gray-500">
+                          {activity.duration}
+                        </span>
+                        {activity.priority === "high" && (
                           <span className="px-2 py-0.5 text-xs font-medium bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full">
                             Ưu tiên
                           </span>
@@ -555,31 +612,40 @@ export function OverviewTab() {
                   Tiến độ lộ trình
                 </h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {learningPath?.completedPhases}/{learningPath?.totalPhases} chặng hoàn thành
+                  {learningPath?.completedPhases}/{learningPath?.totalPhases}{" "}
+                  chặng hoàn thành
                 </p>
               </div>
             </div>
 
             <div className="flex items-center justify-center">
-              <ProgressRing progress={learningPath?.progressPercentage || 0} size={140} strokeWidth={12} />
+              <ProgressRing
+                progress={learningPath?.progressPercentage || 0}
+                size={140}
+                strokeWidth={12}
+              />
             </div>
 
             <div className="grid grid-cols-3 gap-4 mt-6">
               <div className="text-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
                 <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                  {learningPath?.currentBandScore || 'N/A'}
+                  {learningPath?.currentBandScore || "N/A"}
                 </p>
                 <p className="text-xs text-gray-500">Hiện tại</p>
               </div>
               <div className="text-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
                 <p className="text-2xl font-bold text-green-600 dark:text-green-400">
-                  {learningPath?.targetBandScore || 'N/A'}
+                  {learningPath?.targetBandScore || "N/A"}
                 </p>
                 <p className="text-xs text-gray-500">Mục tiêu</p>
               </div>
               <div className="text-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
                 <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-                  +{((learningPath?.targetBandScore || 0) - (learningPath?.currentBandScore || 0)).toFixed(1)}
+                  +
+                  {(
+                    (learningPath?.targetBandScore || 0) -
+                    (learningPath?.currentBandScore || 0)
+                  ).toFixed(1)}
                 </p>
                 <p className="text-xs text-gray-500">Cần tăng</p>
               </div>
@@ -606,7 +672,9 @@ export function OverviewTab() {
                   transition={{ delay: 0.5 + index * 0.1 }}
                   className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
                 >
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${activity.color}`}>
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center ${activity.color}`}
+                  >
                     <activity.icon className="w-5 h-5" />
                   </div>
                   <div className="flex-1">
