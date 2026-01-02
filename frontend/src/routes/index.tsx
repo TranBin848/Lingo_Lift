@@ -10,6 +10,7 @@ const Listening = lazy(() => import("../pages/skills/Listening"));
 const Speaking = lazy(() => import("../pages/skills/Speaking"));
 const Reading = lazy(() => import("../pages/skills/Reading"));
 const Writing = lazy(() => import("../pages/skills/Writing"));
+const WritingPracticePage = lazy(() => import("../pages/WritingPracticePage"));
 
 export const routes: RouteObject[] = [
   {
@@ -35,6 +36,10 @@ export const routes: RouteObject[] = [
   {
     path: ROUTES.WRITING,
     element: <Writing />,
+  },
+  {
+    path: ROUTES.WRITING_PRACTICE,
+    element: <WritingPracticePage />,
   },
   {
     path: ROUTES.PLACEMENT_TEST,

@@ -13,6 +13,7 @@ export const ROUTES = {
   SPEAKING: '/speaking',
   READING: '/reading',
   WRITING: '/writing',
+  WRITING_PRACTICE: '/writing/practice',
   LOGIN: '/login',
   REGISTER: '/register',
   PROFILE: '/profile',

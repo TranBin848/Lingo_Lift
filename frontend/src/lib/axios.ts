@@ -1,8 +1,11 @@
 import axios from "axios";
 import { useAuthStore } from "../stores/useAuth.Store";
+import { API_BASE_URL } from "../constants";
+
 const api = axios.create({
-    baseURL: import.meta.env.MODE === 'development' ? 'http://localhost:5001/api' : './api',
+    baseURL: API_BASE_URL,
     withCredentials: true,
+    timeout: 60000, // 60 seconds timeout for AI grading (default was 10s)
 });
 
 // Attach access token to outgoing requests. Use a request interceptor (not response).

@@ -28,13 +28,13 @@ export const mockPhases: Phase[] = [
     expectedBandScore: 5.5,
     status: 'Completed',
     task1Topics: [
-      { id: 't1-1', phaseId: 'phase-1', orderIndex: 1, topicName: 'Mô tả xu hướng cơ bản', topicType: 'LineGraph', isRecommended: false, isCompleted: true },
-      { id: 't1-2', phaseId: 'phase-1', orderIndex: 2, topicName: 'So sánh dữ liệu đơn giản', topicType: 'BarChart', isRecommended: false, isCompleted: true },
-      { id: 't1-3', phaseId: 'phase-1', orderIndex: 3, topicName: 'Mô tả tỷ lệ phần trăm', topicType: 'PieChart', isRecommended: false, isCompleted: true },
+      { id: 't1-1', phaseId: 'phase-1', topicId: 'task1-topic-002', orderIndex: 1, topicName: 'Mô tả xu hướng cơ bản', topicType: 'LineGraph', isRecommended: false, isCompleted: true, status: 'completed' },
+      { id: 't1-2', phaseId: 'phase-1', topicId: 'task1-topic-001', orderIndex: 2, topicName: 'So sánh dữ liệu đơn giản', topicType: 'BarChart', isRecommended: false, isCompleted: true, status: 'completed' },
+      { id: 't1-3', phaseId: 'phase-1', topicId: 'task1-topic-003', orderIndex: 3, topicName: 'Mô tả tỷ lệ phần trăm', topicType: 'PieChart', isRecommended: false, isCompleted: true, status: 'completed' },
     ],
     task2Topics: [
-      { id: 't2-1', phaseId: 'phase-1', orderIndex: 1, topicName: 'Cấu trúc bài Opinion Essay', questionType: 'Opinion', isRecommended: false, isCompleted: true },
-      { id: 't2-2', phaseId: 'phase-1', orderIndex: 2, topicName: 'Viết mở bài hiệu quả', questionType: 'Discussion', isRecommended: false, isCompleted: true },
+      { id: 't2-1', phaseId: 'phase-1', topicId: 'task2-topic-001', orderIndex: 1, topicName: 'Cấu trúc bài Opinion Essay', questionType: 'Opinion', isRecommended: false, isCompleted: true, status: 'completed' },
+      { id: 't2-2', phaseId: 'phase-1', topicId: 'task2-topic-003', orderIndex: 2, topicName: 'Viết mở bài hiệu quả', questionType: 'Discussion', isRecommended: false, isCompleted: true, status: 'completed' },
     ]
   },
   {
@@ -50,14 +50,14 @@ export const mockPhases: Phase[] = [
     expectedBandScore: 6.0,
     status: 'InProgress',
     task1Topics: [
-      { id: 't1-4', phaseId: 'phase-2', orderIndex: 1, topicName: 'Phân tích biểu đồ phức hợp', topicType: 'Mixed', isRecommended: true, isCompleted: false },
-      { id: 't1-5', phaseId: 'phase-2', orderIndex: 2, topicName: 'Mô tả quy trình', topicType: 'Process', isRecommended: true, isCompleted: false },
-      { id: 't1-6', phaseId: 'phase-2', orderIndex: 3, topicName: 'So sánh bản đồ', topicType: 'Map', isRecommended: false, isCompleted: false },
+      { id: 't1-4', phaseId: 'phase-2', topicId: 'task1-topic-009', orderIndex: 1, topicName: 'Phân tích biểu đồ phức hợp', topicType: 'Mixed', isRecommended: true, isCompleted: false, status: 'in-progress' },
+      { id: 't1-5', phaseId: 'phase-2', topicId: 'task1-topic-006', orderIndex: 2, topicName: 'Mô tả quy trình', topicType: 'Process', isRecommended: true, isCompleted: false, status: 'not-started' },
+      { id: 't1-6', phaseId: 'phase-2', topicId: 'task1-topic-005', orderIndex: 3, topicName: 'So sánh bản đồ', topicType: 'Map', isRecommended: false, isCompleted: false, status: 'not-started' },
     ],
     task2Topics: [
-      { id: 't2-3', phaseId: 'phase-2', orderIndex: 1, topicName: 'Sử dụng từ nối nâng cao', questionType: 'Discussion', isRecommended: true, isCompleted: false },
-      { id: 't2-4', phaseId: 'phase-2', orderIndex: 2, topicName: 'Phát triển đoạn văn thân bài', questionType: 'ProblemSolution', isRecommended: true, isCompleted: false },
-      { id: 't2-5', phaseId: 'phase-2', orderIndex: 3, topicName: 'Viết kết luận ấn tượng', questionType: 'Opinion', isRecommended: false, isCompleted: false },
+      { id: 't2-3', phaseId: 'phase-2', topicId: 'task2-topic-008', orderIndex: 1, topicName: 'Sử dụng từ nối nâng cao', questionType: 'Discussion', isRecommended: true, isCompleted: false, status: 'in-progress' },
+      { id: 't2-4', phaseId: 'phase-2', topicId: 'task2-topic-004', orderIndex: 2, topicName: 'Phát triển đoạn văn thân bài', questionType: 'ProblemSolution', isRecommended: true, isCompleted: false, status: 'not-started' },
+      { id: 't2-5', phaseId: 'phase-2', topicId: 'task2-topic-002', orderIndex: 3, topicName: 'Viết kết luận ấn tượng', questionType: 'Opinion', isRecommended: false, isCompleted: false, status: 'not-started' },
     ]
   },
   {
@@ -73,13 +73,13 @@ export const mockPhases: Phase[] = [
     expectedBandScore: 6.5,
     status: 'Pending',
     task1Topics: [
-      { id: 't1-7', phaseId: 'phase-3', orderIndex: 1, topicName: 'Từ vựng mô tả số liệu', topicType: 'Table', isRecommended: false, isCompleted: false },
-      { id: 't1-8', phaseId: 'phase-3', orderIndex: 2, topicName: 'Paraphrase trong Task 1', topicType: 'LineGraph', isRecommended: false, isCompleted: false },
+      { id: 't1-7', phaseId: 'phase-3', topicId: 'task1-topic-004', orderIndex: 1, topicName: 'Từ vựng mô tả số liệu', topicType: 'Table', isRecommended: false, isCompleted: false, status: 'not-started' },
+      { id: 't1-8', phaseId: 'phase-3', topicId: 'task1-topic-010', orderIndex: 2, topicName: 'Paraphrase trong Task 1', topicType: 'LineGraph', isRecommended: false, isCompleted: false, status: 'not-started' },
     ],
     task2Topics: [
-      { id: 't2-6', phaseId: 'phase-3', orderIndex: 1, topicName: 'Từ vựng chủ đề Environment', questionType: 'ProblemSolution', isRecommended: false, isCompleted: false },
-      { id: 't2-7', phaseId: 'phase-3', orderIndex: 2, topicName: 'Từ vựng chủ đề Education', questionType: 'Discussion', isRecommended: false, isCompleted: false },
-      { id: 't2-8', phaseId: 'phase-3', orderIndex: 3, topicName: 'Từ vựng chủ đề Technology', questionType: 'AdvantagesDisadvantages', isRecommended: false, isCompleted: false },
+      { id: 't2-6', phaseId: 'phase-3', topicId: 'task2-topic-007', orderIndex: 1, topicName: 'Từ vựng chủ đề Environment', questionType: 'ProblemSolution', isRecommended: false, isCompleted: false, status: 'not-started' },
+      { id: 't2-7', phaseId: 'phase-3', topicId: 'task2-topic-011', orderIndex: 2, topicName: 'Từ vựng chủ đề Education', questionType: 'Discussion', isRecommended: false, isCompleted: false, status: 'not-started' },
+      { id: 't2-8', phaseId: 'phase-3', topicId: 'task2-topic-006', orderIndex: 3, topicName: 'Từ vựng chủ đề Technology', questionType: 'AdvantagesDisadvantages', isRecommended: false, isCompleted: false, status: 'not-started' },
     ]
   },
   {
@@ -95,13 +95,13 @@ export const mockPhases: Phase[] = [
     expectedBandScore: 7.0,
     status: 'Pending',
     task1Topics: [
-      { id: 't1-9', phaseId: 'phase-4', orderIndex: 1, topicName: 'Mock Test Task 1 - Set 1', topicType: 'Mixed', isRecommended: false, isCompleted: false },
-      { id: 't1-10', phaseId: 'phase-4', orderIndex: 2, topicName: 'Mock Test Task 1 - Set 2', topicType: 'Mixed', isRecommended: false, isCompleted: false },
+      { id: 't1-9', phaseId: 'phase-4', topicId: 'task1-topic-009', orderIndex: 1, topicName: 'Mock Test Task 1 - Set 1', topicType: 'Mixed', isRecommended: false, isCompleted: false, status: 'not-started' },
+      { id: 't1-10', phaseId: 'phase-4', topicId: 'task1-topic-010', orderIndex: 2, topicName: 'Mock Test Task 1 - Set 2', topicType: 'Mixed', isRecommended: false, isCompleted: false, status: 'not-started' },
     ],
     task2Topics: [
-      { id: 't2-9', phaseId: 'phase-4', orderIndex: 1, topicName: 'Mock Test Task 2 - Opinion', questionType: 'Opinion', isRecommended: false, isCompleted: false },
-      { id: 't2-10', phaseId: 'phase-4', orderIndex: 2, topicName: 'Mock Test Task 2 - Discussion', questionType: 'Discussion', isRecommended: false, isCompleted: false },
-      { id: 't2-11', phaseId: 'phase-4', orderIndex: 3, topicName: 'Full Mock Test', questionType: 'TwoPartQuestion', isRecommended: false, isCompleted: false },
+      { id: 't2-9', phaseId: 'phase-4', topicId: 'task2-topic-009', orderIndex: 1, topicName: 'Mock Test Task 2 - Opinion', questionType: 'Opinion', isRecommended: false, isCompleted: false, status: 'not-started' },
+      { id: 't2-10', phaseId: 'phase-4', topicId: 'task2-topic-010', orderIndex: 2, topicName: 'Mock Test Task 2 - Discussion', questionType: 'Discussion', isRecommended: false, isCompleted: false, status: 'not-started' },
+      { id: 't2-11', phaseId: 'phase-4', topicId: 'task2-topic-012', orderIndex: 3, topicName: 'Full Mock Test', questionType: 'TwoPartQuestion', isRecommended: false, isCompleted: false, status: 'not-started' },
     ]
   }
 ];
@@ -169,6 +169,7 @@ export const mockTodayTasks: TodayTask[] = [
     estimatedMinutes: 40,
     priority: 'high',
     relatedPhase: 'Phase 2',
+    relatedTopicId: 'task2-topic-008',
     actionUrl: '/essays?type=task2'
   },
   {
@@ -178,7 +179,8 @@ export const mockTodayTasks: TodayTask[] = [
     description: 'Lesson: Sử dụng linking words hiệu quả trong Task 2',
     estimatedMinutes: 20,
     priority: 'high',
-    relatedPhase: 'Phase 2'
+    relatedPhase: 'Phase 2',
+    relatedTopicId: 'lesson-linking-words'
   },
   {
     id: 'task-3',
@@ -188,6 +190,7 @@ export const mockTodayTasks: TodayTask[] = [
     estimatedMinutes: 25,
     priority: 'medium',
     relatedPhase: 'Phase 2',
+    relatedTopicId: 'task1-topic-006',
     actionUrl: '/essays?type=task1'
   },
   {
@@ -197,7 +200,8 @@ export const mockTodayTasks: TodayTask[] = [
     description: '25 từ vựng quan trọng về môi trường',
     estimatedMinutes: 15,
     priority: 'low',
-    relatedPhase: 'Phase 3'
+    relatedPhase: 'Phase 3',
+    relatedTopicId: 'lesson-env-vocab'
   }
 ];
 

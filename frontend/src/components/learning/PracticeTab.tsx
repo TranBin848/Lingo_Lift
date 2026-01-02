@@ -1,11 +1,8 @@
-import { 
-  BookOpen,
-  PenTool
-} from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
-import { LessonsPage } from '../lessons';
-import { EssaysPage } from '../essays';
+import { BookOpen, PenTool } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
+import { LessonsPage } from "../lessons";
+import { EssaysPage } from "../essays";
 
 // Animation variants
 const containerVariants = {
@@ -33,7 +30,7 @@ const cardVariants = {
 };
 
 export function PracticeTab() {
-  const [activeTab, setActiveTab] = useState<'essays' | 'lessons'>('lessons');
+  const [activeTab, setActiveTab] = useState<"essays" | "lessons">("lessons");
 
   return (
     <motion.div
@@ -48,12 +45,13 @@ export function PracticeTab() {
         className="flex items-center gap-2 p-1.5 bg-gray-100 dark:bg-gray-800 rounded-xl w-fit"
       >
         <button
-          onClick={() => setActiveTab('lessons')}
+          onClick={() => setActiveTab("lessons")}
           className={`
             flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all duration-200
-            ${activeTab === 'lessons'
-              ? 'bg-white dark:bg-gray-700 text-emerald-600 dark:text-emerald-400 shadow-md'
-              : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+            ${
+              activeTab === "lessons"
+                ? "bg-white dark:bg-gray-700 text-emerald-600 dark:text-emerald-400 shadow-md"
+                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
             }
           `}
         >
@@ -61,12 +59,13 @@ export function PracticeTab() {
           <span>Bài học</span>
         </button>
         <button
-          onClick={() => setActiveTab('essays')}
+          onClick={() => setActiveTab("essays")}
           className={`
             flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all duration-200
-            ${activeTab === 'essays'
-              ? 'bg-white dark:bg-gray-700 text-indigo-600 dark:text-indigo-400 shadow-md'
-              : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+            ${
+              activeTab === "essays"
+                ? "bg-white dark:bg-gray-700 text-indigo-600 dark:text-indigo-400 shadow-md"
+                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
             }
           `}
         >
@@ -77,7 +76,7 @@ export function PracticeTab() {
 
       {/* Tab Content */}
       <AnimatePresence mode="wait">
-        {activeTab === 'lessons' ? (
+        {activeTab === "lessons" ? (
           <motion.div
             key="lessons"
             initial={{ opacity: 0, x: -20 }}
@@ -102,4 +101,3 @@ export function PracticeTab() {
     </motion.div>
   );
 }
-

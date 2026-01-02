@@ -92,7 +92,7 @@ function CourseCard({
   onClick,
 }: CourseCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  
+
   const statusConfig = {
     Active: {
       bg: "bg-green-100 dark:bg-green-900/30",
@@ -114,7 +114,8 @@ function CourseCard({
     },
   };
 
-  const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.Active;
+  const config =
+    statusConfig[status as keyof typeof statusConfig] || statusConfig.Active;
 
   return (
     <motion.div
@@ -125,7 +126,7 @@ function CourseCard({
       <Card className="relative overflow-hidden bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 group">
         {/* Top gradient accent */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500" />
-        
+
         {/* Hover glow effect */}
         <div className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-300 bg-gradient-to-br from-blue-500 to-purple-500" />
 
@@ -133,7 +134,7 @@ function CourseCard({
           {/* Header */}
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-start gap-4 flex-1">
-              <motion.div 
+              <motion.div
                 className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25"
                 whileHover={{ rotate: [0, -5, 5, 0] }}
                 transition={{ duration: 0.5 }}
@@ -147,8 +148,12 @@ function CourseCard({
                   </h3>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className={`inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full font-medium ${config.bg} ${config.text}`}>
-                    <span className={`w-1.5 h-1.5 rounded-full ${config.dot} animate-pulse`} />
+                  <span
+                    className={`inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full font-medium ${config.bg} ${config.text}`}
+                  >
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full ${config.dot} animate-pulse`}
+                    />
                     {config.label}
                   </span>
                   {daysRemaining !== undefined && status === "Active" && (
@@ -186,12 +191,18 @@ function CourseCard({
             <div className="flex items-center gap-3 mb-4 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4 text-blue-500" />
-                <span className="text-sm text-gray-600 dark:text-gray-400">Band</span>
-                <span className="font-bold text-gray-900 dark:text-white">{currentBand}</span>
+                <span className="text-sm text-gray-600 dark:text-gray-400">
+                  Band
+                </span>
+                <span className="font-bold text-gray-900 dark:text-white">
+                  {currentBand}
+                </span>
               </div>
               <ArrowRight className="w-4 h-4 text-gray-400" />
               <div className="flex items-center gap-2">
-                <span className="font-bold text-blue-600 dark:text-blue-400">{targetBand}</span>
+                <span className="font-bold text-blue-600 dark:text-blue-400">
+                  {targetBand}
+                </span>
                 <span className="text-xs text-gray-500">(Mục tiêu)</span>
               </div>
             </div>
@@ -200,8 +211,12 @@ function CourseCard({
           {/* Progress bar */}
           <div className="space-y-2 mb-4">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-600 dark:text-gray-400">Tiến độ học tập</span>
-              <span className="font-bold text-gray-900 dark:text-white">{progress}%</span>
+              <span className="text-gray-600 dark:text-gray-400">
+                Tiến độ học tập
+              </span>
+              <span className="font-bold text-gray-900 dark:text-white">
+                {progress}%
+              </span>
             </div>
             <div className="relative w-full h-2.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
               <motion.div
@@ -222,15 +237,14 @@ function CourseCard({
             <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
               <div className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-green-500" />
-                <span>{completedPhases}/{totalPhases} chặng</span>
+                <span>
+                  {completedPhases}/{totalPhases} chặng
+                </span>
               </div>
             </div>
-            
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Button 
+
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
                 onClick={(e) => {
                   e.stopPropagation();
                   onClick();
@@ -263,23 +277,27 @@ function CourseCard({
                       <div
                         key={index}
                         className={`flex items-center gap-3 p-2 rounded-lg ${
-                          index < completedPhases 
-                            ? 'bg-green-50 dark:bg-green-900/20' 
-                            : 'bg-gray-50 dark:bg-gray-700/50'
+                          index < completedPhases
+                            ? "bg-green-50 dark:bg-green-900/20"
+                            : "bg-gray-50 dark:bg-gray-700/50"
                         }`}
                       >
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                          index < completedPhases
-                            ? 'bg-green-500 text-white'
-                            : 'bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-400'
-                        }`}>
-                          {index < completedPhases ? '✓' : index + 1}
+                        <div
+                          className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                            index < completedPhases
+                              ? "bg-green-500 text-white"
+                              : "bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-400"
+                          }`}
+                        >
+                          {index < completedPhases ? "✓" : index + 1}
                         </div>
-                        <span className={`text-sm ${
-                          index < completedPhases
-                            ? 'text-green-700 dark:text-green-400'
-                            : 'text-gray-600 dark:text-gray-400'
-                        }`}>
+                        <span
+                          className={`text-sm ${
+                            index < completedPhases
+                              ? "text-green-700 dark:text-green-400"
+                              : "text-gray-600 dark:text-gray-400"
+                          }`}
+                        >
                           Chặng {index + 1}
                         </span>
                       </div>
@@ -307,11 +325,14 @@ function CoursesSkeleton() {
         </div>
         <div className="h-10 w-40 bg-gray-200 dark:bg-gray-700 rounded-lg" />
       </div>
-      
+
       {/* Cards skeleton */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="h-64 bg-gray-200 dark:bg-gray-700 rounded-xl" />
+          <div
+            key={i}
+            className="h-64 bg-gray-200 dark:bg-gray-700 rounded-xl"
+          />
         ))}
       </div>
     </div>
@@ -422,8 +443,8 @@ export function CoursesTab() {
         {/* Back button and header */}
         <div className="flex items-center gap-4">
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => setSelectedCourse(null)}
               className="gap-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-md hover:shadow-lg"
             >
@@ -514,7 +535,8 @@ export function CoursesTab() {
                   <PhaseCard
                     phase={phase}
                     isActive={
-                      phase.phaseNumber === course.learningPath.currentPhaseNumber
+                      phase.phaseNumber ===
+                      course.learningPath.currentPhaseNumber
                     }
                   />
                 </motion.div>
@@ -538,7 +560,10 @@ export function CoursesTab() {
       className="space-y-6"
     >
       {/* Header */}
-      <motion.div variants={cardVariants} className="flex items-center justify-between">
+      <motion.div
+        variants={cardVariants}
+        className="flex items-center justify-between"
+      >
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
             <span className="p-2 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl">
@@ -555,8 +580,8 @@ export function CoursesTab() {
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button 
-                className="gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg shadow-blue-500/25" 
+              <Button
+                className="gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg shadow-blue-500/25"
                 disabled={loading}
               >
                 <Plus className="w-4 h-4" />
@@ -628,8 +653,8 @@ export function CoursesTab() {
               >
                 Hủy
               </Button>
-              <Button 
-                onClick={handleCreateLearningPath} 
+              <Button
+                onClick={handleCreateLearningPath}
                 disabled={isCreating}
                 className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
               >
@@ -654,7 +679,7 @@ export function CoursesTab() {
       {error && (
         <motion.div variants={cardVariants}>
           <Card className="p-12 text-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-xl">
-            <motion.div 
+            <motion.div
               className="w-20 h-20 mx-auto mb-6 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center"
               animate={{ scale: [1, 1.05, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
@@ -664,8 +689,10 @@ export function CoursesTab() {
             <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
               Không thể tải dữ liệu
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">{error}</p>
-            <Button 
+            <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
+              {error}
+            </p>
+            <Button
               onClick={fetchLearningPaths}
               className="bg-blue-600 hover:bg-blue-700"
             >
@@ -689,7 +716,7 @@ export function CoursesTab() {
                 Đang học ({courses.filter((c) => c.status === "Active").length})
               </h2>
             </div>
-            <motion.div 
+            <motion.div
               variants={containerVariants}
               className="grid grid-cols-1 lg:grid-cols-2 gap-6"
             >
@@ -713,10 +740,11 @@ export function CoursesTab() {
                   <CheckCircle2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 </div>
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Đã hoàn thành ({courses.filter((c) => c.status === "Completed").length})
+                  Đã hoàn thành (
+                  {courses.filter((c) => c.status === "Completed").length})
                 </h2>
               </div>
-              <motion.div 
+              <motion.div
                 variants={containerVariants}
                 className="grid grid-cols-1 lg:grid-cols-2 gap-6"
               >
@@ -748,10 +776,14 @@ export function CoursesTab() {
                   Chưa có khóa học nào
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
-                  Bắt đầu hành trình chinh phục IELTS bằng cách tạo lộ trình học được cá nhân hóa cho bạn
+                  Bắt đầu hành trình chinh phục IELTS bằng cách tạo lộ trình học
+                  được cá nhân hóa cho bạn
                 </p>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Button 
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Button
                     onClick={() => setIsDialogOpen(true)}
                     className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg shadow-blue-500/25"
                   >

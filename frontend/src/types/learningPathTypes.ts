@@ -43,21 +43,25 @@ export interface Phase {
 export interface PhaseTask1Topic {
   id: string;
   phaseId: string;
+  topicId: string; // Links to Task1Topic.id in essays
   orderIndex: number;
   topicName: string;
   topicType: 'LineGraph' | 'BarChart' | 'PieChart' | 'Table' | 'Process' | 'Map' | 'Mixed';
   isRecommended: boolean;
   isCompleted: boolean;
+  status?: 'not-started' | 'in-progress' | 'completed';
 }
 
 export interface PhaseTask2Topic {
   id: string;
   phaseId: string;
+  topicId: string; // Links to Task2Topic.id in essays
   orderIndex: number;
   topicName: string;
   questionType: 'Opinion' | 'Discussion' | 'ProblemSolution' | 'AdvantagesDisadvantages' | 'TwoPartQuestion';
   isRecommended: boolean;
   isCompleted: boolean;
+  status?: 'not-started' | 'in-progress' | 'completed';
 }
 
 export type AdjustmentReason = 
@@ -100,6 +104,7 @@ export interface TodayTask {
   estimatedMinutes: number;
   priority: 'high' | 'medium' | 'low';
   relatedPhase?: string;
+  relatedTopicId?: string; // Links to Task1Topic.id or Task2Topic.id
   actionUrl?: string;
 }
 

@@ -19,11 +19,11 @@ export interface StartTestResponse {
 }
 
 export interface Task1SubmitRequest {
-  taskType: string;
-  prompt: string;
-  imageUrl: string;
-  essayText: string;
-  timeTaken: number;
+  TaskType: string;
+  Prompt: string;
+  ImageUrl: string;
+  EssayText: string;
+  TimeTaken: number;
 }
 
 export interface Task1Result {
@@ -46,10 +46,10 @@ export interface Task1Result {
 }
 
 export interface Task2SubmitRequest {
-  prompt: string;
-  questionType: string;
-  essayText: string;
-  timeTaken: number;
+  Prompt: string;
+  QuestionType: string;
+  EssayText: string;
+  TimeTaken: number;
 }
 
 export interface Task2Result {
@@ -81,16 +81,26 @@ export const startPlacementTest = async (data: StartTestRequest): Promise<StartT
 
 /**
  * Nộp Task 1 (Academic Writing - mô tả biểu đồ/bảng/đồ thị)
+ * AI grading may take up to 2 minutes
  */
 export const submitTask1 = async (testId: number, data: Task1SubmitRequest): Promise<Task1Result> => {
-  return apiClient.post<unknown, Task1Result>(`/placement-tests/${testId}/task1/submit`, data);
+  return apiClient.post<unknown, Task1Result>(
+    `/placement-tests/${testId}/task1/submit`, 
+    data,
+    { timeout: 120000 } // 2 minutes timeout for AI grading
+  );
 };
 
 /**
  * Nộp Task 2 (Essay - thảo luận quan điểm)
+ * AI grading may take up to 2 minutes
  */
 export const submitTask2 = async (testId: number, data: Task2SubmitRequest): Promise<Task2Result> => {
-  return apiClient.post<unknown, Task2Result>(`/placement-tests/${testId}/task2/submit`, data);
+  return apiClient.post<unknown, Task2Result>(
+    `/placement-tests/${testId}/task2/submit`, 
+    data,
+    { timeout: 120000 } // 2 minutes timeout for AI grading
+  );
 };
 
 /**

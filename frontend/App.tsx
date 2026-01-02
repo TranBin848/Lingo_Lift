@@ -22,6 +22,7 @@ import PlacementTestHistoryPage from "./src/pages/PlacementTestHistoryPage";
 import LearningPathPage from "./src/pages/LearningPathPage";
 import LearningPathPageV2 from "./src/pages/LearningPathPageV2";
 import { PlacementTestPage } from "./src/components/placement-test";
+import WritingPracticePage from "./src/pages/WritingPracticePage";
 import { AuthProvider } from "./src/context/AuthContext";
 import FloatingChatButton from "./src/components/chat/FloatingChatButton";
 import { Toaster } from "sonner";
@@ -372,6 +373,20 @@ export default function App() {
                 </div>
               }
             />
+            <Route
+              path="/writing/practice"
+              element={
+                <Suspense
+                  fallback={
+                    <div className="flex items-center justify-center min-h-screen">
+                      Đang tải...
+                    </div>
+                  }
+                >
+                  <WritingPracticePage />
+                </Suspense>
+              }
+            />
           </Route>
         </Routes>
       </BrowserRouter>
@@ -383,7 +398,7 @@ function AuthBootstrap() {
   // Kiểm tra token và chỉ refresh nếu cần thiết
   useEffect(() => {
     const { accessToken, user } = useAuthStore.getState();
-    
+
     // Nếu đã có token trong localStorage, không cần refresh ngay
     // Chỉ refresh khi token sắp hết hạn (xử lý bởi interceptor)
     if (accessToken && !user) {

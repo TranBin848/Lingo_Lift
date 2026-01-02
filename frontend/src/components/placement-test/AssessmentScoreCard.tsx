@@ -82,15 +82,15 @@ export function AssessmentScoreCard({ assessment, taskNumber, delay = 0 }: Asses
     >
       <Card className="overflow-hidden bg-white dark:bg-gray-800 border-0 shadow-xl">
         {/* Header */}
-        <div className={`p-5 bg-gradient-to-r ${taskNumber === 1 ? 'from-blue-500 to-indigo-600' : 'from-purple-500 to-pink-600'}`}>
+        <div className={`p-6 bg-gradient-to-r ${taskNumber === 1 ? 'from-blue-500 to-indigo-600' : 'from-purple-500 to-pink-600'}`}>
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                <span className="text-white font-bold">{taskNumber}</span>
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
+                <span className="text-white font-bold text-lg">{taskNumber}</span>
               </div>
               <div>
-                <h3 className="font-bold text-white text-lg">Task {taskNumber}</h3>
-                <p className="text-white/80 text-sm">
+                <h3 className="font-bold text-white text-lg mb-1">Task {taskNumber}</h3>
+                <p className="text-white/90 text-sm">
                   {taskNumber === 1 
                     ? `${(assessment as Task1Assessment).taskType} Writing`
                     : getQuestionTypeLabel((assessment as Task2Assessment).questionType)
@@ -100,11 +100,11 @@ export function AssessmentScoreCard({ assessment, taskNumber, delay = 0 }: Asses
             </div>
             
             {/* Score */}
-            <div className="text-right">
-              <div className="text-4xl font-bold text-white">
+            <div className="text-right flex-shrink-0">
+              <div className="text-4xl font-bold text-white leading-none mb-1">
                 {animatedScore.toFixed(1)}
               </div>
-              <div className="text-white/80 text-xs">Band Score</div>
+              <div className="text-white/90 text-xs font-medium">Band Score</div>
             </div>
           </div>
         </div>
@@ -141,20 +141,19 @@ export function AssessmentScoreCard({ assessment, taskNumber, delay = 0 }: Asses
         </div>
 
         {/* Stats */}
-        <div className="px-5 py-3 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-100 dark:border-gray-700">
-          <div className="flex items-center justify-around text-center">
-            <div>
-              <div className="text-lg font-semibold text-gray-900 dark:text-white">
+        <div className="px-6 py-4 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-100 dark:border-gray-700">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="text-center">
+              <div className="text-xl font-bold text-gray-900 dark:text-white mb-1">
                 {assessment.wordCount}
               </div>
-              <div className="text-xs text-gray-500">Số từ</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">Số từ</div>
             </div>
-            <div className="w-px h-8 bg-gray-200 dark:bg-gray-700" />
-            <div>
-              <div className="text-lg font-semibold text-gray-900 dark:text-white">
+            <div className="text-center border-l border-gray-200 dark:border-gray-700">
+              <div className="text-xl font-bold text-gray-900 dark:text-white mb-1">
                 {Math.floor(assessment.timeTaken / 60)}:{(assessment.timeTaken % 60).toString().padStart(2, '0')}
               </div>
-              <div className="text-xs text-gray-500">Thời gian</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">Thời gian</div>
             </div>
           </div>
         </div>
