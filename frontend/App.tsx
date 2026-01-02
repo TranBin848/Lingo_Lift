@@ -149,7 +149,7 @@ export default function App() {
               }
             />
             <Route
-              path="/learning-path-v2"
+              path="/mycourse"
               element={
                 <Suspense
                   fallback={

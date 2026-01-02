@@ -4,11 +4,15 @@ import {
   Trophy, 
   Award,
   RefreshCw,
-  Home
+  Home,
+  Rocket
 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { AssessmentScoreCard } from './AssessmentScoreCard';
 import { RecommendationPanel } from './RecommendationPanel';
+import { CreateLearningPathModal } from './CreateLearningPathModal';
+import { createLearningPath } from '../../api/learningPath';
+import { useNavigate } from 'react-router-dom';
 import type { PlacementTest } from '../../types/placementTest';
 import { getScoreGradient, getScoreLabel } from '../../types/placementTest';
 
@@ -25,7 +29,10 @@ export function PlacementResult({
   onGoHome, 
   onStartLearning 
 }: PlacementResultProps) {
+  const navigate = useNavigate();
   const [animatedScore, setAnimatedScore] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCreatingPath, setIsCreatingPath] = useState(false);
 
   // Animate main score count-up
   useEffect(() => {
@@ -50,6 +57,27 @@ export function PlacementResult({
 
     return () => clearTimeout(timeout);
   }, [result.overallBandScore]);
+
+  const handleCreateLearningPath = async (targetBandScore: number, targetDate: string) => {
+    try {
+      setIsCreatingPath(true);
+      
+      await createLearningPath({
+        targetBandScore,
+        targetDate
+      });
+      
+      setIsModalOpen(false);
+      
+      // Navigate to mycourse page
+      navigate('/mycourse');
+    } catch (error) {
+      console.error('Failed to create learning path:', error);
+      alert('Có lỗi xảy ra khi tạo lộ trình học. Vui lòng thử lại!');
+    } finally {
+      setIsCreatingPath(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-900 dark:to-indigo-950">
@@ -169,7 +197,7 @@ export function PlacementResult({
         {/* Recommendation */}
         <RecommendationPanel 
           overallScore={result.overallBandScore}
-          onStartLearning={onStartLearning}
+          onStartLearning={() => setIsModalOpen(true)}
         />
 
         {/* Actions */}
@@ -197,6 +225,15 @@ export function PlacementResult({
           </Button>
         </motion.div>
       </div>
+
+      {/* Modal */}
+      <CreateLearningPathModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleCreateLearningPath}
+        currentBandScore={result.overallBandScore}
+        isLoading={isCreatingPath}
+      />
     </div>
   );
 }

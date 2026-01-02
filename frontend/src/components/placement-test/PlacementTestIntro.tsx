@@ -8,10 +8,13 @@ import {
   FileEdit,
   Target,
   Sparkles,
+  Eye,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { CreateLearningPathModal } from "./CreateLearningPathModal";
 
 interface PlacementTestIntroProps {
   onStart: () => void;
@@ -19,6 +22,16 @@ interface PlacementTestIntroProps {
 
 export function PlacementTestIntro({ onStart }: PlacementTestIntroProps) {
   const navigate = useNavigate();
+
+  // ===== PREVIEW MODAL - DELETE THIS SECTION LATER =====
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const handlePreviewSubmit = (targetBandScore: number, targetDate: string) => {
+    console.log("Preview - Target Band Score:", targetBandScore);
+    console.log("Preview - Target Date:", targetDate);
+    setShowPreviewModal(false);
+    alert(`Preview: Target ${targetBandScore}, Date ${targetDate}`);
+  };
+  // ===== END PREVIEW SECTION =====
 
   const features = [
     {
@@ -54,7 +67,7 @@ export function PlacementTestIntro({ onStart }: PlacementTestIntroProps) {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.1 }}
-          className="mb-6"
+          className="mb-6 flex items-center justify-between"
         >
           <Button
             variant="ghost"
@@ -64,6 +77,17 @@ export function PlacementTestIntro({ onStart }: PlacementTestIntroProps) {
             <ArrowLeft className="w-4 h-4 mr-2" />
             Quay lại Learning Path
           </Button>
+
+          {/* ===== PREVIEW BUTTON - DELETE THIS LATER ===== */}
+          {/* <Button
+            variant="outline"
+            onClick={() => setShowPreviewModal(true)}
+            className="border-orange-300 text-orange-600 hover:bg-orange-50 dark:border-orange-700 dark:text-orange-400 dark:hover:bg-orange-900/20"
+          >
+            <Eye className="w-4 h-4 mr-2" />
+            Preview Modal (Dev Only)
+          </Button> */}
+          {/* ===== END PREVIEW BUTTON ===== */}
         </motion.div>
 
         {/* Hero Section */}
@@ -117,11 +141,12 @@ export function PlacementTestIntro({ onStart }: PlacementTestIntroProps) {
             >
               <Card className="p-6 flex flex-col items-center justify-center text-center bg-white dark:bg-gray-800 border-0 shadow-lg hover:shadow-xl transition-shadow h-full">
                 <div
-                  className={`inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br ${feature.color} shadow-md mb-4`}
+                  className={`inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br ${feature.color} shadow-md mb-1`}
                 >
                   <feature.icon className="w-7 h-7 text-white" />
                 </div>
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
+
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                   {feature.title}
                 </h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -211,6 +236,16 @@ export function PlacementTestIntro({ onStart }: PlacementTestIntroProps) {
             </p>
           </div>
         </motion.div>
+
+        {/* ===== PREVIEW MODAL - DELETE THIS SECTION LATER ===== */}
+        <CreateLearningPathModal
+          isOpen={showPreviewModal}
+          onClose={() => setShowPreviewModal(false)}
+          onSubmit={handlePreviewSubmit}
+          currentBandScore={6.5}
+          isLoading={false}
+        />
+        {/* ===== END PREVIEW SECTION ===== */}
       </motion.div>
     </div>
   );

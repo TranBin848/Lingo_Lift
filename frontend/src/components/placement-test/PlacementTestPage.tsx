@@ -451,6 +451,7 @@ export { PlacementProcessing } from "./PlacementProcessing";
 export { PlacementResult } from "./PlacementResult";
 export { AssessmentScoreCard } from "./AssessmentScoreCard";
 export { RecommendationPanel } from "./RecommendationPanel";
+export { CreateLearningPathModal } from "./CreateLearningPathModal";
 export {
   WritingTimer,
   WordCounter,
