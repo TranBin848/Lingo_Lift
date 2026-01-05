@@ -23,9 +23,9 @@ import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { EssayStatusBadge } from './EssayStatusBadge';
 import { Task1FeedbackPanel, Task2FeedbackPanel, GradingInProgress } from './EssayFeedbackPanel';
+import type { Task1Topic } from '../../types/task1-topic';
+import type { Task2Topic } from '../../types/task2-topic';
 import type { 
-  Task1Topic, 
-  Task2Topic,
   EssayStatus,
   ChartType,
   Task1Feedback,
@@ -299,7 +299,17 @@ export function Task1EssayEditor({
   const [isSaving, setIsSaving] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [feedback, setFeedback] = useState<Task1Feedback | null>(null);
+  const [imageLoadError, setImageLoadError] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // DEBUG: Log toàn bộ topic object
+  useEffect(() => {
+    console.log('=== FULL TOPIC OBJECT ===');
+    console.log('topic:', topic);
+    console.log('topic keys:', Object.keys(topic));
+    console.log('imageUrl specifically:', topic.imageUrl);
+    console.log('typeof imageUrl:', typeof topic.imageUrl);
+  }, [topic]);
 
   const difficultyColor = topicDifficultyColors[topic.difficulty];
 
@@ -423,19 +433,55 @@ export function Task1EssayEditor({
                 </div>
               </Card>
 
-              {/* Image/Chart placeholder */}
+              {/* Image/Chart */}
               {topic.chartType !== 'letter' && (
                 <Card className="p-5 bg-white dark:bg-gray-800 border-0 shadow-lg">
                   <h3 className="font-medium text-gray-900 dark:text-white mb-3 flex items-center gap-2">
                     <ImageIcon className="w-4 h-4" />
                     Biểu đồ / Hình ảnh
                   </h3>
-                  <div className="aspect-video bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-                    <div className="text-center text-gray-400">
-                      <ChartTypeIcon type={topic.chartType} className="w-12 h-12 mx-auto mb-2" />
-                      <p className="text-sm">{chartTypeLabels[topic.chartType]}</p>
-                      <p className="text-xs mt-1">Hình ảnh minh họa</p>
-                    </div>
+                  <div className="relative aspect-video bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
+                    {topic.imageUrl && !imageLoadError ? (
+                      <img 
+                        src={topic.imageUrl} 
+                        alt={topic.description || 'IELTS Writing Task 1 Image'}
+                        className="w-full h-full object-contain"
+                        onLoad={() => {
+                          console.log('✅ Image loaded successfully:', topic.imageUrl);
+                          setImageLoadError(false);
+                        }}
+                        onError={(e) => {
+                          console.error('❌ Failed to load image:', topic.imageUrl);
+                          console.error('You may need to:');
+                          console.error('1. Check your network connection');
+                          console.error('2. Disable VPN if active');
+                          console.error('3. Try accessing the URL directly in browser');
+                          setImageLoadError(true);
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center p-6">
+                        <div className="text-center text-gray-400">
+                          <ChartTypeIcon type={topic.chartType} className="w-16 h-16 mx-auto mb-3" />
+                          <p className="text-sm font-medium">{chartTypeLabels[topic.chartType]}</p>
+                          {imageLoadError && topic.imageUrl ? (
+                            <>
+                              <p className="text-xs mt-2 text-red-500">Không thể tải hình ảnh</p>
+                              <a 
+                                href={topic.imageUrl} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-xs text-blue-500 hover:underline mt-1 inline-block"
+                              >
+                                Mở ảnh trong tab mới
+                              </a>
+                            </>
+                          ) : (
+                            <p className="text-xs mt-1">Hình ảnh minh họa</p>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </Card>
               )}

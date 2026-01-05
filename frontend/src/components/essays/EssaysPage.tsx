@@ -201,7 +201,7 @@ export function EssaysPage({ initialTask, initialTopicId }: EssaysPageProps) {
       prompt: topic.description || "",
       taskType: "Academic" as const, // Must be uppercase to match Task1Type
       chartType: (topic.task_type?.toLowerCase() || "bar") as ChartType,
-      imageUrl: topic.image_url || "",
+      imageUrl: topic.imageUrl || topic.image_url || "",
       sampleAnswer: topic.sample_answer || "",
       difficulty: "Intermediate" as const,
       category: (topic.category || "Education") as TopicCategory,
