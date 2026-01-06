@@ -1,5 +1,4 @@
 import { useSearchParams } from "react-router-dom";
-import { useEffect, useState } from "react";
 import { EssaysPage } from "../components/essays";
 
 /**
@@ -22,26 +21,17 @@ import { EssaysPage } from "../components/essays";
  */
 export default function WritingPracticePage() {
   const [searchParams] = useSearchParams();
-  const [initialTask, setInitialTask] = useState<
-    "task1" | "task2" | undefined
-  >();
-  const [initialTopicId, setInitialTopicId] = useState<string | undefined>();
-
-  useEffect(() => {
-    const task = searchParams.get("task") as "task1" | "task2" | null;
-    const topicId = searchParams.get("topicId");
-
-    if (task) {
-      setInitialTask(task);
-    }
-    if (topicId) {
-      setInitialTopicId(topicId);
-    }
-  }, [searchParams]);
+  
+  // Get params directly from URL
+  const task = searchParams.get("task") as "task1" | "task2" | null;
+  const topicId = searchParams.get("topicId");
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-slate-900 dark:to-indigo-950 py-8 px-4 sm:px-6 lg:px-8">
-      <EssaysPage initialTask={initialTask} initialTopicId={initialTopicId} />
+      <EssaysPage 
+        initialTask={task || undefined} 
+        initialTopicId={topicId || undefined} 
+      />
     </div>
   );
 }

@@ -14,7 +14,7 @@ export function EssayStatusBadge({
   size = 'md',
   showIcon = true 
 }: EssayStatusBadgeProps) {
-  const colors = essayStatusColors[status];
+  const colors = essayStatusColors[status] || essayStatusColors['Draft']; // Fallback to Draft
   
   const sizeClasses = {
     sm: 'text-xs px-2 py-0.5',

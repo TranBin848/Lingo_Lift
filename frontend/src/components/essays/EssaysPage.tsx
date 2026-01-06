@@ -31,9 +31,11 @@ import type {
 import { getEssayStats } from "../../mocks/essays";
 import { useTask1Topics } from "../../hooks/useTask1Topics";
 import { useTask1Essays } from "../../hooks/useTask1Essays";
+import { useTask1EssayList } from "../../hooks/useTask1EssayList";
 import { useCreateTask1Essay } from "../../hooks/useCreateTask1Essay";
 import { useTask2Topics } from "../../hooks/useTask2Topics";
 import { useTask2Essays } from "../../hooks/useTask2Essays";
+import { useTask2EssayList } from "../../hooks/useTask2EssayList";
 import { useCreateTask2Essay } from "../../hooks/useCreateTask2Essay";
 import type { Task1Topic as Task1TopicAPI } from "../../types/task1-topic";
 import type { Task1Essay as Task1EssayAPI } from "../../types/task1-essay";
@@ -180,6 +182,29 @@ export function EssaysPage({ initialTask, initialTopicId }: EssaysPageProps) {
     loading: task2EssaysLoading,
     refetch: refetchTask2Essays,
   } = useTask2Essays();
+  
+  // Use new API for essay list in history view
+  const { 
+    data: task1EssayListData, 
+    isLoading: isLoadingTask1List,
+    refetch: refetchTask1List 
+  } = useTask1EssayList({ 
+    page: 1, 
+    pageSize: 50,
+    sortBy: 'CreatedAt',
+    sortOrder: 'desc'
+  });
+  
+  const { 
+    data: task2EssayListData, 
+    isLoading: isLoadingTask2List,
+    refetch: refetchTask2List 
+  } = useTask2EssayList({ 
+    page: 1, 
+    pageSize: 50,
+    sortBy: 'CreatedAt',
+    sortOrder: 'desc'
+  });
   const stats = getEssayStats();
   const {
     submit: submitTask1Essay,
@@ -196,23 +221,63 @@ export function EssaysPage({ initialTask, initialTopicId }: EssaysPageProps) {
 
   // Transform API data to match component types
   const task1Topics: Task1Topic[] = (task1TopicsData || []).map(
-    (topic: Task1TopicAPI) => ({
-      id: topic.id.toString(),
-      prompt: topic.description || "",
-      taskType: "Academic" as const, // Must be uppercase to match Task1Type
-      chartType: (topic.task_type?.toLowerCase() || "bar") as ChartType,
-      imageUrl: topic.image_url || "",
-      sampleAnswer: topic.sample_answer || "",
-      difficulty: "Intermediate" as const,
-      category: (topic.category || "Education") as TopicCategory,
-      estimatedBandLevel: 6.5,
-      frequency: "Common" as const,
-      keywords: topic.vocabulary_list || [],
-      isPublished: true,
-      createdAt: topic.created_at,
-      updatedAt: topic.updated_at,
-    })
+    (topic: Task1TopicAPI) => {
+      // Map API difficulty to component difficulty
+      let mappedDifficulty: 'Beginner' | 'Intermediate' | 'Advanced' = 'Intermediate';
+      if (topic.difficulty) {
+        const diff = topic.difficulty.toLowerCase();
+        if (diff === 'easy') mappedDifficulty = 'Beginner';
+        else if (diff === 'medium') mappedDifficulty = 'Intermediate';
+        else if (diff === 'hard') mappedDifficulty = 'Advanced';
+      }
+
+      return {
+        id: topic.id.toString(),
+        prompt: topic.description || topic.prompt || "",
+        taskType: "Academic" as const,
+        chartType: (topic.chartType?.toLowerCase() || topic.task_type?.toLowerCase() || "bar") as ChartType,
+        imageUrl: topic.imageUrl || topic.image_url || "",
+        sampleAnswer: topic.sample_answer || "",
+        difficulty: mappedDifficulty,
+        category: (topic.category || "Education") as TopicCategory,
+        estimatedBandLevel: 6.5,
+        frequency: "Common" as const,
+        keywords: topic.vocabulary_list || [],
+        isPublished: topic.isPublished !== undefined ? topic.isPublished : true,
+        createdAt: topic.created_at || topic.createdAt,
+        updatedAt: topic.updated_at || topic.updatedAt,
+      };
+    }
   );
+
+  // Transform Task 1 Essays from new API for history view
+  const task1EssaysFromList: Task1EssayWithTopic[] = (task1EssayListData?.items || []).map((essay) => ({
+    id: essay.id.toString(),
+    userId: essay.userId?.toString() || '',
+    topicId: essay.task1TopicId.toString(),
+    content: essay.essayText,
+    wordCount: essay.wordCount,
+    timeSpent: essay.timeTaken || 0,
+    status: essay.status as 'Draft' | 'Submitted' | 'Graded',
+    submittedAt: essay.submittedAt || essay.createdAt,
+    feedback: essay.feedback,
+    topic: task1Topics.find((t) => t.id === essay.task1TopicId.toString()) || {
+      id: essay.task1TopicId.toString(),
+      prompt: essay.topicPrompt || '',
+      taskType: 'Academic',
+      chartType: 'bar',
+      imageUrl: '',
+      sampleAnswer: '',
+      difficulty: 'Intermediate',
+      category: 'Other',
+      estimatedBandLevel: 6.5,
+      frequency: 'Common',
+      keywords: [],
+      isPublished: true,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+  }));
 
   const task1Essays: Task1EssayWithTopic[] = (
     Array.isArray(task1EssaysData) ? task1EssaysData : []
@@ -230,20 +295,57 @@ export function EssaysPage({ initialTask, initialTopicId }: EssaysPageProps) {
 
   // Transform Task 2 Topics
   const task2Topics: Task2Topic[] = (task2TopicsData || []).map(
-    (topic: Task2TopicAPI) => ({
-      id: topic.id.toString(),
-      prompt: topic.question || "",
-      questionType: "opinion" as const,
-      category: (topic.category || "Education") as TopicCategory,
-      difficulty: "Intermediate" as const,
-      estimatedBandLevel: 6.5,
-      frequency: "Common" as const,
-      keywords: topic.vocabulary_list || [],
-      isPublished: true,
-      createdAt: topic.created_at,
-      updatedAt: topic.updated_at,
-    })
+    (topic: Task2TopicAPI) => {
+      // Map API difficulty to component difficulty
+      let mappedDifficulty: 'Beginner' | 'Intermediate' | 'Advanced' = 'Intermediate';
+      if (topic.difficulty) {
+        const diff = topic.difficulty.toLowerCase();
+        if (diff === 'easy') mappedDifficulty = 'Beginner';
+        else if (diff === 'medium') mappedDifficulty = 'Intermediate';
+        else if (diff === 'hard') mappedDifficulty = 'Advanced';
+      }
+
+      return {
+        id: topic.id.toString(),
+        prompt: topic.prompt || topic.question || "",
+        questionType: (topic.questionType?.toLowerCase().replace(/[- ]/g, '_') || "opinion") as any,
+        category: (topic.category || "Education") as TopicCategory,
+        difficulty: mappedDifficulty,
+        estimatedBandLevel: 6.5,
+        frequency: "Common" as const,
+        keywords: topic.keywords ? topic.keywords.split(',').map(k => k.trim()) : (topic.vocabulary_list || []),
+        isPublished: topic.isPublished !== undefined ? topic.isPublished : true,
+        createdAt: topic.createdAt || topic.created_at,
+        updatedAt: topic.updatedAt || topic.updated_at,
+      };
+    }
   );
+
+  // Transform Task 2 Essays from new API for history view
+  const task2EssaysFromList: Task2EssayWithTopic[] = (task2EssayListData?.items || []).map((essay) => ({
+    id: essay.id.toString(),
+    userId: essay.userId?.toString() || '',
+    topicId: essay.task2TopicId.toString(),
+    content: essay.essayText,
+    wordCount: essay.wordCount,
+    timeSpent: essay.timeTaken || 0,
+    status: essay.status as 'Draft' | 'Submitted' | 'Graded',
+    submittedAt: essay.submittedAt || essay.createdAt,
+    feedback: essay.feedback,
+    topic: task2Topics.find((t) => t.id === essay.task2TopicId.toString()) || {
+      id: essay.task2TopicId.toString(),
+      prompt: essay.topicPrompt || '',
+      questionType: 'opinion',
+      category: 'Other',
+      difficulty: 'Intermediate',
+      estimatedBandLevel: 6.5,
+      frequency: 'Common',
+      keywords: [],
+      isPublished: true,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+  }));
 
   // Transform Task 2 Essays
   const task2Essays: Task2EssayWithTopic[] = (
@@ -262,9 +364,44 @@ export function EssaysPage({ initialTask, initialTopicId }: EssaysPageProps) {
 
   // Auto-select topic from URL params
   useEffect(() => {
-    if (initialized || !initialTopicId) return;
+    // Don't re-initialize if already done
+    if (initialized) return;
+    
+    // If no topicId provided, just set the active tab and mark initialized
+    if (!initialTopicId) {
+      if (initialTask) {
+        setActiveTab(initialTask);
+      }
+      setInitialized(true);
+      return;
+    }
 
-    // Try to find topic in Task 1
+    // Wait for topics to load before trying to find the topic
+    const isLoading = initialTask === "task2" ? task2TopicsLoading : task1TopicsLoading;
+    if (isLoading) return;
+
+    // Try to find topic based on initialTask hint first
+    if (initialTask === "task2") {
+      const task2Topic = task2Topics.find((t) => t.id === initialTopicId);
+      if (task2Topic) {
+        setActiveTab("task2");
+        setSelectedTask2Topic(task2Topic);
+        setViewMode("writing");
+        setInitialized(true);
+        return;
+      }
+    } else {
+      const task1Topic = task1Topics.find((t) => t.id === initialTopicId);
+      if (task1Topic) {
+        setActiveTab("task1");
+        setSelectedTask1Topic(task1Topic);
+        setViewMode("writing");
+        setInitialized(true);
+        return;
+      }
+    }
+
+    // Fallback: try both lists if not found in the expected one
     const task1Topic = task1Topics.find((t) => t.id === initialTopicId);
     if (task1Topic) {
       setActiveTab("task1");
@@ -274,7 +411,6 @@ export function EssaysPage({ initialTask, initialTopicId }: EssaysPageProps) {
       return;
     }
 
-    // Try to find topic in Task 2
     const task2Topic = task2Topics.find((t) => t.id === initialTopicId);
     if (task2Topic) {
       setActiveTab("task2");
@@ -284,12 +420,12 @@ export function EssaysPage({ initialTask, initialTopicId }: EssaysPageProps) {
       return;
     }
 
-    // If initialTask is provided, switch to that tab even if topicId not found
+    // Topic not found in either list, just set tab and mark initialized
     if (initialTask) {
       setActiveTab(initialTask);
     }
     setInitialized(true);
-  }, [initialTopicId, initialTask, task1Topics, task2Topics, initialized]);
+  }, [initialTopicId, initialTask, task1Topics, task2Topics, task1TopicsLoading, task2TopicsLoading, initialized]);
 
   // Filter Task 1 topics
   const filteredTask1Topics = useMemo(() => {
@@ -410,44 +546,22 @@ export function EssaysPage({ initialTask, initialTopicId }: EssaysPageProps) {
     wordCount: number,
     timeSpent: number
   ) => {
-    if (!selectedTask1Topic && !selectedTask2Topic) return;
-
-    // Task 1 submission with real API
+    // EssayEditor already handles the submission via createAndSubmitTask1Essay/Task2Essay
+    // This callback is just for notification and refreshing the list
+    console.log('Essay submitted:', { content, wordCount, timeSpent });
+    
+    // Refresh essays list after submission
     if (selectedTask1Topic) {
-      try {
-        await submitTask1Essay({
-          task1_topic_id: parseInt(selectedTask1Topic.id),
-          essay_text: content,
-        });
-        // Refresh essays list
-        await refetchTask1Essays();
-        // Close editor and switch to history
-        setViewMode("history");
-        setSelectedTask1Topic(null);
-      } catch (error) {
-        console.error("Failed to submit Task 1 essay:", error);
-        // Error is handled by the hook
-      }
-      return;
+      await refetchTask1Essays();
+      await refetchTask1List();
     }
-
-    // Task 2 submission with real API
     if (selectedTask2Topic) {
-      try {
-        await submitTask2Essay({
-          task2_topic_id: parseInt(selectedTask2Topic.id),
-          essay_text: content,
-        });
-        // Refresh essays list
-        await refetchTask2Essays();
-        // Close editor and switch to history
-        setViewMode("history");
-        setSelectedTask2Topic(null);
-      } catch (error) {
-        console.error("Failed to submit Task 2 essay:", error);
-        // Error is handled by the hook
-      }
+      await refetchTask2Essays();
+      await refetchTask2List();
     }
+    
+    // Don't close editor or change view - let the feedback display in editor
+    // User can close manually when they're done reviewing
   };
 
   const handleViewTask1Essay = (essay: Task1Essay) => {
@@ -843,7 +957,7 @@ export function EssaysPage({ initialTask, initialTopicId }: EssaysPageProps) {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              {task1EssaysLoading ? (
+              {isLoadingTask1List ? (
                 <div className="space-y-4">
                   {[...Array(3)].map((_, i) => (
                     <Card
@@ -858,9 +972,12 @@ export function EssaysPage({ initialTask, initialTopicId }: EssaysPageProps) {
                 </div>
               ) : (
                 <Task1EssayList
-                  essays={task1Essays}
+                  essays={task1EssaysFromList}
                   topics={task1Topics}
-                  getBandScore={() => undefined}
+                  getBandScore={(essayId) => {
+                    const essay = task1EssaysFromList.find(e => e.id === essayId);
+                    return essay?.feedback?.overallScore;
+                  }}
                   onViewEssay={handleViewTask1Essay}
                   onRewriteTopic={handleStartWritingTask1}
                   emptyMessage="Bạn chưa có bài viết Task 1 nào"
@@ -878,7 +995,7 @@ export function EssaysPage({ initialTask, initialTopicId }: EssaysPageProps) {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              {task2EssaysLoading ? (
+              {isLoadingTask2List ? (
                 <div className="space-y-4">
                   {[...Array(3)].map((_, i) => (
                     <Card
@@ -893,9 +1010,12 @@ export function EssaysPage({ initialTask, initialTopicId }: EssaysPageProps) {
                 </div>
               ) : (
                 <Task2EssayList
-                  essays={task2Essays}
+                  essays={task2EssaysFromList}
                   topics={task2Topics}
-                  getBandScore={() => undefined}
+                  getBandScore={(essayId) => {
+                    const essay = task2EssaysFromList.find(e => e.id === essayId);
+                    return essay?.feedback?.overallScore;
+                  }}
                   onViewEssay={handleViewTask2Essay}
                   onRewriteTopic={handleStartWritingTask2}
                   emptyMessage="Bạn chưa có bài viết Task 2 nào"

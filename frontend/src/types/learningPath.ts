@@ -4,6 +4,7 @@ export type PrimaryFocus =
   | 'CoherenceCohesion' 
   | 'LexicalResource' 
   | 'TaskAchievement' 
+  | 'GrammaticalRange'
   | 'GrammaticalRangeAccuracy'
   | 'AllAreas';
 
@@ -28,6 +29,25 @@ export interface Phase {
   lessonProgressPercentage?: number;
 }
 
+// Summary of learning path (without phases) - from /current endpoint
+export interface LearningPathSummary {
+  id: number;
+  currentBandScore: number;
+  targetBandScore: number;
+  targetDate: string;
+  estimatedDurationWeeks: number;
+  status: LearningPathStatus;
+  createdAt: string;
+  updatedAt: string;
+  userId: number;
+  placementTestId: number;
+  totalPhases: number;
+  completedPhases: number;
+  currentPhaseNumber: number;
+  progressPercentage: number;
+}
+
+// Full learning path with phases - from /{id} endpoint
 export interface LearningPath {
   id: number;
   currentBandScore: number;
@@ -44,6 +64,6 @@ export interface LearningPath {
   completedPhases: number;
   currentPhaseNumber: number;
   progressPercentage: number;
-  daysRemaining: number;
-  isOnTrack: boolean;
+  daysRemaining?: number;
+  isOnTrack?: boolean;
 }

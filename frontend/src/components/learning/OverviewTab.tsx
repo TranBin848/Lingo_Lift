@@ -12,10 +12,14 @@ import {
   ArrowRight,
   CheckCircle2,
   Zap,
+  GraduationCap,
+  Play,
+  Lock,
+  ChevronRight,
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { getCurrentLearningPath } from "../../api/learningPath";
-import type { LearningPath } from "../../types/learningPath";
+import { getCurrentLearningPath, getLearningPathPhases } from "../../api/learningPath";
+import type { LearningPathSummary, Phase } from "../../types/learningPath";
 import { Button } from "../ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuthStore } from "../../stores/useAuth.Store";
@@ -218,7 +222,8 @@ function OverviewSkeleton() {
 }
 
 export function OverviewTab() {
-  const [learningPath, setLearningPath] = useState<LearningPath | null>(null);
+  const [learningPath, setLearningPath] = useState<LearningPathSummary | null>(null);
+  const [phases, setPhases] = useState<Phase[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuthStore();
@@ -250,6 +255,12 @@ export function OverviewTab() {
       setError(null);
       const data = await getCurrentLearningPath();
       setLearningPath(data);
+      
+      // Fetch phases if we have a learning path
+      if (data?.id) {
+        const phasesData = await getLearningPathPhases(data.id);
+        setPhases(phasesData);
+      }
     } catch (err: unknown) {
       console.error("Error fetching learning path:", err);
       const errorMessage =
@@ -261,6 +272,61 @@ export function OverviewTab() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Calculate days remaining
+  const calculateDaysRemaining = () => {
+    if (!learningPath?.targetDate) return 0;
+    const targetDate = new Date(learningPath.targetDate);
+    const today = new Date();
+    const diffTime = targetDate.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return Math.max(0, diffDays);
+  };
+
+  // Get current phase
+  const getCurrentPhase = () => {
+    return phases.find(p => p.status === 'InProgress') || phases[0];
+  };
+
+  // Get phase status icon and color
+  const getPhaseStatusConfig = (status: string) => {
+    switch (status) {
+      case 'Completed':
+        return { 
+          icon: CheckCircle2, 
+          bg: 'bg-green-500', 
+          text: 'text-green-500',
+          label: 'Hoàn thành'
+        };
+      case 'InProgress':
+        return { 
+          icon: Play, 
+          bg: 'bg-blue-500', 
+          text: 'text-blue-500',
+          label: 'Đang học'
+        };
+      default:
+        return { 
+          icon: Lock, 
+          bg: 'bg-gray-400', 
+          text: 'text-gray-400',
+          label: 'Chưa mở'
+        };
+    }
+  };
+
+  // Get focus label
+  const getFocusLabel = (focus: string) => {
+    const labels: Record<string, string> = {
+      'GrammaticalRange': 'Ngữ pháp',
+      'GrammaticalRangeAccuracy': 'Ngữ pháp & Độ chính xác',
+      'CoherenceCohesion': 'Mạch lạc & Liên kết',
+      'LexicalResource': 'Từ vựng',
+      'TaskAchievement': 'Hoàn thành bài',
+      'AllAreas': 'Tất cả kỹ năng'
+    };
+    return labels[focus] || focus;
   };
 
   // Mock data for statistics
@@ -474,36 +540,178 @@ export function OverviewTab() {
       >
         <StatCard
           icon={<Clock className="w-6 h-6 text-white" />}
-          label="Giờ học"
-          value={`${stats.totalStudyHours}h`}
-          subtext="+5h tuần này"
+          label="Thời gian dự kiến"
+          value={`${learningPath?.estimatedDurationWeeks || 0} tuần`}
+          subtext={`${learningPath?.totalPhases || 0} chặng học`}
           color="bg-gradient-to-br from-purple-500 to-purple-600"
         />
         <StatCard
-          icon={<BookOpen className="w-6 h-6 text-white" />}
-          label="Bài học"
-          value={`${stats.completedLessons}/${stats.totalLessons}`}
-          subtext={`${Math.round(
-            (stats.completedLessons / stats.totalLessons) * 100
-          )}% hoàn thành`}
+          icon={<Target className="w-6 h-6 text-white" />}
+          label="Chặng hiện tại"
+          value={`${learningPath?.currentPhaseNumber || 1}/${learningPath?.totalPhases || 4}`}
+          subtext={`${learningPath?.completedPhases || 0} đã hoàn thành`}
           color="bg-gradient-to-br from-blue-500 to-blue-600"
         />
         <StatCard
-          icon={<FileText className="w-6 h-6 text-white" />}
-          label="Bài test"
-          value={`${stats.completedTests}/${stats.totalTests}`}
-          subtext={`${Math.round(
-            (stats.completedTests / stats.totalTests) * 100
-          )}% hoàn thành`}
+          icon={<TrendingUp className="w-6 h-6 text-white" />}
+          label="Tiến độ"
+          value={`${learningPath?.progressPercentage || 0}%`}
+          subtext="Hoàn thành lộ trình"
           color="bg-gradient-to-br from-green-500 to-green-600"
         />
         <StatCard
           icon={<Calendar className="w-6 h-6 text-white" />}
           label="Còn lại"
-          value={`${learningPath?.daysRemaining || 0} ngày`}
-          subtext={`${learningPath?.estimatedDurationWeeks || 0} tuần`}
+          value={`${calculateDaysRemaining()} ngày`}
+          subtext={learningPath?.targetDate ? new Date(learningPath.targetDate).toLocaleDateString('vi-VN') : ''}
           color="bg-gradient-to-br from-pink-500 to-pink-600"
         />
+      </motion.div>
+
+      {/* Learning Path Phases */}
+      <motion.div variants={itemVariants}>
+        <Card className="p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg">
+                <GraduationCap className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                  Lộ trình học tập
+                </h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {learningPath?.completedPhases || 0}/{learningPath?.totalPhases || 0} chặng hoàn thành
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 rounded-full">
+              <Target className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+              <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
+                Mục tiêu Band {learningPath?.targetBandScore || 0}
+              </span>
+            </div>
+          </div>
+
+          {/* Timeline Progress */}
+          <div className="relative mb-6">
+            <div className="absolute top-5 left-0 right-0 h-1 bg-gray-200 dark:bg-gray-700 rounded-full">
+              <motion.div 
+                className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"
+                initial={{ width: 0 }}
+                animate={{ width: `${learningPath?.progressPercentage || 0}%` }}
+                transition={{ duration: 1, delay: 0.5 }}
+              />
+            </div>
+            <div className="flex justify-between relative">
+              {phases.map((phase, index) => {
+                const config = getPhaseStatusConfig(phase.status);
+                const IconComponent = config.icon;
+                return (
+                  <motion.div
+                    key={phase.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 + index * 0.1 }}
+                    className="flex flex-col items-center"
+                    style={{ width: `${100 / phases.length}%` }}
+                  >
+                    <div className={`w-10 h-10 rounded-full ${config.bg} flex items-center justify-center shadow-lg z-10`}>
+                      <IconComponent className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-2">
+                      Chặng {phase.phaseNumber}
+                    </span>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Phase Cards */}
+          <div className="space-y-4">
+            {phases.map((phase, index) => {
+              const config = getPhaseStatusConfig(phase.status);
+              const isCurrentPhase = phase.status === 'InProgress';
+              
+              return (
+                <motion.div
+                  key={phase.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.4 + index * 0.1 }}
+                  whileHover={{ x: 4 }}
+                  className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
+                    isCurrentPhase 
+                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' 
+                      : phase.status === 'Completed'
+                        ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/10'
+                        : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50'
+                  }`}
+                >
+                  <div className="flex items-start gap-4">
+                    <div className={`p-3 rounded-xl ${config.bg} shadow-lg`}>
+                      <config.icon className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h4 className="font-bold text-gray-900 dark:text-white">
+                          Chặng {phase.phaseNumber}: {phase.title}
+                        </h4>
+                        {isCurrentPhase && (
+                          <span className="px-2 py-0.5 text-xs font-medium bg-blue-500 text-white rounded-full animate-pulse">
+                            Đang học
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                        {phase.description}
+                      </p>
+                      <div className="flex flex-wrap items-center gap-4 text-sm">
+                        <div className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400">
+                          <Clock className="w-4 h-4" />
+                          <span>{phase.durationWeeks} tuần</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400">
+                          <Target className="w-4 h-4" />
+                          <span>Band {phase.expectedBandScore}</span>
+                        </div>
+                        <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium ${
+                          phase.primaryFocus === 'GrammaticalRange' || phase.primaryFocus === 'GrammaticalRangeAccuracy'
+                            ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
+                            : phase.primaryFocus === 'LexicalResource'
+                              ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300'
+                              : phase.primaryFocus === 'CoherenceCohesion'
+                                ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                                : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                        }`}>
+                          {getFocusLabel(phase.primaryFocus)}
+                        </div>
+                        <div className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400">
+                          <Calendar className="w-4 h-4" />
+                          <span>
+                            {new Date(phase.startDate).toLocaleDateString('vi-VN')} - {new Date(phase.endDate).toLocaleDateString('vi-VN')}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    {isCurrentPhase && (
+                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                        <Button size="sm" className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg">
+                          <Play className="w-4 h-4 mr-1" />
+                          Tiếp tục
+                        </Button>
+                      </motion.div>
+                    )}
+                    {phase.status === 'Pending' && (
+                      <ChevronRight className="w-5 h-5 text-gray-400" />
+                    )}
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </Card>
       </motion.div>
 
       {/* Two Column Layout */}
@@ -601,56 +809,63 @@ export function OverviewTab() {
 
         {/* Progress & Recent Activity */}
         <motion.div variants={itemVariants} className="space-y-6">
-          {/* Progress Card */}
-          <Card className="p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg">
-                <TrendingUp className="w-5 h-5 text-white" />
+          {/* Current Phase Details */}
+          {getCurrentPhase() && (
+            <Card className="p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-lg">
+                  <Target className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                    Chặng hiện tại
+                  </h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {getCurrentPhase()?.title}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                  Tiến độ lộ trình
-                </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {learningPath?.completedPhases}/{learningPath?.totalPhases}{" "}
-                  chặng hoàn thành
-                </p>
-              </div>
-            </div>
 
-            <div className="flex items-center justify-center">
-              <ProgressRing
-                progress={learningPath?.progressPercentage || 0}
-                size={140}
-                strokeWidth={12}
-              />
-            </div>
+              <div className="flex items-center justify-center mb-6">
+                <ProgressRing
+                  progress={learningPath?.progressPercentage || 0}
+                  size={140}
+                  strokeWidth={12}
+                />
+              </div>
 
-            <div className="grid grid-cols-3 gap-4 mt-6">
-              <div className="text-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
-                <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                  {learningPath?.currentBandScore || "N/A"}
-                </p>
-                <p className="text-xs text-gray-500">Hiện tại</p>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="text-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+                  <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                    {learningPath?.currentBandScore || "N/A"}
+                  </p>
+                  <p className="text-xs text-gray-500">Hiện tại</p>
+                </div>
+                <div className="text-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+                  <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+                    {getCurrentPhase()?.expectedBandScore || "N/A"}
+                  </p>
+                  <p className="text-xs text-gray-500">Mục tiêu chặng</p>
+                </div>
+                <div className="text-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+                  <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+                    {learningPath?.targetBandScore || "N/A"}
+                  </p>
+                  <p className="text-xs text-gray-500">Mục tiêu cuối</p>
+                </div>
               </div>
-              <div className="text-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
-                <p className="text-2xl font-bold text-green-600 dark:text-green-400">
-                  {learningPath?.targetBandScore || "N/A"}
-                </p>
-                <p className="text-xs text-gray-500">Mục tiêu</p>
-              </div>
-              <div className="text-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
-                <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-                  +
-                  {(
-                    (learningPath?.targetBandScore || 0) -
-                    (learningPath?.currentBandScore || 0)
-                  ).toFixed(1)}
-                </p>
-                <p className="text-xs text-gray-500">Cần tăng</p>
-              </div>
-            </div>
-          </Card>
+
+              {/* Focus area for current phase */}
+              {getCurrentPhase()?.primaryFocus && (
+                <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+                  <p className="text-sm text-blue-700 dark:text-blue-300">
+                    <span className="font-medium">Trọng tâm chặng này:</span>{" "}
+                    {getFocusLabel(getCurrentPhase()?.primaryFocus || '')}
+                  </p>
+                </div>
+              )}
+            </Card>
+          )}
 
           {/* Recent Activity */}
           <Card className="p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg">

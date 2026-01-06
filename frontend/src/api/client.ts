@@ -1,5 +1,6 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig, type AxiosResponse } from 'axios'
 import { API_BASE_URL } from '../constants'
+import { useAuthStore } from '../stores/useAuth.Store'
 
 // Create axios instance
 export const apiClient = axios.create({
@@ -14,28 +15,18 @@ export const apiClient = axios.create({
 // Request interceptor - add auth token
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // Get token from Zustand persist storage
-    const authStorage = localStorage.getItem('auth-storage')
-    let token = null
-    
-    if (authStorage) {
-      try {
-        const parsed = JSON.parse(authStorage)
-        token = parsed.state?.accessToken
-      } catch (e) {
-        console.error('Failed to parse auth storage:', e)
-      }
-    }
+    // Get token from Zustand store (same as lib/axios.ts)
+    const { accessToken } = useAuthStore.getState()
     
     console.log('Request Interceptor:', {
       url: config.url,
       method: config.method,
-      hasToken: !!token,
-      token: token ? token.substring(0, 20) + '...' : 'none'
+      hasToken: !!accessToken,
+      token: accessToken ? accessToken.substring(0, 20) + '...' : 'none'
     });
     
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`
     }
     return config
   },

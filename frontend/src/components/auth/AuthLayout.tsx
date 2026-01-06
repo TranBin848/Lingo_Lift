@@ -32,7 +32,7 @@ export default function AuthLayout({
           <div
             className={`inline-flex items-center justify-center w-10 h-10 bg-gradient-to-br ${logoGradient} rounded-lg mb-2 shadow-sm`}
           >
-            <span className="text-base font-bold text-white">DE</span>
+            <span className="text-base font-bold text-white">LL</span>
           </div>
           <h1 className="text-xl font-semibold text-gray-900 mb-1">{title}</h1>
           <p className="text-sm text-gray-600">{subtitle}</p>
