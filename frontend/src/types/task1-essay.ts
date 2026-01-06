@@ -5,6 +5,33 @@
  */
 
 /**
+ * Query parameters for fetching Task 1 essays
+ */
+export interface Task1EssayQueryParams {
+  status?: 'Draft' | 'Submitted' | 'Graded';
+  task1TopicId?: number;
+  fromDate?: string;
+  toDate?: string;
+  minWordCount?: number;
+  maxWordCount?: number;
+  page?: number;
+  pageSize?: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
+/**
+ * Paginated response for Task 1 essays
+ */
+export interface Task1EssayListResponse {
+  items: Task1Essay[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
+/**
  * Task 1 Essay
  * Represents a submitted Task 1 essay
  */

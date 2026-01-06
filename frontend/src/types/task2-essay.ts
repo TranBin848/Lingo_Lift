@@ -6,6 +6,33 @@
  */
 
 /**
+ * Query parameters for fetching Task 2 essays
+ */
+export interface Task2EssayQueryParams {
+  status?: 'Draft' | 'Submitted' | 'Graded';
+  task2TopicId?: number;
+  fromDate?: string;
+  toDate?: string;
+  minWordCount?: number;
+  maxWordCount?: number;
+  page?: number;
+  pageSize?: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
+/**
+ * Paginated response for Task 2 essays
+ */
+export interface Task2EssayListResponse {
+  items: Task2Essay[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
+/**
  * Task 2 Essay interface
  * Represents a submitted Task 2 essay
  */

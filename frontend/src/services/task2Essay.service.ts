@@ -10,7 +10,8 @@ import type {
   Task2Essay,
   CreateTask2EssayPayload,
   CreateTask2EssayResponse,
-  SubmitTask2EssayResponse
+  Task2EssayQueryParams,
+  Task2EssayListResponse
 } from '../types/task2-essay';
 
 /**
@@ -72,6 +73,35 @@ export async function createAndSubmitTask2Essay(payload: CreateTask2EssayPayload
   const result = await submitTask2Essay(essay.id);
   
   return result;
+}
+
+/**
+ * Get all Task 2 essays with optional filters
+ * Returns paginated list of user's essays
+ * 
+ * @param params - Query parameters for filtering
+ * @returns Promise with paginated essay list
+ * 
+ * @example
+ * const result = await getAllTask2Essays({ status: 'Graded', page: 1, pageSize: 10 });
+ */
+export async function getAllTask2Essays(params?: Task2EssayQueryParams): Promise<Task2EssayListResponse> {
+  // Convert camelCase to PascalCase for .NET backend
+  const queryParams: Record<string, string> = {};
+  
+  if (params?.status) queryParams.Status = params.status;
+  if (params?.task2TopicId) queryParams.Task2TopicId = params.task2TopicId.toString();
+  if (params?.fromDate) queryParams.FromDate = params.fromDate;
+  if (params?.toDate) queryParams.ToDate = params.toDate;
+  if (params?.minWordCount) queryParams.MinWordCount = params.minWordCount.toString();
+  if (params?.maxWordCount) queryParams.MaxWordCount = params.maxWordCount.toString();
+  if (params?.page) queryParams.Page = params.page.toString();
+  if (params?.pageSize) queryParams.PageSize = params.pageSize.toString();
+  if (params?.sortBy) queryParams.SortBy = params.sortBy;
+  if (params?.sortOrder) queryParams.SortOrder = params.sortOrder;
+  
+  const response = await api.get<Task2EssayListResponse>('/task2-essays', { params: queryParams });
+  return response.data;
 }
 
 /**

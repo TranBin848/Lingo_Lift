@@ -31,9 +31,11 @@ import type {
 import { getEssayStats } from "../../mocks/essays";
 import { useTask1Topics } from "../../hooks/useTask1Topics";
 import { useTask1Essays } from "../../hooks/useTask1Essays";
+import { useTask1EssayList } from "../../hooks/useTask1EssayList";
 import { useCreateTask1Essay } from "../../hooks/useCreateTask1Essay";
 import { useTask2Topics } from "../../hooks/useTask2Topics";
 import { useTask2Essays } from "../../hooks/useTask2Essays";
+import { useTask2EssayList } from "../../hooks/useTask2EssayList";
 import { useCreateTask2Essay } from "../../hooks/useCreateTask2Essay";
 import type { Task1Topic as Task1TopicAPI } from "../../types/task1-topic";
 import type { Task1Essay as Task1EssayAPI } from "../../types/task1-essay";
@@ -180,6 +182,29 @@ export function EssaysPage({ initialTask, initialTopicId }: EssaysPageProps) {
     loading: task2EssaysLoading,
     refetch: refetchTask2Essays,
   } = useTask2Essays();
+  
+  // Use new API for essay list in history view
+  const { 
+    data: task1EssayListData, 
+    isLoading: isLoadingTask1List,
+    refetch: refetchTask1List 
+  } = useTask1EssayList({ 
+    page: 1, 
+    pageSize: 50,
+    sortBy: 'CreatedAt',
+    sortOrder: 'desc'
+  });
+  
+  const { 
+    data: task2EssayListData, 
+    isLoading: isLoadingTask2List,
+    refetch: refetchTask2List 
+  } = useTask2EssayList({ 
+    page: 1, 
+    pageSize: 50,
+    sortBy: 'CreatedAt',
+    sortOrder: 'desc'
+  });
   const stats = getEssayStats();
   const {
     submit: submitTask1Essay,
@@ -225,6 +250,35 @@ export function EssaysPage({ initialTask, initialTopicId }: EssaysPageProps) {
     }
   );
 
+  // Transform Task 1 Essays from new API for history view
+  const task1EssaysFromList: Task1EssayWithTopic[] = (task1EssayListData?.items || []).map((essay) => ({
+    id: essay.id.toString(),
+    userId: essay.userId?.toString() || '',
+    topicId: essay.task1TopicId.toString(),
+    content: essay.essayText,
+    wordCount: essay.wordCount,
+    timeSpent: essay.timeTaken || 0,
+    status: essay.status as 'Draft' | 'Submitted' | 'Graded',
+    submittedAt: essay.submittedAt || essay.createdAt,
+    feedback: essay.feedback,
+    topic: task1Topics.find((t) => t.id === essay.task1TopicId.toString()) || {
+      id: essay.task1TopicId.toString(),
+      prompt: essay.topicPrompt || '',
+      taskType: 'Academic',
+      chartType: 'bar',
+      imageUrl: '',
+      sampleAnswer: '',
+      difficulty: 'Intermediate',
+      category: 'Other',
+      estimatedBandLevel: 6.5,
+      frequency: 'Common',
+      keywords: [],
+      isPublished: true,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+  }));
+
   const task1Essays: Task1EssayWithTopic[] = (
     Array.isArray(task1EssaysData) ? task1EssaysData : []
   ).map((essay: Task1EssayAPI) => ({
@@ -266,6 +320,32 @@ export function EssaysPage({ initialTask, initialTopicId }: EssaysPageProps) {
       };
     }
   );
+
+  // Transform Task 2 Essays from new API for history view
+  const task2EssaysFromList: Task2EssayWithTopic[] = (task2EssayListData?.items || []).map((essay) => ({
+    id: essay.id.toString(),
+    userId: essay.userId?.toString() || '',
+    topicId: essay.task2TopicId.toString(),
+    content: essay.essayText,
+    wordCount: essay.wordCount,
+    timeSpent: essay.timeTaken || 0,
+    status: essay.status as 'Draft' | 'Submitted' | 'Graded',
+    submittedAt: essay.submittedAt || essay.createdAt,
+    feedback: essay.feedback,
+    topic: task2Topics.find((t) => t.id === essay.task2TopicId.toString()) || {
+      id: essay.task2TopicId.toString(),
+      prompt: essay.topicPrompt || '',
+      questionType: 'opinion',
+      category: 'Other',
+      difficulty: 'Intermediate',
+      estimatedBandLevel: 6.5,
+      frequency: 'Common',
+      keywords: [],
+      isPublished: true,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+  }));
 
   // Transform Task 2 Essays
   const task2Essays: Task2EssayWithTopic[] = (
@@ -473,9 +553,11 @@ export function EssaysPage({ initialTask, initialTopicId }: EssaysPageProps) {
     // Refresh essays list after submission
     if (selectedTask1Topic) {
       await refetchTask1Essays();
+      await refetchTask1List();
     }
     if (selectedTask2Topic) {
       await refetchTask2Essays();
+      await refetchTask2List();
     }
     
     // Don't close editor or change view - let the feedback display in editor
@@ -875,7 +957,7 @@ export function EssaysPage({ initialTask, initialTopicId }: EssaysPageProps) {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              {task1EssaysLoading ? (
+              {isLoadingTask1List ? (
                 <div className="space-y-4">
                   {[...Array(3)].map((_, i) => (
                     <Card
@@ -890,9 +972,12 @@ export function EssaysPage({ initialTask, initialTopicId }: EssaysPageProps) {
                 </div>
               ) : (
                 <Task1EssayList
-                  essays={task1Essays}
+                  essays={task1EssaysFromList}
                   topics={task1Topics}
-                  getBandScore={() => undefined}
+                  getBandScore={(essayId) => {
+                    const essay = task1EssaysFromList.find(e => e.id === essayId);
+                    return essay?.feedback?.overallScore;
+                  }}
                   onViewEssay={handleViewTask1Essay}
                   onRewriteTopic={handleStartWritingTask1}
                   emptyMessage="Bạn chưa có bài viết Task 1 nào"
@@ -910,7 +995,7 @@ export function EssaysPage({ initialTask, initialTopicId }: EssaysPageProps) {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              {task2EssaysLoading ? (
+              {isLoadingTask2List ? (
                 <div className="space-y-4">
                   {[...Array(3)].map((_, i) => (
                     <Card
@@ -925,9 +1010,12 @@ export function EssaysPage({ initialTask, initialTopicId }: EssaysPageProps) {
                 </div>
               ) : (
                 <Task2EssayList
-                  essays={task2Essays}
+                  essays={task2EssaysFromList}
                   topics={task2Topics}
-                  getBandScore={() => undefined}
+                  getBandScore={(essayId) => {
+                    const essay = task2EssaysFromList.find(e => e.id === essayId);
+                    return essay?.feedback?.overallScore;
+                  }}
                   onViewEssay={handleViewTask2Essay}
                   onRewriteTopic={handleStartWritingTask2}
                   emptyMessage="Bạn chưa có bài viết Task 2 nào"

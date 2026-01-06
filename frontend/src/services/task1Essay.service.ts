@@ -6,7 +6,7 @@
  */
 
 import api from '../lib/axios';
-import type { Task1Essay, CreateTask1EssayPayload, SubmitTask1EssayResponse } from '../types/task1-essay';
+import type { Task1Essay, CreateTask1EssayPayload, Task1EssayQueryParams, Task1EssayListResponse } from '../types/task1-essay';
 
 /**
  * Create a new Task 1 essay (save as draft)
@@ -65,6 +65,35 @@ export async function createAndSubmitTask1Essay(payload: CreateTask1EssayPayload
   const result = await submitTask1Essay(essay.id);
   
   return result;
+}
+
+/**
+ * Get all Task 1 essays with optional filters
+ * Returns paginated list of user's essays
+ * 
+ * @param params - Query parameters for filtering
+ * @returns Promise with paginated essay list
+ * 
+ * @example
+ * const result = await getAllTask1Essays({ status: 'Graded', page: 1, pageSize: 10 });
+ */
+export async function getAllTask1Essays(params?: Task1EssayQueryParams): Promise<Task1EssayListResponse> {
+  // Convert camelCase to PascalCase for .NET backend
+  const queryParams: Record<string, string> = {};
+  
+  if (params?.status) queryParams.Status = params.status;
+  if (params?.task1TopicId) queryParams.Task1TopicId = params.task1TopicId.toString();
+  if (params?.fromDate) queryParams.FromDate = params.fromDate;
+  if (params?.toDate) queryParams.ToDate = params.toDate;
+  if (params?.minWordCount) queryParams.MinWordCount = params.minWordCount.toString();
+  if (params?.maxWordCount) queryParams.MaxWordCount = params.maxWordCount.toString();
+  if (params?.page) queryParams.Page = params.page.toString();
+  if (params?.pageSize) queryParams.PageSize = params.pageSize.toString();
+  if (params?.sortBy) queryParams.SortBy = params.sortBy;
+  if (params?.sortOrder) queryParams.SortOrder = params.sortOrder;
+  
+  const response = await api.get<Task1EssayListResponse>('/task1-essays', { params: queryParams });
+  return response.data;
 }
 
 /**
