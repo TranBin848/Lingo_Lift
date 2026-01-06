@@ -1,6 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, GraduationCap, ChevronDown, User, LogOut } from "lucide-react";
+import {
+  Menu,
+  X,
+  GraduationCap,
+  ChevronDown,
+  User,
+  LogOut,
+} from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../stores/useAuth.Store";
 
@@ -268,7 +275,7 @@ const LandingNavbar = () => {
                     to="/register"
                     className="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 hover:-translate-y-0.5 transition-all duration-300"
                   >
-                    Dùng thử miễn phí
+                    Chưa có tài khoản?
                   </Link>
                 </>
               ) : (
@@ -406,7 +413,9 @@ const LandingNavbar = () => {
                           <p className="text-sm font-semibold text-gray-900 truncate">
                             {user?.displayName || user?.username}
                           </p>
-                          <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+                          <p className="text-xs text-gray-500 truncate">
+                            {user?.email}
+                          </p>
                         </div>
                       </div>
                       <Link

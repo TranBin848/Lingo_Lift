@@ -11,20 +11,32 @@
  */
 export interface Task2Essay {
   id: number;
-  user_id: number;
-  task2_topic_id: number;
-  essay_text: string;
-  word_count: number;
-  created_at: string;
-  updated_at: string;
+  userId?: number;
+  task2TopicId: number;
+  taskType?: string;
+  essayText: string;
+  wordCount: number;
+  timeTaken?: number;
+  version?: number;
+  status: 'Draft' | 'Submitted' | 'Graded';
+  submittedAt?: string;
+  createdAt: string;
+  updatedAt?: string;
+  topicPrompt?: string;
+  previousVersionId?: number | null;
+  hasFeedback?: boolean;
+  feedback?: Task2ApiFeedback;
 }
 
 /**
  * Payload for creating a new Task 2 essay
  */
 export interface CreateTask2EssayPayload {
-  task2_topic_id: number;
-  essay_text: string;
+  task2TopicId: number;
+  taskType: 'Academic' | 'General';
+  essayText: string;
+  wordCount: number;
+  timeTaken: number;
 }
 
 /**
@@ -32,37 +44,65 @@ export interface CreateTask2EssayPayload {
  */
 export interface CreateTask2EssayResponse {
   id: number;
-  user_id: number;
-  task2_topic_id: number;
-  essay_text: string;
-  word_count: number;
-  created_at: string;
-  updated_at: string;
+  userId: number;
+  task2TopicId: number;
+  essayText: string;
+  wordCount: number;
+  timeTaken: number;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 /**
- * USAGE EXAMPLES:
- * 
- * 1. Submit essay:
- * ```typescript
- * const payload: CreateTask2EssayPayload = {
- *   task2_topic_id: 123,
- *   essay_text: "Some people believe that..."
- * };
- * 
- * const result = await createTask2Essay(payload);
- * console.log(result.id); // Essay ID
- * ```
- * 
- * 2. Get essay detail:
- * ```typescript
- * const essay: Task2Essay = await getTask2EssayById(456);
- * console.log(essay.essay_text);
- * ```
- * 
- * 3. Get essays by topic:
- * ```typescript
- * const essays: Task2Essay[] = await getTask2EssaysByTopic(123);
- * essays.forEach(essay => console.log(essay.word_count));
- * ```
+ * API Feedback Annotation
  */
+export interface FeedbackAnnotation {
+  id: number;
+  type: 'Error' | 'Suggestion' | 'Highlight';
+  startIndex: number;
+  endIndex: number;
+  originalText: string;
+  category: string;
+  severity: 'Minor' | 'Major' | 'Critical';
+  message: string;
+  suggestion: string;
+}
+
+/**
+ * Score detail from API
+ */
+export interface ApiScoreDetail {
+  score: number;
+  comments: string;
+  strengths: string;
+  improvements: string;
+}
+
+/**
+ * Task 2 API Feedback Response
+ */
+export interface Task2ApiFeedback {
+  id: number;
+  taskResponse?: ApiScoreDetail;
+  taskAchievement?: ApiScoreDetail;
+  coherenceCohesion: ApiScoreDetail;
+  lexicalResource: ApiScoreDetail;
+  grammaticalRange: ApiScoreDetail;
+  overallScore: number;
+  overallComments: string;
+  recommendations: string;
+  estimatedBandScore: number;
+  aiModel: string;
+  processingTimeMs: number | null;
+  createdAt: string;
+  annotations: FeedbackAnnotation[];
+}
+
+/**
+ * Submit Essay Response
+ */
+export interface SubmitTask2EssayResponse {
+  message: string;
+  data: Task2Essay;
+}

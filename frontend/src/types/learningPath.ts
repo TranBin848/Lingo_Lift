@@ -4,6 +4,7 @@ export type PrimaryFocus =
   | 'CoherenceCohesion' 
   | 'LexicalResource' 
   | 'TaskAchievement' 
+  | 'GrammaticalRange'
   | 'GrammaticalRangeAccuracy'
   | 'AllAreas';
 
