@@ -11,6 +11,8 @@ const Speaking = lazy(() => import("../pages/skills/Speaking"));
 const Reading = lazy(() => import("../pages/skills/Reading"));
 const Writing = lazy(() => import("../pages/skills/Writing"));
 const WritingPracticePage = lazy(() => import("../pages/WritingPracticePage"));
+const ProgressTest = lazy(() => import("../pages/ProgressTest"));
+const FinalTest = lazy(() => import("../pages/FinalTest"));
 
 export const routes: RouteObject[] = [
   {
@@ -44,5 +46,13 @@ export const routes: RouteObject[] = [
   {
     path: ROUTES.PLACEMENT_TEST,
     element: <PlacementTestPage />,
+  },
+  {
+    path: ROUTES.PROGRESS_TEST,
+    element: <ProgressTest />,
+  },
+  {
+    path: ROUTES.FINAL_TEST,
+    element: <FinalTest />,
   },
 ];

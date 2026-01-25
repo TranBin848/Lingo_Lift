@@ -23,6 +23,8 @@ import LearningPathPage from "./src/pages/LearningPathPage";
 import LearningPathPageV2 from "./src/pages/LearningPathPageV2";
 import { PlacementTestPage } from "./src/components/placement-test";
 import WritingPracticePage from "./src/pages/WritingPracticePage";
+import ProgressTest from "./src/pages/ProgressTest";
+import FinalTest from "./src/pages/FinalTest";
 import { AuthProvider } from "./src/context/AuthContext";
 import FloatingChatButton from "./src/components/chat/FloatingChatButton";
 import { Toaster } from "sonner";
@@ -173,6 +175,34 @@ export default function App() {
                   }
                 >
                   <PlacementTestPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/progress-test"
+              element={
+                <Suspense
+                  fallback={
+                    <div className="flex items-center justify-center min-h-screen">
+                      Đang tải...
+                    </div>
+                  }
+                >
+                  <ProgressTest />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/final-test"
+              element={
+                <Suspense
+                  fallback={
+                    <div className="flex items-center justify-center min-h-screen">
+                      Đang tải...
+                    </div>
+                  }
+                >
+                  <FinalTest />
                 </Suspense>
               }
             />

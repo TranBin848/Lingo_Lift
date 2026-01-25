@@ -52,13 +52,13 @@ const sidebarItems: SidebarItem[] = [
     type: "link",
     to: "/placement-test",
   },
-  {
-    id: "test-history",
-    label: "Lịch sử kiểm tra",
-    icon: History,
-    type: "link",
-    to: "/placement-test-history",
-  },
+  // {
+  //   id: "test-history",
+  //   label: "Lịch sử kiểm tra",
+  //   icon: History,
+  //   type: "link",
+  //   to: "/placement-test-history",
+  // },
 ];
 
 // Animation variants
