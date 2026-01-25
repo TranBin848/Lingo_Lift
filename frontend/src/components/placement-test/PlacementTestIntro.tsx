@@ -18,9 +18,15 @@ import { CreateLearningPathModal } from "./CreateLearningPathModal";
 
 interface PlacementTestIntroProps {
   onStart: () => void;
+  title?: string;
+  description?: string;
 }
 
-export function PlacementTestIntro({ onStart }: PlacementTestIntroProps) {
+export function PlacementTestIntro({ 
+  onStart, 
+  title = "Bài kiểm tra đầu vào",
+  description = "Bài kiểm tra này giúp AI đánh giá chính xác trình độ Writing hiện tại của bạn, từ đó xây dựng lộ trình học cá nhân hóa phù hợp nhất."
+}: PlacementTestIntroProps) {
   const navigate = useNavigate();
 
   // ===== PREVIEW MODAL - DELETE THIS SECTION LATER =====
@@ -107,7 +113,7 @@ export function PlacementTestIntro({ onStart }: PlacementTestIntroProps) {
             transition={{ delay: 0.3 }}
             className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4"
           >
-            Bài kiểm tra đầu vào
+            {title}
             <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
               {" "}
               IELTS
@@ -120,8 +126,7 @@ export function PlacementTestIntro({ onStart }: PlacementTestIntroProps) {
             transition={{ delay: 0.4 }}
             className="text-lg text-gray-600 dark:text-gray-300 max-w-xl mx-auto"
           >
-            Bài kiểm tra này giúp AI đánh giá chính xác trình độ Writing hiện
-            tại của bạn, từ đó xây dựng lộ trình học cá nhân hóa phù hợp nhất.
+            {description}
           </motion.p>
         </div>
 
